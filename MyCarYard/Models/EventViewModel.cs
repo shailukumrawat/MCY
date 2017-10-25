@@ -44,5 +44,6 @@ namespace MyCarYard.Models
         public int star { get; set; }
         public string email { get; set; }
         public string sponsorname { get; set; }
+        public string goORgoing { get; set; }
     }
 }

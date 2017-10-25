@@ -174,7 +174,7 @@
                             </div>
                             <div class="googlead_box">Google Ad <br> Space</div>
                         </div>
-                       
+
 
                         @RenderBody()
 
@@ -677,14 +677,13 @@
 
                                     var eventkeyword = $('#eventkeyword').val();
 
-
                                     $.ajax({
                                         type: "POST",
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
 
-                                        data: "{ cat: '" + cat + "',eventdue: '" + eventdue + "',country: '" + eventcountry + "',state: '" + state + "',eventkeyword: '" + eventkeyword + "',spons: '" + spons + "'}",
+                                        data: "{ cat: '" + cat + "',eventdue: '" + eventdue + "',country: '" + eventcountry + "',state: '" + state + "',eventkeyword: '" + eventkeyword + "',spons: '" + spons + "',loginid:'" + @Session["id"] + "'}",
                                         url: '/Home/AdvanceSearchEvent',
                                         asyn: false,
                                         cache: false,
@@ -702,7 +701,7 @@
 
                                             _html += "<div class='newlis_contain'><div class='listing_tab'>";
 
-                                           // _html += "<ul class='nav nav-tabs'><li><a data-toggle='tab' href='#upcoming_events'>EVENTS</a></li></ul>";
+                                            // _html += "<ul class='nav nav-tabs'><li><a data-toggle='tab' href='#upcoming_events'>EVENTS</a></li></ul>";
 
                                             _html += "</div><div class='event_topbar'><div class='tab-content'><div id='upcoming_events' class='tab-pane fade in active'>";
 
@@ -721,8 +720,13 @@
                                                 _html += "<div class='item_detail'>";
                                                 _html += "<h5>Place:" + result.eventlist[i].state + "," + result.eventlist[i].country + "," + result.eventlist[i].date + "</h5>";
                                                 _html += "<p>" + result.eventlist[i].subject.substring(0, 200) + "</p><ul></ul></div><div class='listing_btm'>";
-                                                _html += "<ul><li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i>" + parseInt(result.eventlist[i].going) + "</a></li>";
-                                                _html += '<li><a href="#" class="fuel_btn"  onclick="return EventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + result.eventlist[i].eid + '\',\'' + '@Session["email"].ToString()' + '\');">Go!</a></li>';
+                                                _html += "<ul><li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount'>" + parseInt(result.eventlist[i].going) + "</span></a></li>";
+                                                if (result.eventlist[i].goORgoing == "0") {
+                                                    _html += '<li><a href="#" class="fuel_btn"  onclick="return EventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + result.eventlist[i].eid + '\',\'' + '@Session["email"].ToString()' + '\');">Go!</a></li>';
+                                                }
+                                                else {
+                                                    _html += '<li><a href="#" class="fuel_btn" style="background-color: #5cb85c;"  onclick="return RemoveEventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + result.eventlist[i].eid + '\',\'' + '@Session["email"].ToString()' + '\');">Going!</a></li>';
+                                                }
                                                 _html += "<li><a class='fuel_btn' href='@Url.Action("UserEventDetails", "Home")?eid=" + result.eventlist[i].eid + "'> Full Detail</a></li></ul>";
                                                 _html += "</div></div></div>";
 
@@ -845,7 +849,7 @@
                                                                 if (marker1.getAnimation() !== null) {
                                                                     marker1.setAnimation(null);
                                                                 } else {
-                                                                   // marker1.setAnimation(google.maps.Animation.BOUNCE);
+                                                                    // marker1.setAnimation(google.maps.Animation.BOUNCE);
                                                                 }
                                                             });
                                                         })(marker1, data1);
@@ -999,7 +1003,8 @@
                                                         content: 'Your Entry feed Successfully',
                                                         alertBtnText: 'Okey',
                                                         alertHandler: function () {
-
+                                                            alert($('#gocount').text());
+                                                            //$('#gocount').html($(content).closest('.target-class'));
                                                         }
                                                     });
                                                     $('.alert-btn').focus();
@@ -1010,7 +1015,6 @@
                                                         content: response.status,
                                                         alertBtnText: 'Okey',
                                                         alertHandler: function () {
-
                                                         }
                                                     });
                                                     $('.alert-btn').focus();
@@ -1028,6 +1032,64 @@
                                 })
 
                             }
+
+                        </script>
+                        <script>
+
+    function RemoveEventGoing(uid, eid, email) {
+
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure!!! Not going ?',
+            confirmHandler: function () {
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/DeleteGoindToEvent',
+                    data: "{uid: '" + uid + "',eid: '" + eid + "',email: '" + email + "'}",
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+
+                            lnv.alert({
+                                title: ' ',
+                                content: 'Your Entry feed Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+
+                                    var url = '@Url.Action("ManageEvent","Home")';
+                                    window.location = url;
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        } else {
+
+                            lnv.alert({
+                                title: ' ',
+                                content: response.status,
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        }
+
+                    },
+                    error: function () {
+                        //alert("Error");
+                    }
+                });
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+    }
+
 
                         </script>
 

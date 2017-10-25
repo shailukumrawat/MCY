@@ -2022,8 +2022,9 @@ namespace MyCarYard.Controllers
         }
 
         [HttpPost]
-        public JObject DeleteGoindToEvent(int uid, int eid, string email)
+        public JObject DeleteGoindToEvent(int uid, string eid, string email)
         {
+            eid = ConvertHelper.Decode(eid);
             JObject json = new JObject();
             con = new SqlConnection(constr);
             con.Open();
@@ -3535,7 +3536,7 @@ namespace MyCarYard.Controllers
 
         [WebMethod]
         [HttpPost]
-        public JObject AdvanceSearchEvent(string cat, string eventdue, string country, string state, string eventkeyword, string spons)
+        public JObject AdvanceSearchEvent(string cat, string eventdue, string country, string state, string eventkeyword, string spons, string loginid)
         {
 
 
@@ -3658,6 +3659,7 @@ namespace MyCarYard.Controllers
             cmd.Parameters.AddWithValue("@state", state);
             cmd.Parameters.AddWithValue("@keyword", eventkeyword);
             cmd.Parameters.AddWithValue("@spons", spons);
+            cmd.Parameters.AddWithValue("@loginid", loginid);
 
 
             con.Open();
@@ -3700,1902 +3702,1902 @@ namespace MyCarYard.Controllers
                         price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
                         showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
                         going = dt.Rows[i]["going"].ToString(),
+                        goORgoing = dt.Rows[i]["goORgoing"].ToString()
 
 
 
-
-                    });
-                }
-
-
-
+                });
             }
 
 
-            JObject json = new JObject();
-            json["eventlist"] = JToken.FromObject(eventlist1);
+
+        }
+
+
+        JObject json = new JObject();
+        json["eventlist"] = JToken.FromObject(eventlist1);
             return json;
         }
 
-        [WebMethod]
-        [HttpPost]
-        public JObject AdvanceSearchEventMap(string cat, string eventdue, string country, string state, string eventkeyword, string spons)
+    [WebMethod]
+    [HttpPost]
+    public JObject AdvanceSearchEventMap(string cat, string eventdue, string country, string state, string eventkeyword, string spons)
+    {
+
+
+
+        List<EventModel> UserList = new List<EventModel>();
+        JObject json = new JObject();
+        con = new SqlConnection(constr);
+        cmd = new SqlCommand("AdvanceSearchEventMap", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@cat", cat);
+        cmd.Parameters.AddWithValue("@eventdue", eventdue);
+        cmd.Parameters.AddWithValue("@country", country);
+        cmd.Parameters.AddWithValue("@state", state);
+        cmd.Parameters.AddWithValue("@keyword", eventkeyword);
+        cmd.Parameters.AddWithValue("@spons", spons);
+        SqlDataAdapter da = new SqlDataAdapter(cmd);
+        DataTable dt = new DataTable();
+        con.Open();
+        da.Fill(dt);
+        con.Close();
+        //Bind EmpModel generic list using dataRow 
+        foreach (DataRow dr in dt.Rows)
         {
-
-
-
-            List<EventModel> UserList = new List<EventModel>();
-            JObject json = new JObject();
-            con = new SqlConnection(constr);
-            cmd = new SqlCommand("AdvanceSearchEventMap", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@cat", cat);
-            cmd.Parameters.AddWithValue("@eventdue", eventdue);
-            cmd.Parameters.AddWithValue("@country", country);
-            cmd.Parameters.AddWithValue("@state", state);
-            cmd.Parameters.AddWithValue("@keyword", eventkeyword);
-            cmd.Parameters.AddWithValue("@spons", spons);
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            con.Open();
-            da.Fill(dt);
-            con.Close();
-            //Bind EmpModel generic list using dataRow 
-            foreach (DataRow dr in dt.Rows)
-            {
-                UserList.Add(
-                    new EventModel
-                    {
-                        eid = ConvertHelper.Encode(dr["eid"].ToString()),
-                        category = dr["category"].ToString(),
-                        img = dr["img"].ToString(),
-                        title = Convert.ToString(dr["title"].ToString()),
-                        subject = Convert.ToString(dr["subject"].ToString()),
-                        date = Convert.ToDateTime(dr["edate"].ToString()).ToString("MM/dd/yyyy", CultureInfo.InvariantCulture),
-                        // type = dr["type"].ToString(),
-                        late = dr["late"].ToString(),
-                        lonz = dr["long"].ToString(),
-                        status = Convert.ToInt32(dr["status"].ToString()),
-                        city_name = dr["cityname"].ToString(),
-                        country_name = dr["country_name"].ToString(),
-                        state_name = dr["state_name"].ToString(),
-                        going = dr["going"].ToString()
-                    }
-                    );
-            }
-            json["userlist"] = JToken.FromObject(UserList);
-            return json;
-
-        }
-
-        public ActionResult UserAdvanceSearchEvent(int cat, string eventdue, int country, int state, string eventkeyword)
-        {
-
-
-            DataTable dt = new DataTable();
-            List<EventViewModel> eventlist1 = new List<EventViewModel>();
-
-            RegisterViewModel eventmodel = new RegisterViewModel();
-            con = new SqlConnection(constr);
-            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1", con);
-
-            if (cat != 0 && eventdue == "0" && country == 0 && state == 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "'", con);
-
-            }
-
-
-            if (cat != 0 && eventdue == "going" && country == 0 && state == 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.edate = '" + DateTime.Now.ToString() + "'", con);
-
-            }
-
-            if (cat != 0 && eventdue == "upcomming" && country == 0 && state == 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.edate > '" + DateTime.Now.ToString() + "'", con);
-
-            }
-
-            if (cat != 0 && eventdue == "due" && country == 0 && state == 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.edate < '" + DateTime.Now.ToString() + "'", con);
-
-            }
-
-            if (cat != 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "'", con);
-
-            }
-
-            if (cat != 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.state='" + state + "'", con);
-
-            }
-
-            if (cat != 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword != "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.state='" + state + "' and a.titel like '%" + eventkeyword + "%'", con);
-
-            }
-
-            if (cat == 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.country='" + country + "' and a.state='" + state + "'", con);
-
-            }
-            if (cat == 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.country='" + country + "'", con);
-
-            }
-
-            if (cat == 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword != "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.country='" + country + "'  and a.titel like '%" + eventkeyword + "%'", con);
-
-            }
-
-            if (cat == 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword != "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.country='" + country + "' and a.state='" + state + "' and a.titel like '%" + eventkeyword + "%'", con);
-
-            }
-
-            if (cat != 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "'", con);
-
-            }
-            if (cat != 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword == "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.state='" + state + "'", con);
-
-            }
-            if (cat != 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword != "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.title like '%" + eventkeyword + "%'", con);
-
-            }
-
-            if (cat != 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword != "")
-            {
-
-                cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.state='" + state + "' and a.title like '%" + eventkeyword + "%'", con);
-
-            }
-
-
-
-            con.Open();
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    eventlist1.Add(new EventViewModel
-                    {
-
-                        eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
-                        uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                        title = dt.Rows[i]["title"].ToString(),
-                        subject = dt.Rows[i]["subject"].ToString(),
-                        date = dt.Rows[i]["edate"].ToString(),
-                        time = dt.Rows[i]["etime"].ToString(),
-                        address = dt.Rows[i]["address"].ToString(),
-                        cno = dt.Rows[i]["cno"].ToString(),
-                        country = dt.Rows[i]["country_name"].ToString(),
-                        state = dt.Rows[i]["state_name"].ToString(),
-                        city = dt.Rows[i]["city"].ToString(),
-                        descr = dt.Rows[i]["descr"].ToString(),
-                        late = dt.Rows[i]["late"].ToString(),
-                        lonz = dt.Rows[i]["long"].ToString(),
-                        status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                        img = dt.Rows[i]["img"].ToString(),
-                        img1 = dt.Rows[i]["img1"].ToString(),
-                        img2 = dt.Rows[i]["img2"].ToString(),
-                        reason = dt.Rows[i]["reason"].ToString(),
-                        suburb = dt.Rows[i]["suburb"].ToString(),
-                        code = dt.Rows[i]["code"].ToString(),
-                        unit = dt.Rows[i]["unit"].ToString(),
-                        street = dt.Rows[i]["street"].ToString(),
-                        sname = dt.Rows[i]["sname"].ToString(),
-                        cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                        ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
-                        create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
-                        price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
-                        showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
-                        going = dt.Rows[i]["going"].ToString()
-
-
-                    });
-                }
-
-
-
-            }
-            eventmodel.eventlist = eventlist1;
-
-            return View(eventmodel);
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult UserCarMaster(string option = "0")
-        {
-            if (option == "0")
-            {
-
-                option = "CID";
-            }
-            //return View();
-
-            DataTable dt = new DataTable();
-            List<CarModel> carlist = new List<CarModel>();
-            RegisterViewModel model = new RegisterViewModel();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCarDetails", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@sortby", option);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            int carid = Convert.ToInt32(dt.Rows[i]["cid"].ToString());
-                            string uid = Session["id"].ToString();
-
-                            SqlCommand cmd1 = new SqlCommand("select * from CarWatchList where cid='" + carid + "' and uid ='" + uid + "'", con);
-                            SqlDataReader dr1 = cmd1.ExecuteReader();
-                            string starget = "0";
-                            if (dr1.Read())
-                            {
-                                starget = dr1["status"].ToString();
-                            }
-                            dr1.Close();
-                            carlist.Add(new CarModel
-                            {
-
-                                cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
-                                price = dt.Rows[i]["price"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                engine = dt.Rows[i]["ensize_name"].ToString(),
-                                year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
-                                cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
-                                cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                bcolor = dt.Rows[i]["bcolor"].ToString(),
-                                icolor = dt.Rows[i]["icolor"].ToString(),
-                                list = dt.Rows[i]["list"].ToString(),
-                                material = dt.Rows[i]["material"].ToString(),
-                                body_type = dt.Rows[i]["bodytypename"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                make = dt.Rows[i]["make_type"].ToString(),
-                                badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series_type"].ToString(),
-                                currency = dt.Rows[i]["currencyname"].ToString(),
-                                model = dt.Rows[i]["model"].ToString(),
-                                tranmition = dt.Rows[i]["transmision"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                zipcode = dt.Rows[i]["zip"].ToString(),
-                                meter = dt.Rows[i]["meter"].ToString(),
-                                matrics = dt.Rows[i]["odometer"].ToString(),
-                                condition = dt.Rows[i]["condition"].ToString(),
-                                uname = dt.Rows[i]["name"].ToString(),
-                                drive = dt.Rows[i]["drive"].ToString(),
-                                fuel = dt.Rows[i]["fuel"].ToString(),
-                                gstatus = dt.Rows[i]["gstatus"].ToString(),
-                                speedtype = dt.Rows[i]["speedtypename"].ToString(),
-                                star = Convert.ToInt32(starget),
-                                img3 = dt.Rows[i]["img3"].ToString(),
-                                img4 = dt.Rows[i]["img4"].ToString(),
-                                img5 = dt.Rows[i]["img5"].ToString(),
-                                created_date = dt.Rows[i]["created_date"].ToString(),
-                                showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                orgname = dt.Rows[i]["orgname"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                email = dt.Rows[i]["email"].ToString()
-                            });
-                        }
-                    }
-                }
-            }
-
-
-            dt = new DataTable();
-            List<EventViewModel> eventlist1 = new List<EventViewModel>();
-
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetEvent", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@sortby", option);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            eventlist1.Add(new EventViewModel
-                            {
-
-                                eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                title = dt.Rows[i]["title"].ToString(),
-                                subject = dt.Rows[i]["subject"].ToString(),
-                                date = dt.Rows[i]["edate"].ToString(),
-                                time = dt.Rows[i]["etime"].ToString(),
-                                address = dt.Rows[i]["address"].ToString(),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                late = dt.Rows[i]["late"].ToString(),
-                                lonz = dt.Rows[i]["long"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                reason = dt.Rows[i]["reason"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                code = dt.Rows[i]["code"].ToString(),
-                                unit = dt.Rows[i]["unit"].ToString(),
-                                street = dt.Rows[i]["street"].ToString(),
-                                sname = dt.Rows[i]["sname"].ToString(),
-                                cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                                create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
-                                ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
-                                price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
-                                showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
-                                going = dt.Rows[i]["going"].ToString()
-
-
-
-                            });
-                        }
-                    }
-
-                }
-            }
-            model.eventlist = eventlist1;
-            model.carlist = carlist;
-            return View("UserCarMaster", model);
-
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult UserEventMaster(string option = "0")
-        {
-            //return View();
-            if (option == "0")
-            {
-
-                option = "CID";
-            }
-
-            DataTable dt = new DataTable();
-            List<CarModel> carlist = new List<CarModel>();
-            RegisterViewModel model = new RegisterViewModel();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCarDetails", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@sortby", option);
-
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-
-                            int carid = Convert.ToInt32(dt.Rows[i]["cid"].ToString());
-                            string uid = Session["id"].ToString();
-
-                            SqlCommand cmd1 = new SqlCommand("select * from CarWatchList where cid='" + carid + "' and uid ='" + uid + "'", con);
-                            SqlDataReader dr1 = cmd1.ExecuteReader();
-                            string starget = "0";
-                            if (dr1.Read())
-                            {
-                                starget = dr1["status"].ToString();
-                            }
-                            dr1.Close();
-                            carlist.Add(new CarModel
-                            {
-                                cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
-                                price = dt.Rows[i]["price"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                engine = dt.Rows[i]["ensize_name"].ToString(),
-                                year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
-                                cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
-                                cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                bcolor = dt.Rows[i]["bcolor"].ToString(),
-                                icolor = dt.Rows[i]["icolor"].ToString(),
-                                list = dt.Rows[i]["list"].ToString(),
-                                material = dt.Rows[i]["material"].ToString(),
-                                body_type = dt.Rows[i]["bodytypename"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                make = dt.Rows[i]["make_type"].ToString(),
-                                badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series_type"].ToString(),
-                                currency = dt.Rows[i]["currencyname"].ToString(),
-                                model = dt.Rows[i]["model"].ToString(),
-                                tranmition = dt.Rows[i]["transmision"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                zipcode = dt.Rows[i]["zip"].ToString(),
-                                meter = dt.Rows[i]["meter"].ToString(),
-                                matrics = dt.Rows[i]["odometer"].ToString(),
-                                condition = dt.Rows[i]["condition"].ToString(),
-                                uname = dt.Rows[i]["name"].ToString(),
-                                drive = dt.Rows[i]["drive"].ToString(),
-                                fuel = dt.Rows[i]["fuel"].ToString(),
-                                gstatus = dt.Rows[i]["gstatus"].ToString(),
-                                speedtype = dt.Rows[i]["speedtypename"].ToString(),
-                                star = Convert.ToInt32(starget),
-                                img3 = dt.Rows[i]["img3"].ToString(),
-                                img4 = dt.Rows[i]["img4"].ToString(),
-                                img5 = dt.Rows[i]["img5"].ToString(),
-                                created_date = dt.Rows[i]["created_date"].ToString(),
-                                showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                orgname = dt.Rows[i]["orgname"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString()
-
-
-                            });
-                        }
-                    }
-                }
-            }
-
-
-            dt = new DataTable();
-            List<EventViewModel> eventlist1 = new List<EventViewModel>();
-
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetEvent", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@sortby", option);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            eventlist1.Add(new EventViewModel
-                            {
-
-                                eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                title = dt.Rows[i]["title"].ToString(),
-                                subject = dt.Rows[i]["subject"].ToString(),
-                                date = dt.Rows[i]["edate"].ToString(),
-                                time = dt.Rows[i]["etime"].ToString(),
-                                address = dt.Rows[i]["address"].ToString(),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                late = dt.Rows[i]["late"].ToString(),
-                                lonz = dt.Rows[i]["long"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                reason = dt.Rows[i]["reason"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                code = dt.Rows[i]["code"].ToString(),
-                                unit = dt.Rows[i]["unit"].ToString(),
-                                street = dt.Rows[i]["street"].ToString(),
-                                sname = dt.Rows[i]["sname"].ToString(),
-                                cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                                create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
-                                ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
-                                price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
-                                showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
-                                going = dt.Rows[i]["going"].ToString(),
-
-
-                            });
-                        }
-                    }
-
-                }
-            }
-            model.eventlist = eventlist1;
-            model.carlist = carlist;
-            return View(model);
-
-        }
-
-        public ActionResult CarDetails(string cid = "0")
-        {
-            cid = ConvertHelper.Decode(cid);
-            con = new SqlConnection(constr);
-
-            List<CarModel> cardetailslist = new List<CarModel>();
-
-            RegisterViewModel model = new RegisterViewModel();
-            SqlCommand com = new SqlCommand("CarDetails", con);
-            com.CommandType = CommandType.StoredProcedure;
-
-            SqlDataAdapter da = new SqlDataAdapter(com);
-            DataTable dt = new DataTable();
-            con.Open();
-            com.Parameters.AddWithValue("@cid", cid);
-            da.Fill(dt);
-            con.Close();
-
-            if (dt.Rows.Count > 0)
-            {
-
-                cardetailslist.Add(new CarModel
-                {
-                    cid = ConvertHelper.Encode(dt.Rows[0]["cid"].ToString()),
-                    uid = Convert.ToInt32(dt.Rows[0]["uid"].ToString()),
-                    make = dt.Rows[0]["make_type"].ToString(),
-                    price = dt.Rows[0]["price"].ToString(),
-                    descr = TextToHtml(dt.Rows[0]["descr"].ToString()),
-                    bcolor = dt.Rows[0]["body_color_name"].ToString(),
-                    model = dt.Rows[0]["model"].ToString(),
-                    engine = dt.Rows[0]["ensize_name"].ToString(),
-                    year = Convert.ToInt32(dt.Rows[0]["year"].ToString()),
-                    body_type = dt.Rows[0]["body_type"].ToString(),
-                    tranmition = dt.Rows[0]["transmision"].ToString(),
-                    status = Convert.ToInt32(dt.Rows[0]["status"].ToString()),
-                    img = dt.Rows[0]["img"].ToString(),
-                    img1 = dt.Rows[0]["img1"].ToString(),
-                    img2 = dt.Rows[0]["img2"].ToString(),
-                    uname = dt.Rows[0]["name"].ToString(),
-                    country = dt.Rows[0]["country_name"].ToString(),
-                    state = dt.Rows[0]["state_name"].ToString(),
-                    badge = dt.Rows[0]["badge_type"].ToString(),
-                    series = dt.Rows[0]["series_type"].ToString(),
-                    currency = dt.Rows[0]["currencyname"].ToString(),
-                    icolor = dt.Rows[0]["inter_color_name"].ToString(),
-                    list = dt.Rows[0]["list"].ToString(),
-                    material = dt.Rows[0]["inter_mat_name"].ToString(),
-                    meter = dt.Rows[0]["meter"].ToString(),
-                    matrics = dt.Rows[0]["odometer"].ToString(),
-                    condition = dt.Rows[0]["condition"].ToString(),
-                    cylinder = Convert.ToInt32(dt.Rows[0]["cylinder"].ToString()),
-                    drive = dt.Rows[0]["drive"].ToString(),
-                    created_date = dt.Rows[0]["created_date"].ToString(),
-                    city = dt.Rows[0]["cityname"].ToString(),
-                    fuel = dt.Rows[0]["fuel"].ToString(),
-                    gstatus = dt.Rows[0]["gstatus"].ToString(),
-                    speedtype = dt.Rows[0]["speedtypename"].ToString(),
-                    star = Convert.ToInt32(dt.Rows[0]["star"].ToString()),
-                    img3 = dt.Rows[0]["img3"].ToString(),
-                    img4 = dt.Rows[0]["img4"].ToString(),
-                    img5 = dt.Rows[0]["img5"].ToString(),
-                    showphone = Convert.ToInt32(dt.Rows[0]["showphone"].ToString()),
-                    cno = dt.Rows[0]["cno"].ToString(),
-                    orgname = dt.Rows[0]["orgname"].ToString(),
-                    zipcode = dt.Rows[0]["zip"].ToString(),
-                    suburb = dt.Rows[0]["regionname"].ToString(),
-                    cylinder_name = dt.Rows[0]["cylinder_name"].ToString(),
-                    email = dt.Rows[0]["email"].ToString()
-
-
-                });
-
-            }
-
-            List<MakeTypeModel> list = new List<MakeTypeModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("GetMakeType", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list.Add(new MakeTypeModel
-                {
-                    make_id = Convert.ToInt32(dr["make_id"].ToString()),
-                    make = dr["make_type"].ToString(),
-                    status = Convert.ToInt32(dr["status"].ToString())
-
-                });
-            }
-            dr.Close();
-            con.Close();
-            model.makelist = list;
-            model.cardetailslist = cardetailslist;
-            return View("CarDetails", model);
-
-            //  return View();
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult UserCarDetails(string cid = "0")
-        {
-            cid = ConvertHelper.Decode(cid);
-
-            con = new SqlConnection(constr);
-
-            List<CarModel> cardetailslist = new List<CarModel>();
-
-            RegisterViewModel model = new RegisterViewModel();
-            SqlCommand com = new SqlCommand("CarDetails", con);
-            com.CommandType = CommandType.StoredProcedure;
-
-            SqlDataAdapter da = new SqlDataAdapter(com);
-            DataTable dt = new DataTable();
-            con.Open();
-            com.Parameters.AddWithValue("@cid", cid);
-            da.Fill(dt);
-            con.Close();
-
-            if (dt.Rows.Count > 0)
-            {
-
-                cardetailslist.Add(new CarModel
-                {
-                    cid = ConvertHelper.Encode(dt.Rows[0]["cid"].ToString()),
-                    uid = Convert.ToInt32(dt.Rows[0]["uid"].ToString()),
-                    make = dt.Rows[0]["make_type"].ToString(),
-                    price = dt.Rows[0]["price"].ToString(),
-                    descr = TextToHtml(dt.Rows[0]["descr"].ToString()),
-                    bcolor = dt.Rows[0]["body_color_name"].ToString(),
-                    model = dt.Rows[0]["model"].ToString(),
-                    engine = dt.Rows[0]["ensize_name"].ToString(),
-                    year = Convert.ToInt32(dt.Rows[0]["year"].ToString()),
-                    body_type = dt.Rows[0]["body_type"].ToString(),
-                    tranmition = dt.Rows[0]["transmision"].ToString(),
-                    status = Convert.ToInt32(dt.Rows[0]["status"].ToString()),
-                    img = dt.Rows[0]["img"].ToString(),
-                    img1 = dt.Rows[0]["img1"].ToString(),
-                    img2 = dt.Rows[0]["img2"].ToString(),
-                    uname = dt.Rows[0]["name"].ToString(),
-                    country = dt.Rows[0]["country_name"].ToString(),
-                    state = dt.Rows[0]["state_name"].ToString(),
-                    badge = dt.Rows[0]["badge_type"].ToString(),
-                    series = dt.Rows[0]["series_type"].ToString(),
-                    currency = dt.Rows[0]["currencyname"].ToString(),
-                    icolor = dt.Rows[0]["inter_color_name"].ToString(),
-                    list = dt.Rows[0]["list"].ToString(),
-                    material = dt.Rows[0]["inter_mat_name"].ToString(),
-                    meter = dt.Rows[0]["meter"].ToString(),
-                    matrics = dt.Rows[0]["odometer"].ToString(),
-                    condition = dt.Rows[0]["condition"].ToString(),
-                    cylinder = Convert.ToInt32(dt.Rows[0]["cylinder"].ToString()),
-                    drive = dt.Rows[0]["drive"].ToString(),
-                    created_date = dt.Rows[0]["created_date"].ToString(),
-                    city = dt.Rows[0]["cityname"].ToString(),
-                    fuel = dt.Rows[0]["fuel"].ToString(),
-                    gstatus = dt.Rows[0]["gstatus"].ToString(),
-                    speedtype = dt.Rows[0]["speedtypename"].ToString(),
-                    star = Convert.ToInt32(dt.Rows[0]["carstar"].ToString()),
-                    img3 = dt.Rows[0]["img3"].ToString(),
-                    img4 = dt.Rows[0]["img4"].ToString(),
-                    img5 = dt.Rows[0]["img5"].ToString(),
-                    showphone = Convert.ToInt32(dt.Rows[0]["showphone"].ToString()),
-                    cno = dt.Rows[0]["cno"].ToString(),
-                    orgname = dt.Rows[0]["orgname"].ToString(),
-                    zipcode = dt.Rows[0]["zip"].ToString(),
-                    suburb = dt.Rows[0]["regionname"].ToString(),
-                    cylinder_name = dt.Rows[0]["cylinder_name"].ToString(),
-                    email = dt.Rows[0]["email"].ToString()
-
-
-
-
-                });
-
-            }
-
-
-            model.cardetailslist = cardetailslist;
-            return View("UserCarDetails", model);
-
-            //  return View();
-        }
-
-        public ActionResult EventDetails(string eid = "0")
-        {
-
-            eid = ConvertHelper.Decode(eid);
-
-            con = new SqlConnection(constr);
-
-            List<EventViewModel> eventdetailslist = new List<EventViewModel>();
-
-            RegisterViewModel model = new RegisterViewModel();
-            SqlCommand com = new SqlCommand("GetEventDetails", con);
-            com.CommandType = CommandType.StoredProcedure;
-
-            SqlDataAdapter da = new SqlDataAdapter(com);
-            DataTable dt = new DataTable();
-            con.Open();
-            com.Parameters.AddWithValue("@eid", eid);
-            da.Fill(dt);
-            con.Close();
-            if (dt.Rows.Count > 0)
-            {
-
-                eventdetailslist.Add(new EventViewModel
-                {
-
-                    eid = ConvertHelper.Encode(dt.Rows[0]["eid"].ToString()),
-                    uid = Convert.ToInt32(dt.Rows[0]["uid"].ToString()),
-                    title = dt.Rows[0]["title"].ToString(),
-                    subject = TextToHtml(dt.Rows[0]["subject"].ToString()),
-                    date = dt.Rows[0]["edate"].ToString(),
-                    time = dt.Rows[0]["etime"].ToString(),
-                    address = dt.Rows[0]["address"].ToString(),
-                    cno = dt.Rows[0]["cno"].ToString(),
-                    country = dt.Rows[0]["country_name"].ToString(),
-                    state = dt.Rows[0]["state_name"].ToString(),
-                    city = dt.Rows[0]["city"].ToString(),
-                    descr = dt.Rows[0]["descr"].ToString(),
-                    late = dt.Rows[0]["late"].ToString(),
-                    lonz = dt.Rows[0]["long"].ToString(),
-                    status = Convert.ToInt32(dt.Rows[0]["status"].ToString()),
-                    img = dt.Rows[0]["img"].ToString(),
-                    img1 = dt.Rows[0]["img1"].ToString(),
-                    img2 = dt.Rows[0]["img2"].ToString(),
-                    reason = dt.Rows[0]["reason"].ToString(),
-                    //suburb = dt.Rows[0]["suburb"].ToString(),
-                    code = dt.Rows[0]["code"].ToString(),
-                    unit = dt.Rows[0]["unit"].ToString(),
-                    street = dt.Rows[0]["street"].ToString(),
-                    sname = dt.Rows[0]["sname"].ToString(),
-                    cat = Convert.ToInt32(dt.Rows[0]["cat"].ToString()),
-                    uname = dt.Rows[0]["name"].ToString(),
-                    create_date = Convert.ToDateTime(dt.Rows[0]["created_date"].ToString()),
-                    ispaid = Convert.ToInt32(dt.Rows[0]["ispaid"].ToString()),
-                    price = Convert.ToInt32(dt.Rows[0]["price"].ToString()),
-                    showphone = Convert.ToInt32(dt.Rows[0]["shownumber"].ToString()),
-                    going = dt.Rows[0]["going"].ToString(),
-                    email = dt.Rows[0]["email"].ToString()
-
-
-                });
-
-
-
-
-            }
-
-
-            List<MakeTypeModel> list = new List<MakeTypeModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("GetMakeType", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list.Add(new MakeTypeModel
-                {
-                    make_id = Convert.ToInt32(dr["make_id"].ToString()),
-                    make = dr["make_type"].ToString(),
-                    status = Convert.ToInt32(dr["status"].ToString())
-
-                });
-            }
-            dr.Close();
-            con.Close();
-            model.makelist = list;
-            model.eventdetailslist = eventdetailslist;
-            return View("EventDetails", model);
-
-            //return View();
-        }
-
-        public string TextToHtml(string text)
-        {
-            text = HttpUtility.HtmlEncode(text);
-            text = text.Replace("\r\n", "\r");
-            text = text.Replace("\n", "\r");
-            text = text.Replace("\r", "<br>\r\n");
-            text = text.Replace("  ", " &nbsp;");
-            return text;
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult UserEventDetails(string eid = "0")
-        {
-            eid = ConvertHelper.Decode(eid);
-
-            con = new SqlConnection(constr);
-
-            List<EventViewModel> eventdetailslist = new List<EventViewModel>();
-
-            RegisterViewModel model = new RegisterViewModel();
-            SqlCommand com = new SqlCommand("GetEventDetails", con);
-            com.CommandType = CommandType.StoredProcedure;
-
-            SqlDataAdapter da = new SqlDataAdapter(com);
-            DataTable dt = new DataTable();
-            con.Open();
-            com.Parameters.AddWithValue("@eid", eid);
-            da.Fill(dt);
-            con.Close();
-            if (dt.Rows.Count > 0)
-            {
-
-                eventdetailslist.Add(new EventViewModel
-                {
-
-                    eid = ConvertHelper.Encode(dt.Rows[0]["eid"].ToString()),
-                    uid = Convert.ToInt32(dt.Rows[0]["uid"].ToString()),
-                    title = dt.Rows[0]["title"].ToString(),
-                    subject = TextToHtml(dt.Rows[0]["subject"].ToString()),
-                    date = dt.Rows[0]["edate"].ToString(),
-                    time = dt.Rows[0]["etime"].ToString(),
-                    address = dt.Rows[0]["address"].ToString(),
-                    cno = dt.Rows[0]["cno"].ToString(),
-                    country = dt.Rows[0]["country_name"].ToString(),
-                    state = dt.Rows[0]["state_name"].ToString(),
-                    city = dt.Rows[0]["city"].ToString(),
-                    descr = dt.Rows[0]["descr"].ToString(),
-                    late = dt.Rows[0]["late"].ToString(),
-                    lonz = dt.Rows[0]["long"].ToString(),
-                    status = Convert.ToInt32(dt.Rows[0]["status"].ToString()),
-                    img = dt.Rows[0]["img"].ToString(),
-                    img1 = dt.Rows[0]["img1"].ToString(),
-                    img2 = dt.Rows[0]["img2"].ToString(),
-                    reason = dt.Rows[0]["reason"].ToString(),
-                    suburb = dt.Rows[0]["suburb"].ToString(),
-                    code = dt.Rows[0]["code"].ToString(),
-                    unit = dt.Rows[0]["unit"].ToString(),
-                    street = dt.Rows[0]["street"].ToString(),
-                    sname = dt.Rows[0]["sname"].ToString(),
-                    cat = Convert.ToInt32(dt.Rows[0]["cat"].ToString()),
-                    uname = dt.Rows[0]["name"].ToString(),
-                    going = dt.Rows[0]["going"].ToString(),
-                    create_date = Convert.ToDateTime(dt.Rows[0]["created_date"].ToString()),
-                    ispaid = Convert.ToInt32(dt.Rows[0]["ispaid"].ToString()),
-                    price = Convert.ToInt32(dt.Rows[0]["price"].ToString()),
-                    showphone = Convert.ToInt32(dt.Rows[0]["shownumber"].ToString()),
-                    email = dt.Rows[0]["email"].ToString()
-
-
-                });
-
-            }
-
-            model.eventdetailslist = eventdetailslist;
-
-            return View(model);
-
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult ManageEvent()
-        {
-            string uid = Session["id"].ToString();
-            DataTable dt = new DataTable();
-            List<EventViewModel> eventlist1 = new List<EventViewModel>();
-            RegisterViewModel eventmodel = new RegisterViewModel();
-            SqlConnection con = new SqlConnection(constr);
-
-            SqlCommand cmd = new SqlCommand("GetAllEventList", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@cid", uid);
-            con.Open();
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    eventlist1.Add(new EventViewModel
-                    {
-
-                        eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
-                        uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                        title = dt.Rows[i]["title"].ToString(),
-                        subject = dt.Rows[i]["subject"].ToString(),
-                        date = dt.Rows[i]["edate"].ToString(),
-                        time = dt.Rows[i]["etime"].ToString(),
-                        address = dt.Rows[i]["address"].ToString(),
-                        cno = dt.Rows[i]["cno"].ToString(),
-                        country = dt.Rows[i]["country_name"].ToString(),
-                        state = dt.Rows[i]["state_name"].ToString(),
-                        city = dt.Rows[i]["city"].ToString(),
-                        descr = dt.Rows[i]["descr"].ToString(),
-                        late = dt.Rows[i]["late"].ToString(),
-                        lonz = dt.Rows[i]["long"].ToString(),
-                        status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                        img = dt.Rows[i]["img"].ToString(),
-                        img1 = dt.Rows[i]["img1"].ToString(),
-                        img2 = dt.Rows[i]["img2"].ToString(),
-                        reason = dt.Rows[i]["reason"].ToString(),
-                        suburb = dt.Rows[i]["suburb"].ToString(),
-                        code = dt.Rows[i]["code"].ToString(),
-                        unit = dt.Rows[i]["unit"].ToString(),
-                        street = dt.Rows[i]["street"].ToString(),
-                        sname = dt.Rows[i]["sname"].ToString(),
-                        cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                        create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString())
-
-                    });
-                }
-            }
-
-
-
-            dt = new DataTable();
-
-            string id = Session["id"].ToString();
-            List<EventViewModel> eventlist = new List<EventViewModel>();
-
-            using (SqlConnection con1 = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd1 = new SqlCommand("GetGoingEvents", con1))
-                {
-                    con1.Open();
-                    cmd1.CommandType = CommandType.StoredProcedure;
-                    cmd1.Parameters.AddWithValue("@uid", id);
-                    SqlDataAdapter da1 = new SqlDataAdapter(cmd1);
-                    da1.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            eventlist.Add(new EventViewModel
-                            {
-
-                                eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                title = dt.Rows[i]["title"].ToString(),
-                                subject = dt.Rows[i]["subject"].ToString(),
-                                date = dt.Rows[i]["edate"].ToString(),
-                                time = dt.Rows[i]["etime"].ToString(),
-                                address = dt.Rows[i]["address"].ToString(),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["city"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                late = dt.Rows[i]["late"].ToString(),
-                                lonz = dt.Rows[i]["long"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                reason = dt.Rows[i]["reason"].ToString(),
-                                suburb = dt.Rows[i]["suburb"].ToString(),
-                                code = dt.Rows[i]["code"].ToString(),
-                                unit = dt.Rows[i]["unit"].ToString(),
-                                street = dt.Rows[i]["street"].ToString(),
-                                sname = dt.Rows[i]["sname"].ToString(),
-                                cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                                create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
-                                ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
-                                price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
-                                showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
-                                going = dt.Rows[i]["going"].ToString()
-
-                            });
-                        }
-                    }
-
-                }
-            }
-
-
-
-            eventmodel.eventdetailslist = eventlist;
-            eventmodel.eventlist = eventlist1;
-            return View(eventmodel);
-
-        }
-        [AuthonticateUserHelper]
-        public ActionResult ManageYard()
-        {
-            string uid = Session["id"].ToString();
-            DataTable dt = new DataTable();
-            List<CarModel> carlist = new List<CarModel>();
-            RegisterViewModel model = new RegisterViewModel();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCarDetailsbyID", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@uid", uid);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            carlist.Add(new CarModel
-                            {
-                                cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
-                                price = dt.Rows[i]["price"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                engine = dt.Rows[i]["ensize_name"].ToString(),
-                                year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
-                                cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
-                                cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                bcolor = dt.Rows[i]["bcolor"].ToString(),
-                                icolor = dt.Rows[i]["icolor"].ToString(),
-                                list = dt.Rows[i]["list"].ToString(),
-                                material = dt.Rows[i]["material"].ToString(),
-                                body_type = dt.Rows[i]["bodytypename"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                make = dt.Rows[i]["make_type"].ToString(),
-                                badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series_type"].ToString(),
-                                currency = dt.Rows[i]["currencyname"].ToString(),
-                                model = dt.Rows[i]["model"].ToString(),
-                                tranmition = dt.Rows[i]["transmision"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                zipcode = dt.Rows[i]["zip"].ToString(),
-                                meter = dt.Rows[i]["meter"].ToString(),
-                                matrics = dt.Rows[i]["odometer"].ToString(),
-                                condition = dt.Rows[i]["condition"].ToString(),
-                                uname = dt.Rows[i]["name"].ToString(),
-                                drive = dt.Rows[i]["drive"].ToString(),
-                                fuel = dt.Rows[i]["fuel"].ToString(),
-                                gstatus = dt.Rows[i]["gstatus"].ToString(),
-                                speedtype = dt.Rows[i]["speedtypename"].ToString(),
-                                star = Convert.ToInt32(dt.Rows[i]["carstar"].ToString()),
-                                img3 = dt.Rows[i]["img3"].ToString(),
-                                img4 = dt.Rows[i]["img4"].ToString(),
-                                img5 = dt.Rows[i]["img5"].ToString(),
-                                created_date = dt.Rows[i]["created_date"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString()
-
-
-
-
-
-
-
-                            });
-                        }
-                    }
-                }
-            }
-            model.carlist = carlist;
-
-            return View(model);
-        }
-
-        public ActionResult CarMapListing(string uid)
-        {
-            uid = ConvertHelper.Decode(uid);
-
-            DataTable dt = new DataTable();
-            List<CarModel> carlist = new List<CarModel>();
-            RegisterViewModel model = new RegisterViewModel();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCarMapListing", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@uid", uid);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            carlist.Add(new CarModel
-                            {
-                                cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
-                                price = dt.Rows[i]["price"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                engine = dt.Rows[i]["ensize_name"].ToString(),
-                                year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
-                                cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
-                                cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                bcolor = dt.Rows[i]["bcolor"].ToString(),
-                                icolor = dt.Rows[i]["icolor"].ToString(),
-                                list = dt.Rows[i]["list"].ToString(),
-                                material = dt.Rows[i]["material"].ToString(),
-                                body_type = dt.Rows[i]["bodytypename"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                make = dt.Rows[i]["make_type"].ToString(),
-                                badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series_type"].ToString(),
-                                currency = dt.Rows[i]["currencyname"].ToString(),
-                                model = dt.Rows[i]["model"].ToString(),
-                                tranmition = dt.Rows[i]["transmision"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                zipcode = dt.Rows[i]["zip"].ToString(),
-                                meter = dt.Rows[i]["meter"].ToString(),
-                                matrics = dt.Rows[i]["odometer"].ToString(),
-                                condition = dt.Rows[i]["condition"].ToString(),
-                                uname = dt.Rows[i]["name"].ToString(),
-                                drive = dt.Rows[i]["drive"].ToString(),
-                                fuel = dt.Rows[i]["fuel"].ToString(),
-                                gstatus = dt.Rows[i]["gstatus"].ToString(),
-                                speedtype = dt.Rows[i]["speedtypename"].ToString(),
-                                star = Convert.ToInt32(dt.Rows[i]["carstar"].ToString()),
-                                img3 = dt.Rows[i]["img3"].ToString(),
-                                img4 = dt.Rows[i]["img4"].ToString(),
-                                img5 = dt.Rows[i]["img5"].ToString(),
-                                created_date = dt.Rows[i]["created_date"].ToString(),
-                                showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                orgname = dt.Rows[i]["orgname"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                email = dt.Rows[i]["email"].ToString()
-
-
-
-                            });
-                        }
-                    }
-                }
-            }
-
-            List<MakeTypeModel> list = new List<MakeTypeModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("GetMakeType", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list.Add(new MakeTypeModel
-                {
-                    make_id = Convert.ToInt32(dr["make_id"].ToString()),
-                    make = dr["make_type"].ToString(),
-                    status = Convert.ToInt32(dr["status"].ToString())
-
-                });
-            }
-            dr.Close();
-            con.Close();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select * from tbl_login where id='" + uid + "'", con);
-            dr = cmd.ExecuteReader();
-            if (dr.Read())
-            {
-
-                model.buslog = dr["buslogo"].ToString();
-            }
-            dr.Close();
-            con.Close();
-
-
-
-
-            model.makelist = list;
-            model.carlist = carlist;
-
-            return View(model);
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult UserCarMapListing(string uid)
-        {
-            uid = ConvertHelper.Decode(uid);
-
-            DataTable dt = new DataTable();
-            List<CarModel> carlist = new List<CarModel>();
-            RegisterViewModel model = new RegisterViewModel();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCarMapListing", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@uid", uid);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            carlist.Add(new CarModel
-                            {
-                                cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
-                                price = dt.Rows[i]["price"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                engine = dt.Rows[i]["ensize_name"].ToString(),
-                                year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
-                                cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
-                                cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                bcolor = dt.Rows[i]["bcolor"].ToString(),
-                                icolor = dt.Rows[i]["icolor"].ToString(),
-                                list = dt.Rows[i]["list"].ToString(),
-                                material = dt.Rows[i]["material"].ToString(),
-                                body_type = dt.Rows[i]["bodytypename"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                make = dt.Rows[i]["make_type"].ToString(),
-                                badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series_type"].ToString(),
-                                currency = dt.Rows[i]["currencyname"].ToString(),
-                                model = dt.Rows[i]["model"].ToString(),
-                                tranmition = dt.Rows[i]["transmision"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                zipcode = dt.Rows[i]["zip"].ToString(),
-                                meter = dt.Rows[i]["meter"].ToString(),
-                                matrics = dt.Rows[i]["odometer"].ToString(),
-                                condition = dt.Rows[i]["condition"].ToString(),
-                                uname = dt.Rows[i]["name"].ToString(),
-                                drive = dt.Rows[i]["drive"].ToString(),
-                                fuel = dt.Rows[i]["fuel"].ToString(),
-                                gstatus = dt.Rows[i]["gstatus"].ToString(),
-                                speedtype = dt.Rows[i]["speedtypename"].ToString(),
-                                star = Convert.ToInt32(dt.Rows[i]["carstar"].ToString()),
-                                img3 = dt.Rows[i]["img3"].ToString(),
-                                img4 = dt.Rows[i]["img4"].ToString(),
-                                img5 = dt.Rows[i]["img5"].ToString(),
-                                created_date = dt.Rows[i]["created_date"].ToString(),
-                                showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                orgname = dt.Rows[i]["orgname"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString()
-
-
-
-                            });
-                        }
-                    }
-                }
-            }
-
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select * from tbl_login where id = '" + uid + "'", con);
-            dr = cmd.ExecuteReader();
-            if (dr.Read())
-            {
-
-                model.buslog = dr["buslogo"].ToString();
-            }
-
-            dr.Close();
-            model.carlist = carlist;
-
-            return View(model);
-        }
-
-        [AuthonticateUserHelper]
-
-        public ActionResult WatchList()
-        {
-            string uid = Session["id"].ToString();
-            DataTable dt = new DataTable();
-            List<CarModel> carlist = new List<CarModel>();
-            RegisterViewModel model = new RegisterViewModel();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCarWatchlist", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@uid", uid);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            carlist.Add(new CarModel
-                            {
-                                cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
-                                price = dt.Rows[i]["price"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                engine = dt.Rows[i]["ensize_name"].ToString(),
-                                year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
-                                cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
-                                cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                bcolor = dt.Rows[i]["bcolor"].ToString(),
-                                icolor = dt.Rows[i]["icolor"].ToString(),
-                                list = dt.Rows[i]["list"].ToString(),
-                                material = dt.Rows[i]["material"].ToString(),
-                                body_type = dt.Rows[i]["bodytypename"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                make = dt.Rows[i]["make_type"].ToString(),
-                                badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series"].ToString(),
-                                currency = dt.Rows[i]["currencyname"].ToString(),
-                                model = dt.Rows[i]["model"].ToString(),
-                                tranmition = dt.Rows[i]["transmision"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                zipcode = dt.Rows[i]["zip"].ToString(),
-                                meter = dt.Rows[i]["meter"].ToString(),
-                                matrics = dt.Rows[i]["odometer"].ToString(),
-                                condition = dt.Rows[i]["condition"].ToString(),
-                                uname = dt.Rows[i]["name"].ToString(),
-                                drive = dt.Rows[i]["drive"].ToString(),
-                                fuel = dt.Rows[i]["fuel"].ToString(),
-                                gstatus = dt.Rows[i]["gstatus"].ToString(),
-                                speedtype = dt.Rows[i]["speedtypename"].ToString(),
-                                star = Convert.ToInt32(dt.Rows[i]["carstar"].ToString()),
-                                img3 = dt.Rows[i]["img3"].ToString(),
-                                img4 = dt.Rows[i]["img4"].ToString(),
-                                img5 = dt.Rows[i]["img5"].ToString(),
-                                created_date = dt.Rows[i]["created_date"].ToString(),
-                                showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                orgname = dt.Rows[i]["orgname"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                email = dt.Rows[i]["email"].ToString()
-
-
-
-                            });
-                        }
-                    }
-                }
-            }
-
-            dt = new DataTable();
-
-            List<EventViewModel> eventlist1 = new List<EventViewModel>();
-            con = new SqlConnection(constr);
-            cmd = new SqlCommand("GetEventWatchList", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@uid", uid);
-            con.Open();
-            da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    eventlist1.Add(new EventViewModel
-                    {
-
-                        eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
-                        uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                        title = dt.Rows[i]["title"].ToString(),
-                        subject = dt.Rows[i]["subject"].ToString(),
-                        date = dt.Rows[i]["edate"].ToString(),
-                        time = dt.Rows[i]["etime"].ToString(),
-                        address = dt.Rows[i]["address"].ToString(),
-                        cno = dt.Rows[i]["cno"].ToString(),
-                        country = dt.Rows[i]["country_name"].ToString(),
-                        state = dt.Rows[i]["state_name"].ToString(),
-                        city = dt.Rows[i]["city"].ToString(),
-                        descr = dt.Rows[i]["descr"].ToString(),
-                        late = dt.Rows[i]["late"].ToString(),
-                        lonz = dt.Rows[i]["long"].ToString(),
-                        status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                        img = dt.Rows[i]["img"].ToString(),
-                        img1 = dt.Rows[i]["img1"].ToString(),
-                        img2 = dt.Rows[i]["img2"].ToString(),
-                        reason = dt.Rows[i]["reason"].ToString(),
-                        suburb = dt.Rows[i]["suburb"].ToString(),
-                        code = dt.Rows[i]["code"].ToString(),
-                        unit = dt.Rows[i]["unit"].ToString(),
-                        street = dt.Rows[i]["street"].ToString(),
-                        sname = dt.Rows[i]["sname"].ToString(),
-                        cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                        create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
-                        star = Convert.ToInt32(dt.Rows[i]["eventstar"].ToString())
-
-                    });
-                }
-            }
-
-
-
-            model.carlist = carlist;
-            model.eventlist = eventlist1;
-            return View(model);
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult StateMaster()
-        {
-
-            con = new SqlConnection(constr);
-            List<StateMasterModel> statelist = new List<StateMasterModel>();
-            //JObject json = new JObject();
-            StateMasterModel model = new Models.StateMasterModel();
-            SqlCommand com = new SqlCommand("GetAllState", con);
-            com.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter da = new SqlDataAdapter(com);
-            DataTable dt = new DataTable();
-            con.Open();
-            da.Fill(dt);
-            con.Close();
-            foreach (DataRow dr in dt.Rows)
-            {
-                statelist.Add(
-                    new StateMasterModel
-                    {
-                        state_id = Convert.ToInt32(dr["state_id"].ToString()),
-                        count_id = Convert.ToInt32(dr["count_id"].ToString()),
-                        country_name = dr["country_name"].ToString(),
-                        state = dr["state_name"].ToString(),
-                        status = Convert.ToInt32(dr["status"].ToString())
-                    });
-            }
-            model.statelist = statelist;
-            return View(model);
-        }
-        [AuthonticateUserHelper]
-        public ActionResult CountryMaster()
-        {
-
-            con = new SqlConnection(constr);
-            List<CountryMasterModel> countrylist = new List<CountryMasterModel>();
-            CountryMasterModel model = new CountryMasterModel();
-            SqlCommand com = new SqlCommand("GetCountry", con);
-            com.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter da = new SqlDataAdapter(com);
-            DataTable dt = new DataTable();
-            con.Open();
-            da.Fill(dt);
-            con.Close();
-            foreach (DataRow dr in dt.Rows)
-            {
-                countrylist.Add(
-                    new CountryMasterModel
-                    {
-                        count_id = Convert.ToInt32(dr["count_id"].ToString()),
-                        countryname = dr["country_name"].ToString(),
-                        status = Convert.ToInt32(dr["status"].ToString())
-                    });
-            }
-            model.countrylist = countrylist;
-            // json["countrylist"] = JToken.FromObject(countrylist);
-            return View(model);
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult EventCatMaster()
-        {
-
-            DataTable dt = new DataTable();
-            List<EventCategoryModel> categorylist = new List<EventCategoryModel>();
-            EventCategoryModel model = new EventCategoryModel();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCategory", con))
-                {
-                    con.Open();
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            categorylist.Add(new EventCategoryModel
-                            {
-                                ecat_id = Convert.ToInt32(dt.Rows[i]["ecat_id"].ToString()),
-                                category = dt.Rows[i]["category"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString())
-                            });
-                        }
-                    }
-
-                }
-            }
-            model.categorylist = categorylist;
-            return View("EventCatMaster", model);
-
-            //return View();
-        }
-
-        public ActionResult About()
-        {
-            RegisterViewModel model = new RegisterViewModel();
-            ViewBag.Message = "Your application description page.";
-            List<MakeTypeModel> list = new List<MakeTypeModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("GetMakeType", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list.Add(new MakeTypeModel
-                {
-                    make_id = Convert.ToInt32(dr["make_id"].ToString()),
-                    make = dr["make_type"].ToString(),
-                    status = Convert.ToInt32(dr["status"].ToString())
-
-                });
-            }
-            dr.Close();
-            con.Close();
-            model.makelist = list;
-            return View(model);
-        }
-
-        public ActionResult Contact()
-        {
-            RegisterViewModel model = new RegisterViewModel();
-            ViewBag.Message = "Your application description page.";
-            List<MakeTypeModel> list = new List<MakeTypeModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("GetMakeType", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list.Add(new MakeTypeModel
-                {
-                    make_id = Convert.ToInt32(dr["make_id"].ToString()),
-                    make = dr["make_type"].ToString(),
-                    status = Convert.ToInt32(dr["status"].ToString())
-
-                });
-            }
-            dr.Close();
-            con.Close();
-            model.makelist = list;
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public JObject PfreeUserCount()
-        {
-
-            JObject json = new JObject();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select count(*) from tbl_login where status = '0' and type = 'Free'", con);
-            dr = cmd.ExecuteReader();
-            if (dr.Read())
-            {
-
-                json["freetotalusers"] = dr[0].ToString();
-            }
-            else
-            {
-
-                json["freetotalusers"] = 0;
-            }
-            dr.Close();
-            con.Close();
-            List<UserListModel> list1 = new List<UserListModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select * from tbl_login where status = '0' and type = 'Free'", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list1.Add(new UserListModel
-                {
-                    id = ConvertHelper.Encode(dr["id"].ToString()),
-                    orgname = dr["orgname"].ToString(),
-                    regdate = dr["reg_date"].ToString(),
-                    name = dr["fname"].ToString(),
-                    lname = dr["lname"].ToString(),
-                    email = dr["email"].ToString()
-
-                });
-
-
-            }
-
-            json["freeuserlist"] = JToken.FromObject(list1);
-            dr.Close();
-            con.Close();
-
-            return json;
-        }
-        [HttpPost]
-        public JObject PUserCount()
-        {
-
-            JObject json = new JObject();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select count(*) from tbl_login where status = '2' and type = 'Paid'", con);
-            dr = cmd.ExecuteReader();
-            if (dr.Read())
-            {
-
-                json["totalusers"] = dr[0].ToString();
-            }
-            else
-            {
-
-                json["totalusers"] = 0;
-            }
-            dr.Close();
-            con.Close();
-            List<UserListModel> list = new List<UserListModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select * from tbl_login where status = '2' and type = 'Paid'", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list.Add(new UserListModel
-                {
-
-                    id = ConvertHelper.Encode(dr["id"].ToString()),
-                    orgname = dr["orgname"].ToString(),
-                    regdate = dr["reg_date"].ToString(),
-                    name = dr["fname"].ToString(),
-                    lname = dr["lname"].ToString(),
-                    email = dr["email"].ToString()
-
-                });
-
-
-            }
-
-            json["userlist"] = JToken.FromObject(list);
-            dr.Close();
-            con.Close();
-
-
-
-            return json;
-        }
-
-        [HttpPost]
-        public JObject UserCarCount()
-        {
-
-            JObject json = new JObject();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select count(*) from tbl_carmaster where status = '0'", con);
-            dr = cmd.ExecuteReader();
-            if (dr.Read())
-            {
-
-                json["carcount"] = dr[0].ToString();
-            }
-            else
-            {
-
-                json["carcount"] = 0;
-            }
-            dr.Close();
-            con.Close();
-            List<CarModel> list = new List<CarModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select a.*,b.make_type,c.model as 'ModelName' from tbl_carmaster a,MakeTypeMaster b,ModelMaster c where c.model_id=a.model and b.make_id=a.make and a.status = '0'", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list.Add(new CarModel
-                {
-                    cid = ConvertHelper.Encode(dr["cid"].ToString()),
-                    make = dr["make_type"].ToString(),
-                    model = dr["modelname"].ToString()
-
-                });
-
-
-            }
-
-            json["carlist"] = JToken.FromObject(list);
-            dr.Close();
-            con.Close();
-
-
-
-            return json;
-        }
-
-        [HttpPost]
-        public JObject UserEventCount()
-        {
-
-            JObject json = new JObject();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select count(*) from tbl_eventmaster where status = '0'", con);
-            dr = cmd.ExecuteReader();
-            if (dr.Read())
-            {
-
-                json["eventcount"] = dr[0].ToString();
-            }
-            else
-            {
-
-                json["eventcount"] = 0;
-            }
-            dr.Close();
-            con.Close();
-            List<EventViewModel> list = new List<EventViewModel>();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("select * from tbl_eventmaster where status = '0'", con);
-            dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-
-                list.Add(new EventViewModel
+            UserList.Add(
+                new EventModel
                 {
                     eid = ConvertHelper.Encode(dr["eid"].ToString()),
-                    //subject = dr["subject"].ToString(),
-                    title = dr["title"].ToString()
+                    category = dr["category"].ToString(),
+                    img = dr["img"].ToString(),
+                    title = Convert.ToString(dr["title"].ToString()),
+                    subject = Convert.ToString(dr["subject"].ToString()),
+                    date = Convert.ToDateTime(dr["edate"].ToString()).ToString("MM/dd/yyyy", CultureInfo.InvariantCulture),
+                        // type = dr["type"].ToString(),
+                        late = dr["late"].ToString(),
+                    lonz = dr["long"].ToString(),
+                    status = Convert.ToInt32(dr["status"].ToString()),
+                    city_name = dr["cityname"].ToString(),
+                    country_name = dr["country_name"].ToString(),
+                    state_name = dr["state_name"].ToString(),
+                    going = dr["going"].ToString()
+                }
+                );
+        }
+        json["userlist"] = JToken.FromObject(UserList);
+        return json;
+
+    }
+
+    public ActionResult UserAdvanceSearchEvent(int cat, string eventdue, int country, int state, string eventkeyword)
+    {
+
+
+        DataTable dt = new DataTable();
+        List<EventViewModel> eventlist1 = new List<EventViewModel>();
+
+        RegisterViewModel eventmodel = new RegisterViewModel();
+        con = new SqlConnection(constr);
+        cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1", con);
+
+        if (cat != 0 && eventdue == "0" && country == 0 && state == 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "'", con);
+
+        }
+
+
+        if (cat != 0 && eventdue == "going" && country == 0 && state == 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.edate = '" + DateTime.Now.ToString() + "'", con);
+
+        }
+
+        if (cat != 0 && eventdue == "upcomming" && country == 0 && state == 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.edate > '" + DateTime.Now.ToString() + "'", con);
+
+        }
+
+        if (cat != 0 && eventdue == "due" && country == 0 && state == 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.edate < '" + DateTime.Now.ToString() + "'", con);
+
+        }
+
+        if (cat != 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "'", con);
+
+        }
+
+        if (cat != 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.state='" + state + "'", con);
+
+        }
+
+        if (cat != 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword != "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.state='" + state + "' and a.titel like '%" + eventkeyword + "%'", con);
+
+        }
+
+        if (cat == 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.country='" + country + "' and a.state='" + state + "'", con);
+
+        }
+        if (cat == 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.country='" + country + "'", con);
+
+        }
+
+        if (cat == 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword != "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.country='" + country + "'  and a.titel like '%" + eventkeyword + "%'", con);
+
+        }
+
+        if (cat == 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword != "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.country='" + country + "' and a.state='" + state + "' and a.titel like '%" + eventkeyword + "%'", con);
+
+        }
+
+        if (cat != 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "'", con);
+
+        }
+        if (cat != 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword == "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.state='" + state + "'", con);
+
+        }
+        if (cat != 0 && eventdue == "0" && country != 0 && state == 0 && eventkeyword != "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.title like '%" + eventkeyword + "%'", con);
+
+        }
+
+        if (cat != 0 && eventdue == "0" && country != 0 && state != 0 && eventkeyword != "")
+        {
+
+            cmd = new SqlCommand("SELECT  b.country_name,c.state_name,a.*,d.name,(select count(*) from eventgoingmaster where eid=a.eid) as 'going' from tbl_eventmaster a,tbl_country_master b,tbl_state_master c,tbl_login d where b.count_id=a.country and c.state_id=a.state and  d.id=a.uid and a.status = 1 and a.cat='" + cat + "' and a.country='" + country + "' and a.state='" + state + "' and a.title like '%" + eventkeyword + "%'", con);
+
+        }
+
+
+
+        con.Open();
+        SqlDataAdapter da = new SqlDataAdapter(cmd);
+        da.Fill(dt);
+        if (dt.Rows.Count > 0)
+        {
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                eventlist1.Add(new EventViewModel
+                {
+
+                    eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
+                    uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                    title = dt.Rows[i]["title"].ToString(),
+                    subject = dt.Rows[i]["subject"].ToString(),
+                    date = dt.Rows[i]["edate"].ToString(),
+                    time = dt.Rows[i]["etime"].ToString(),
+                    address = dt.Rows[i]["address"].ToString(),
+                    cno = dt.Rows[i]["cno"].ToString(),
+                    country = dt.Rows[i]["country_name"].ToString(),
+                    state = dt.Rows[i]["state_name"].ToString(),
+                    city = dt.Rows[i]["city"].ToString(),
+                    descr = dt.Rows[i]["descr"].ToString(),
+                    late = dt.Rows[i]["late"].ToString(),
+                    lonz = dt.Rows[i]["long"].ToString(),
+                    status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                    img = dt.Rows[i]["img"].ToString(),
+                    img1 = dt.Rows[i]["img1"].ToString(),
+                    img2 = dt.Rows[i]["img2"].ToString(),
+                    reason = dt.Rows[i]["reason"].ToString(),
+                    suburb = dt.Rows[i]["suburb"].ToString(),
+                    code = dt.Rows[i]["code"].ToString(),
+                    unit = dt.Rows[i]["unit"].ToString(),
+                    street = dt.Rows[i]["street"].ToString(),
+                    sname = dt.Rows[i]["sname"].ToString(),
+                    cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
+                    ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
+                    create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
+                    price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
+                    showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
+                    going = dt.Rows[i]["going"].ToString()
+
 
                 });
-
-
             }
 
-            json["eventlist"] = JToken.FromObject(list);
-            dr.Close();
-            con.Close();
 
-
-
-            return json;
-        }
-
-        [HttpPost]
-        public JObject ChangeCarStatus(string cid, string status)
-        {
-
-            cid = ConvertHelper.Decode(cid);
-
-            JObject json = new JObject();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("ChangeCarStatus", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@cid", cid);
-            cmd.Parameters.AddWithValue("@status", status);
-            cmd.ExecuteNonQuery();
-            json["status"] = "Success";
-            con.Close();
-            return json;
-        }
-
-        [HttpPost]
-        public JObject ChangeCarGStatus(string cid, string status)
-        {
-            cid = ConvertHelper.Decode(cid);
-
-            JObject json = new JObject();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("ChangeCarGStatus", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@cid", cid);
-            cmd.Parameters.AddWithValue("@status", status);
-            cmd.ExecuteNonQuery();
-            json["status"] = "Success";
-            con.Close();
-            return json;
-        }
-
-        [HttpPost]
-        public JObject ChangeEventStatus(string eid, string status)
-        {
-            eid = ConvertHelper.Decode(eid);
-
-            JObject json = new JObject();
-            con = new SqlConnection(constr);
-            con.Open();
-            cmd = new SqlCommand("ChangeEventStatus", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@eid", eid);
-            cmd.Parameters.AddWithValue("@status", status);
-            cmd.ExecuteNonQuery();
-            json["status"] = "Success";
-            con.Close();
-            return json;
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult UserAboutUS()
-        {
-
-
-            return View();
 
         }
+        eventmodel.eventlist = eventlist1;
 
-        [AuthonticateUserHelper]
-        public ActionResult UserContact()
+        return View(eventmodel);
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult UserCarMaster(string option = "0")
+    {
+        if (option == "0")
         {
 
-
-            return View();
-
+            option = "CID";
         }
+        //return View();
 
-        [AuthonticateUserHelper]
-        public ActionResult ManageStore()
+        DataTable dt = new DataTable();
+        List<CarModel> carlist = new List<CarModel>();
+        RegisterViewModel model = new RegisterViewModel();
+        using (SqlConnection con = new SqlConnection(constr))
         {
-            string uid = Session["id"].ToString();
-            UserListModel model = new UserListModel();
-            con = new SqlConnection(constr);
-            List<UserListModel> UserList = new List<UserListModel>();
-            JObject json = new JObject();
-            SqlCommand com = new SqlCommand("GetStoreByParentStore", con);
-            com.CommandType = CommandType.StoredProcedure;
-            com.Parameters.AddWithValue("@parentstore", uid);
-            SqlDataAdapter da = new SqlDataAdapter(com);
-            DataTable dt = new DataTable();
-            con.Open();
-            da.Fill(dt);
-            con.Close();
-            //Bind EmpModel generic list using dataRow 
-            foreach (DataRow dr in dt.Rows)
+            using (SqlCommand cmd = new SqlCommand("GetCarDetails", con))
             {
-                UserList.Add(
-                    new UserListModel
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@sortby", option);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        id = dr["id"].ToString(),
-                        name = Convert.ToString(dr["name"].ToString()),
-                        email = Convert.ToString(dr["email"].ToString()),
-                        type = dr["type"].ToString(),
-                        status = Convert.ToInt32(dr["status"].ToString()),
-                        regdate = Convert.ToDateTime(dr["reg_date"].ToString()).ToString("MM/dd/yyyy", CultureInfo.InvariantCulture),
-                        orgname = dr["orgname"].ToString(),
-                        customerid = dr["cust_id"].ToString()
+                        int carid = Convert.ToInt32(dt.Rows[i]["cid"].ToString());
+                        string uid = Session["id"].ToString();
+
+                        SqlCommand cmd1 = new SqlCommand("select * from CarWatchList where cid='" + carid + "' and uid ='" + uid + "'", con);
+                        SqlDataReader dr1 = cmd1.ExecuteReader();
+                        string starget = "0";
+                        if (dr1.Read())
+                        {
+                            starget = dr1["status"].ToString();
+                        }
+                        dr1.Close();
+                        carlist.Add(new CarModel
+                        {
+
+                            cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
+                            price = dt.Rows[i]["price"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            engine = dt.Rows[i]["ensize_name"].ToString(),
+                            year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
+                            cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
+                            cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            bcolor = dt.Rows[i]["bcolor"].ToString(),
+                            icolor = dt.Rows[i]["icolor"].ToString(),
+                            list = dt.Rows[i]["list"].ToString(),
+                            material = dt.Rows[i]["material"].ToString(),
+                            body_type = dt.Rows[i]["bodytypename"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            make = dt.Rows[i]["make_type"].ToString(),
+                            badge = dt.Rows[i]["badge_type"].ToString(),
+                            series = dt.Rows[i]["series_type"].ToString(),
+                            currency = dt.Rows[i]["currencyname"].ToString(),
+                            model = dt.Rows[i]["model"].ToString(),
+                            tranmition = dt.Rows[i]["transmision"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            zipcode = dt.Rows[i]["zip"].ToString(),
+                            meter = dt.Rows[i]["meter"].ToString(),
+                            matrics = dt.Rows[i]["odometer"].ToString(),
+                            condition = dt.Rows[i]["condition"].ToString(),
+                            uname = dt.Rows[i]["name"].ToString(),
+                            drive = dt.Rows[i]["drive"].ToString(),
+                            fuel = dt.Rows[i]["fuel"].ToString(),
+                            gstatus = dt.Rows[i]["gstatus"].ToString(),
+                            speedtype = dt.Rows[i]["speedtypename"].ToString(),
+                            star = Convert.ToInt32(starget),
+                            img3 = dt.Rows[i]["img3"].ToString(),
+                            img4 = dt.Rows[i]["img4"].ToString(),
+                            img5 = dt.Rows[i]["img5"].ToString(),
+                            created_date = dt.Rows[i]["created_date"].ToString(),
+                            showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            orgname = dt.Rows[i]["orgname"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            email = dt.Rows[i]["email"].ToString()
+                        });
+                    }
+                }
+            }
+        }
+
+
+        dt = new DataTable();
+        List<EventViewModel> eventlist1 = new List<EventViewModel>();
+
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetEvent", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@sortby", option);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        eventlist1.Add(new EventViewModel
+                        {
+
+                            eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            title = dt.Rows[i]["title"].ToString(),
+                            subject = dt.Rows[i]["subject"].ToString(),
+                            date = dt.Rows[i]["edate"].ToString(),
+                            time = dt.Rows[i]["etime"].ToString(),
+                            address = dt.Rows[i]["address"].ToString(),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            late = dt.Rows[i]["late"].ToString(),
+                            lonz = dt.Rows[i]["long"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            reason = dt.Rows[i]["reason"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            code = dt.Rows[i]["code"].ToString(),
+                            unit = dt.Rows[i]["unit"].ToString(),
+                            street = dt.Rows[i]["street"].ToString(),
+                            sname = dt.Rows[i]["sname"].ToString(),
+                            cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
+                            create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
+                            ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
+                            price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
+                            showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
+                            going = dt.Rows[i]["going"].ToString()
+
+
+
+                        });
+                    }
+                }
+
+            }
+        }
+        model.eventlist = eventlist1;
+        model.carlist = carlist;
+        return View("UserCarMaster", model);
+
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult UserEventMaster(string option = "0")
+    {
+        //return View();
+        if (option == "0")
+        {
+
+            option = "CID";
+        }
+
+        DataTable dt = new DataTable();
+        List<CarModel> carlist = new List<CarModel>();
+        RegisterViewModel model = new RegisterViewModel();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetCarDetails", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@sortby", option);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+
+                        int carid = Convert.ToInt32(dt.Rows[i]["cid"].ToString());
+                        string uid = Session["id"].ToString();
+
+                        SqlCommand cmd1 = new SqlCommand("select * from CarWatchList where cid='" + carid + "' and uid ='" + uid + "'", con);
+                        SqlDataReader dr1 = cmd1.ExecuteReader();
+                        string starget = "0";
+                        if (dr1.Read())
+                        {
+                            starget = dr1["status"].ToString();
+                        }
+                        dr1.Close();
+                        carlist.Add(new CarModel
+                        {
+                            cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
+                            price = dt.Rows[i]["price"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            engine = dt.Rows[i]["ensize_name"].ToString(),
+                            year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
+                            cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
+                            cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            bcolor = dt.Rows[i]["bcolor"].ToString(),
+                            icolor = dt.Rows[i]["icolor"].ToString(),
+                            list = dt.Rows[i]["list"].ToString(),
+                            material = dt.Rows[i]["material"].ToString(),
+                            body_type = dt.Rows[i]["bodytypename"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            make = dt.Rows[i]["make_type"].ToString(),
+                            badge = dt.Rows[i]["badge_type"].ToString(),
+                            series = dt.Rows[i]["series_type"].ToString(),
+                            currency = dt.Rows[i]["currencyname"].ToString(),
+                            model = dt.Rows[i]["model"].ToString(),
+                            tranmition = dt.Rows[i]["transmision"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            zipcode = dt.Rows[i]["zip"].ToString(),
+                            meter = dt.Rows[i]["meter"].ToString(),
+                            matrics = dt.Rows[i]["odometer"].ToString(),
+                            condition = dt.Rows[i]["condition"].ToString(),
+                            uname = dt.Rows[i]["name"].ToString(),
+                            drive = dt.Rows[i]["drive"].ToString(),
+                            fuel = dt.Rows[i]["fuel"].ToString(),
+                            gstatus = dt.Rows[i]["gstatus"].ToString(),
+                            speedtype = dt.Rows[i]["speedtypename"].ToString(),
+                            star = Convert.ToInt32(starget),
+                            img3 = dt.Rows[i]["img3"].ToString(),
+                            img4 = dt.Rows[i]["img4"].ToString(),
+                            img5 = dt.Rows[i]["img5"].ToString(),
+                            created_date = dt.Rows[i]["created_date"].ToString(),
+                            showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            orgname = dt.Rows[i]["orgname"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString()
+
+
+                        });
+                    }
+                }
+            }
+        }
+
+
+        dt = new DataTable();
+        List<EventViewModel> eventlist1 = new List<EventViewModel>();
+
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetEvent", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@sortby", option);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        eventlist1.Add(new EventViewModel
+                        {
+
+                            eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            title = dt.Rows[i]["title"].ToString(),
+                            subject = dt.Rows[i]["subject"].ToString(),
+                            date = dt.Rows[i]["edate"].ToString(),
+                            time = dt.Rows[i]["etime"].ToString(),
+                            address = dt.Rows[i]["address"].ToString(),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            late = dt.Rows[i]["late"].ToString(),
+                            lonz = dt.Rows[i]["long"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            reason = dt.Rows[i]["reason"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            code = dt.Rows[i]["code"].ToString(),
+                            unit = dt.Rows[i]["unit"].ToString(),
+                            street = dt.Rows[i]["street"].ToString(),
+                            sname = dt.Rows[i]["sname"].ToString(),
+                            cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
+                            create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
+                            ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
+                            price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
+                            showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
+                            going = dt.Rows[i]["going"].ToString(),
+
+
+                        });
+                    }
+                }
+
+            }
+        }
+        model.eventlist = eventlist1;
+        model.carlist = carlist;
+        return View(model);
+
+    }
+
+    public ActionResult CarDetails(string cid = "0")
+    {
+        cid = ConvertHelper.Decode(cid);
+        con = new SqlConnection(constr);
+
+        List<CarModel> cardetailslist = new List<CarModel>();
+
+        RegisterViewModel model = new RegisterViewModel();
+        SqlCommand com = new SqlCommand("CarDetails", con);
+        com.CommandType = CommandType.StoredProcedure;
+
+        SqlDataAdapter da = new SqlDataAdapter(com);
+        DataTable dt = new DataTable();
+        con.Open();
+        com.Parameters.AddWithValue("@cid", cid);
+        da.Fill(dt);
+        con.Close();
+
+        if (dt.Rows.Count > 0)
+        {
+
+            cardetailslist.Add(new CarModel
+            {
+                cid = ConvertHelper.Encode(dt.Rows[0]["cid"].ToString()),
+                uid = Convert.ToInt32(dt.Rows[0]["uid"].ToString()),
+                make = dt.Rows[0]["make_type"].ToString(),
+                price = dt.Rows[0]["price"].ToString(),
+                descr = TextToHtml(dt.Rows[0]["descr"].ToString()),
+                bcolor = dt.Rows[0]["body_color_name"].ToString(),
+                model = dt.Rows[0]["model"].ToString(),
+                engine = dt.Rows[0]["ensize_name"].ToString(),
+                year = Convert.ToInt32(dt.Rows[0]["year"].ToString()),
+                body_type = dt.Rows[0]["body_type"].ToString(),
+                tranmition = dt.Rows[0]["transmision"].ToString(),
+                status = Convert.ToInt32(dt.Rows[0]["status"].ToString()),
+                img = dt.Rows[0]["img"].ToString(),
+                img1 = dt.Rows[0]["img1"].ToString(),
+                img2 = dt.Rows[0]["img2"].ToString(),
+                uname = dt.Rows[0]["name"].ToString(),
+                country = dt.Rows[0]["country_name"].ToString(),
+                state = dt.Rows[0]["state_name"].ToString(),
+                badge = dt.Rows[0]["badge_type"].ToString(),
+                series = dt.Rows[0]["series_type"].ToString(),
+                currency = dt.Rows[0]["currencyname"].ToString(),
+                icolor = dt.Rows[0]["inter_color_name"].ToString(),
+                list = dt.Rows[0]["list"].ToString(),
+                material = dt.Rows[0]["inter_mat_name"].ToString(),
+                meter = dt.Rows[0]["meter"].ToString(),
+                matrics = dt.Rows[0]["odometer"].ToString(),
+                condition = dt.Rows[0]["condition"].ToString(),
+                cylinder = Convert.ToInt32(dt.Rows[0]["cylinder"].ToString()),
+                drive = dt.Rows[0]["drive"].ToString(),
+                created_date = dt.Rows[0]["created_date"].ToString(),
+                city = dt.Rows[0]["cityname"].ToString(),
+                fuel = dt.Rows[0]["fuel"].ToString(),
+                gstatus = dt.Rows[0]["gstatus"].ToString(),
+                speedtype = dt.Rows[0]["speedtypename"].ToString(),
+                star = Convert.ToInt32(dt.Rows[0]["star"].ToString()),
+                img3 = dt.Rows[0]["img3"].ToString(),
+                img4 = dt.Rows[0]["img4"].ToString(),
+                img5 = dt.Rows[0]["img5"].ToString(),
+                showphone = Convert.ToInt32(dt.Rows[0]["showphone"].ToString()),
+                cno = dt.Rows[0]["cno"].ToString(),
+                orgname = dt.Rows[0]["orgname"].ToString(),
+                zipcode = dt.Rows[0]["zip"].ToString(),
+                suburb = dt.Rows[0]["regionname"].ToString(),
+                cylinder_name = dt.Rows[0]["cylinder_name"].ToString(),
+                email = dt.Rows[0]["email"].ToString()
+
+
+            });
+
+        }
+
+        List<MakeTypeModel> list = new List<MakeTypeModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("GetMakeType", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list.Add(new MakeTypeModel
+            {
+                make_id = Convert.ToInt32(dr["make_id"].ToString()),
+                make = dr["make_type"].ToString(),
+                status = Convert.ToInt32(dr["status"].ToString())
+
+            });
+        }
+        dr.Close();
+        con.Close();
+        model.makelist = list;
+        model.cardetailslist = cardetailslist;
+        return View("CarDetails", model);
+
+        //  return View();
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult UserCarDetails(string cid = "0")
+    {
+        cid = ConvertHelper.Decode(cid);
+
+        con = new SqlConnection(constr);
+
+        List<CarModel> cardetailslist = new List<CarModel>();
+
+        RegisterViewModel model = new RegisterViewModel();
+        SqlCommand com = new SqlCommand("CarDetails", con);
+        com.CommandType = CommandType.StoredProcedure;
+
+        SqlDataAdapter da = new SqlDataAdapter(com);
+        DataTable dt = new DataTable();
+        con.Open();
+        com.Parameters.AddWithValue("@cid", cid);
+        da.Fill(dt);
+        con.Close();
+
+        if (dt.Rows.Count > 0)
+        {
+
+            cardetailslist.Add(new CarModel
+            {
+                cid = ConvertHelper.Encode(dt.Rows[0]["cid"].ToString()),
+                uid = Convert.ToInt32(dt.Rows[0]["uid"].ToString()),
+                make = dt.Rows[0]["make_type"].ToString(),
+                price = dt.Rows[0]["price"].ToString(),
+                descr = TextToHtml(dt.Rows[0]["descr"].ToString()),
+                bcolor = dt.Rows[0]["body_color_name"].ToString(),
+                model = dt.Rows[0]["model"].ToString(),
+                engine = dt.Rows[0]["ensize_name"].ToString(),
+                year = Convert.ToInt32(dt.Rows[0]["year"].ToString()),
+                body_type = dt.Rows[0]["body_type"].ToString(),
+                tranmition = dt.Rows[0]["transmision"].ToString(),
+                status = Convert.ToInt32(dt.Rows[0]["status"].ToString()),
+                img = dt.Rows[0]["img"].ToString(),
+                img1 = dt.Rows[0]["img1"].ToString(),
+                img2 = dt.Rows[0]["img2"].ToString(),
+                uname = dt.Rows[0]["name"].ToString(),
+                country = dt.Rows[0]["country_name"].ToString(),
+                state = dt.Rows[0]["state_name"].ToString(),
+                badge = dt.Rows[0]["badge_type"].ToString(),
+                series = dt.Rows[0]["series_type"].ToString(),
+                currency = dt.Rows[0]["currencyname"].ToString(),
+                icolor = dt.Rows[0]["inter_color_name"].ToString(),
+                list = dt.Rows[0]["list"].ToString(),
+                material = dt.Rows[0]["inter_mat_name"].ToString(),
+                meter = dt.Rows[0]["meter"].ToString(),
+                matrics = dt.Rows[0]["odometer"].ToString(),
+                condition = dt.Rows[0]["condition"].ToString(),
+                cylinder = Convert.ToInt32(dt.Rows[0]["cylinder"].ToString()),
+                drive = dt.Rows[0]["drive"].ToString(),
+                created_date = dt.Rows[0]["created_date"].ToString(),
+                city = dt.Rows[0]["cityname"].ToString(),
+                fuel = dt.Rows[0]["fuel"].ToString(),
+                gstatus = dt.Rows[0]["gstatus"].ToString(),
+                speedtype = dt.Rows[0]["speedtypename"].ToString(),
+                star = Convert.ToInt32(dt.Rows[0]["carstar"].ToString()),
+                img3 = dt.Rows[0]["img3"].ToString(),
+                img4 = dt.Rows[0]["img4"].ToString(),
+                img5 = dt.Rows[0]["img5"].ToString(),
+                showphone = Convert.ToInt32(dt.Rows[0]["showphone"].ToString()),
+                cno = dt.Rows[0]["cno"].ToString(),
+                orgname = dt.Rows[0]["orgname"].ToString(),
+                zipcode = dt.Rows[0]["zip"].ToString(),
+                suburb = dt.Rows[0]["regionname"].ToString(),
+                cylinder_name = dt.Rows[0]["cylinder_name"].ToString(),
+                email = dt.Rows[0]["email"].ToString()
+
+
+
+
+            });
+
+        }
+
+
+        model.cardetailslist = cardetailslist;
+        return View("UserCarDetails", model);
+
+        //  return View();
+    }
+
+    public ActionResult EventDetails(string eid = "0")
+    {
+
+        eid = ConvertHelper.Decode(eid);
+
+        con = new SqlConnection(constr);
+
+        List<EventViewModel> eventdetailslist = new List<EventViewModel>();
+
+        RegisterViewModel model = new RegisterViewModel();
+        SqlCommand com = new SqlCommand("GetEventDetails", con);
+        com.CommandType = CommandType.StoredProcedure;
+
+        SqlDataAdapter da = new SqlDataAdapter(com);
+        DataTable dt = new DataTable();
+        con.Open();
+        com.Parameters.AddWithValue("@eid", eid);
+        da.Fill(dt);
+        con.Close();
+        if (dt.Rows.Count > 0)
+        {
+
+            eventdetailslist.Add(new EventViewModel
+            {
+
+                eid = ConvertHelper.Encode(dt.Rows[0]["eid"].ToString()),
+                uid = Convert.ToInt32(dt.Rows[0]["uid"].ToString()),
+                title = dt.Rows[0]["title"].ToString(),
+                subject = TextToHtml(dt.Rows[0]["subject"].ToString()),
+                date = dt.Rows[0]["edate"].ToString(),
+                time = dt.Rows[0]["etime"].ToString(),
+                address = dt.Rows[0]["address"].ToString(),
+                cno = dt.Rows[0]["cno"].ToString(),
+                country = dt.Rows[0]["country_name"].ToString(),
+                state = dt.Rows[0]["state_name"].ToString(),
+                city = dt.Rows[0]["city"].ToString(),
+                descr = dt.Rows[0]["descr"].ToString(),
+                late = dt.Rows[0]["late"].ToString(),
+                lonz = dt.Rows[0]["long"].ToString(),
+                status = Convert.ToInt32(dt.Rows[0]["status"].ToString()),
+                img = dt.Rows[0]["img"].ToString(),
+                img1 = dt.Rows[0]["img1"].ToString(),
+                img2 = dt.Rows[0]["img2"].ToString(),
+                reason = dt.Rows[0]["reason"].ToString(),
+                //suburb = dt.Rows[0]["suburb"].ToString(),
+                code = dt.Rows[0]["code"].ToString(),
+                unit = dt.Rows[0]["unit"].ToString(),
+                street = dt.Rows[0]["street"].ToString(),
+                sname = dt.Rows[0]["sname"].ToString(),
+                cat = Convert.ToInt32(dt.Rows[0]["cat"].ToString()),
+                uname = dt.Rows[0]["name"].ToString(),
+                create_date = Convert.ToDateTime(dt.Rows[0]["created_date"].ToString()),
+                ispaid = Convert.ToInt32(dt.Rows[0]["ispaid"].ToString()),
+                price = Convert.ToInt32(dt.Rows[0]["price"].ToString()),
+                showphone = Convert.ToInt32(dt.Rows[0]["shownumber"].ToString()),
+                going = dt.Rows[0]["going"].ToString(),
+                email = dt.Rows[0]["email"].ToString()
+
+
+            });
+
+
+
+
+        }
+
+
+        List<MakeTypeModel> list = new List<MakeTypeModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("GetMakeType", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list.Add(new MakeTypeModel
+            {
+                make_id = Convert.ToInt32(dr["make_id"].ToString()),
+                make = dr["make_type"].ToString(),
+                status = Convert.ToInt32(dr["status"].ToString())
+
+            });
+        }
+        dr.Close();
+        con.Close();
+        model.makelist = list;
+        model.eventdetailslist = eventdetailslist;
+        return View("EventDetails", model);
+
+        //return View();
+    }
+
+    public string TextToHtml(string text)
+    {
+        text = HttpUtility.HtmlEncode(text);
+        text = text.Replace("\r\n", "\r");
+        text = text.Replace("\n", "\r");
+        text = text.Replace("\r", "<br>\r\n");
+        text = text.Replace("  ", " &nbsp;");
+        return text;
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult UserEventDetails(string eid = "0")
+    {
+        eid = ConvertHelper.Decode(eid);
+
+        con = new SqlConnection(constr);
+
+        List<EventViewModel> eventdetailslist = new List<EventViewModel>();
+
+        RegisterViewModel model = new RegisterViewModel();
+        SqlCommand com = new SqlCommand("GetEventDetails", con);
+        com.CommandType = CommandType.StoredProcedure;
+
+        SqlDataAdapter da = new SqlDataAdapter(com);
+        DataTable dt = new DataTable();
+        con.Open();
+        com.Parameters.AddWithValue("@eid", eid);
+        da.Fill(dt);
+        con.Close();
+        if (dt.Rows.Count > 0)
+        {
+
+            eventdetailslist.Add(new EventViewModel
+            {
+
+                eid = ConvertHelper.Encode(dt.Rows[0]["eid"].ToString()),
+                uid = Convert.ToInt32(dt.Rows[0]["uid"].ToString()),
+                title = dt.Rows[0]["title"].ToString(),
+                subject = TextToHtml(dt.Rows[0]["subject"].ToString()),
+                date = dt.Rows[0]["edate"].ToString(),
+                time = dt.Rows[0]["etime"].ToString(),
+                address = dt.Rows[0]["address"].ToString(),
+                cno = dt.Rows[0]["cno"].ToString(),
+                country = dt.Rows[0]["country_name"].ToString(),
+                state = dt.Rows[0]["state_name"].ToString(),
+                city = dt.Rows[0]["city"].ToString(),
+                descr = dt.Rows[0]["descr"].ToString(),
+                late = dt.Rows[0]["late"].ToString(),
+                lonz = dt.Rows[0]["long"].ToString(),
+                status = Convert.ToInt32(dt.Rows[0]["status"].ToString()),
+                img = dt.Rows[0]["img"].ToString(),
+                img1 = dt.Rows[0]["img1"].ToString(),
+                img2 = dt.Rows[0]["img2"].ToString(),
+                reason = dt.Rows[0]["reason"].ToString(),
+                suburb = dt.Rows[0]["suburb"].ToString(),
+                code = dt.Rows[0]["code"].ToString(),
+                unit = dt.Rows[0]["unit"].ToString(),
+                street = dt.Rows[0]["street"].ToString(),
+                sname = dt.Rows[0]["sname"].ToString(),
+                cat = Convert.ToInt32(dt.Rows[0]["cat"].ToString()),
+                uname = dt.Rows[0]["name"].ToString(),
+                going = dt.Rows[0]["going"].ToString(),
+                create_date = Convert.ToDateTime(dt.Rows[0]["created_date"].ToString()),
+                ispaid = Convert.ToInt32(dt.Rows[0]["ispaid"].ToString()),
+                price = Convert.ToInt32(dt.Rows[0]["price"].ToString()),
+                showphone = Convert.ToInt32(dt.Rows[0]["shownumber"].ToString()),
+                email = dt.Rows[0]["email"].ToString()
+
+
+            });
+
+        }
+
+        model.eventdetailslist = eventdetailslist;
+
+        return View(model);
+
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult ManageEvent()
+    {
+        string uid = Session["id"].ToString();
+        DataTable dt = new DataTable();
+        List<EventViewModel> eventlist1 = new List<EventViewModel>();
+        RegisterViewModel eventmodel = new RegisterViewModel();
+        SqlConnection con = new SqlConnection(constr);
+
+        SqlCommand cmd = new SqlCommand("GetAllEventList", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@cid", uid);
+        con.Open();
+        SqlDataAdapter da = new SqlDataAdapter(cmd);
+        da.Fill(dt);
+        if (dt.Rows.Count > 0)
+        {
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                eventlist1.Add(new EventViewModel
+                {
+
+                    eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
+                    uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                    title = dt.Rows[i]["title"].ToString(),
+                    subject = dt.Rows[i]["subject"].ToString(),
+                    date = dt.Rows[i]["edate"].ToString(),
+                    time = dt.Rows[i]["etime"].ToString(),
+                    address = dt.Rows[i]["address"].ToString(),
+                    cno = dt.Rows[i]["cno"].ToString(),
+                    country = dt.Rows[i]["country_name"].ToString(),
+                    state = dt.Rows[i]["state_name"].ToString(),
+                    city = dt.Rows[i]["city"].ToString(),
+                    descr = dt.Rows[i]["descr"].ToString(),
+                    late = dt.Rows[i]["late"].ToString(),
+                    lonz = dt.Rows[i]["long"].ToString(),
+                    status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                    img = dt.Rows[i]["img"].ToString(),
+                    img1 = dt.Rows[i]["img1"].ToString(),
+                    img2 = dt.Rows[i]["img2"].ToString(),
+                    reason = dt.Rows[i]["reason"].ToString(),
+                    suburb = dt.Rows[i]["suburb"].ToString(),
+                    code = dt.Rows[i]["code"].ToString(),
+                    unit = dt.Rows[i]["unit"].ToString(),
+                    street = dt.Rows[i]["street"].ToString(),
+                    sname = dt.Rows[i]["sname"].ToString(),
+                    cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
+                    create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString())
+
+                });
+            }
+        }
+
+
+
+        dt = new DataTable();
+
+        string id = Session["id"].ToString();
+        List<EventViewModel> eventlist = new List<EventViewModel>();
+
+        using (SqlConnection con1 = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd1 = new SqlCommand("GetGoingEvents", con1))
+            {
+                con1.Open();
+                cmd1.CommandType = CommandType.StoredProcedure;
+                cmd1.Parameters.AddWithValue("@uid", id);
+                SqlDataAdapter da1 = new SqlDataAdapter(cmd1);
+                da1.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        eventlist.Add(new EventViewModel
+                        {
+
+                            eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            title = dt.Rows[i]["title"].ToString(),
+                            subject = dt.Rows[i]["subject"].ToString(),
+                            date = dt.Rows[i]["edate"].ToString(),
+                            time = dt.Rows[i]["etime"].ToString(),
+                            address = dt.Rows[i]["address"].ToString(),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["city"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            late = dt.Rows[i]["late"].ToString(),
+                            lonz = dt.Rows[i]["long"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            reason = dt.Rows[i]["reason"].ToString(),
+                            suburb = dt.Rows[i]["suburb"].ToString(),
+                            code = dt.Rows[i]["code"].ToString(),
+                            unit = dt.Rows[i]["unit"].ToString(),
+                            street = dt.Rows[i]["street"].ToString(),
+                            sname = dt.Rows[i]["sname"].ToString(),
+                            cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
+                            create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
+                            ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
+                            price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
+                            showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
+                            going = dt.Rows[i]["going"].ToString()
+
+                        });
+                    }
+                }
+
+            }
+        }
+
+
+
+        eventmodel.eventdetailslist = eventlist;
+        eventmodel.eventlist = eventlist1;
+        return View(eventmodel);
+
+    }
+    [AuthonticateUserHelper]
+    public ActionResult ManageYard()
+    {
+        string uid = Session["id"].ToString();
+        DataTable dt = new DataTable();
+        List<CarModel> carlist = new List<CarModel>();
+        RegisterViewModel model = new RegisterViewModel();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetCarDetailsbyID", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        carlist.Add(new CarModel
+                        {
+                            cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
+                            price = dt.Rows[i]["price"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            engine = dt.Rows[i]["ensize_name"].ToString(),
+                            year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
+                            cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
+                            cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            bcolor = dt.Rows[i]["bcolor"].ToString(),
+                            icolor = dt.Rows[i]["icolor"].ToString(),
+                            list = dt.Rows[i]["list"].ToString(),
+                            material = dt.Rows[i]["material"].ToString(),
+                            body_type = dt.Rows[i]["bodytypename"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            make = dt.Rows[i]["make_type"].ToString(),
+                            badge = dt.Rows[i]["badge_type"].ToString(),
+                            series = dt.Rows[i]["series_type"].ToString(),
+                            currency = dt.Rows[i]["currencyname"].ToString(),
+                            model = dt.Rows[i]["model"].ToString(),
+                            tranmition = dt.Rows[i]["transmision"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            zipcode = dt.Rows[i]["zip"].ToString(),
+                            meter = dt.Rows[i]["meter"].ToString(),
+                            matrics = dt.Rows[i]["odometer"].ToString(),
+                            condition = dt.Rows[i]["condition"].ToString(),
+                            uname = dt.Rows[i]["name"].ToString(),
+                            drive = dt.Rows[i]["drive"].ToString(),
+                            fuel = dt.Rows[i]["fuel"].ToString(),
+                            gstatus = dt.Rows[i]["gstatus"].ToString(),
+                            speedtype = dt.Rows[i]["speedtypename"].ToString(),
+                            star = Convert.ToInt32(dt.Rows[i]["carstar"].ToString()),
+                            img3 = dt.Rows[i]["img3"].ToString(),
+                            img4 = dt.Rows[i]["img4"].ToString(),
+                            img5 = dt.Rows[i]["img5"].ToString(),
+                            created_date = dt.Rows[i]["created_date"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString()
+
+
+
+
+
+
+
+                        });
+                    }
+                }
+            }
+        }
+        model.carlist = carlist;
+
+        return View(model);
+    }
+
+    public ActionResult CarMapListing(string uid)
+    {
+        uid = ConvertHelper.Decode(uid);
+
+        DataTable dt = new DataTable();
+        List<CarModel> carlist = new List<CarModel>();
+        RegisterViewModel model = new RegisterViewModel();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetCarMapListing", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        carlist.Add(new CarModel
+                        {
+                            cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
+                            price = dt.Rows[i]["price"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            engine = dt.Rows[i]["ensize_name"].ToString(),
+                            year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
+                            cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
+                            cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            bcolor = dt.Rows[i]["bcolor"].ToString(),
+                            icolor = dt.Rows[i]["icolor"].ToString(),
+                            list = dt.Rows[i]["list"].ToString(),
+                            material = dt.Rows[i]["material"].ToString(),
+                            body_type = dt.Rows[i]["bodytypename"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            make = dt.Rows[i]["make_type"].ToString(),
+                            badge = dt.Rows[i]["badge_type"].ToString(),
+                            series = dt.Rows[i]["series_type"].ToString(),
+                            currency = dt.Rows[i]["currencyname"].ToString(),
+                            model = dt.Rows[i]["model"].ToString(),
+                            tranmition = dt.Rows[i]["transmision"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            zipcode = dt.Rows[i]["zip"].ToString(),
+                            meter = dt.Rows[i]["meter"].ToString(),
+                            matrics = dt.Rows[i]["odometer"].ToString(),
+                            condition = dt.Rows[i]["condition"].ToString(),
+                            uname = dt.Rows[i]["name"].ToString(),
+                            drive = dt.Rows[i]["drive"].ToString(),
+                            fuel = dt.Rows[i]["fuel"].ToString(),
+                            gstatus = dt.Rows[i]["gstatus"].ToString(),
+                            speedtype = dt.Rows[i]["speedtypename"].ToString(),
+                            star = Convert.ToInt32(dt.Rows[i]["carstar"].ToString()),
+                            img3 = dt.Rows[i]["img3"].ToString(),
+                            img4 = dt.Rows[i]["img4"].ToString(),
+                            img5 = dt.Rows[i]["img5"].ToString(),
+                            created_date = dt.Rows[i]["created_date"].ToString(),
+                            showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            orgname = dt.Rows[i]["orgname"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            email = dt.Rows[i]["email"].ToString()
+
+
+
+                        });
+                    }
+                }
+            }
+        }
+
+        List<MakeTypeModel> list = new List<MakeTypeModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("GetMakeType", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list.Add(new MakeTypeModel
+            {
+                make_id = Convert.ToInt32(dr["make_id"].ToString()),
+                make = dr["make_type"].ToString(),
+                status = Convert.ToInt32(dr["status"].ToString())
+
+            });
+        }
+        dr.Close();
+        con.Close();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select * from tbl_login where id='" + uid + "'", con);
+        dr = cmd.ExecuteReader();
+        if (dr.Read())
+        {
+
+            model.buslog = dr["buslogo"].ToString();
+        }
+        dr.Close();
+        con.Close();
+
+
+
+
+        model.makelist = list;
+        model.carlist = carlist;
+
+        return View(model);
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult UserCarMapListing(string uid)
+    {
+        uid = ConvertHelper.Decode(uid);
+
+        DataTable dt = new DataTable();
+        List<CarModel> carlist = new List<CarModel>();
+        RegisterViewModel model = new RegisterViewModel();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetCarMapListing", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        carlist.Add(new CarModel
+                        {
+                            cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
+                            price = dt.Rows[i]["price"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            engine = dt.Rows[i]["ensize_name"].ToString(),
+                            year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
+                            cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
+                            cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            bcolor = dt.Rows[i]["bcolor"].ToString(),
+                            icolor = dt.Rows[i]["icolor"].ToString(),
+                            list = dt.Rows[i]["list"].ToString(),
+                            material = dt.Rows[i]["material"].ToString(),
+                            body_type = dt.Rows[i]["bodytypename"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            make = dt.Rows[i]["make_type"].ToString(),
+                            badge = dt.Rows[i]["badge_type"].ToString(),
+                            series = dt.Rows[i]["series_type"].ToString(),
+                            currency = dt.Rows[i]["currencyname"].ToString(),
+                            model = dt.Rows[i]["model"].ToString(),
+                            tranmition = dt.Rows[i]["transmision"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            zipcode = dt.Rows[i]["zip"].ToString(),
+                            meter = dt.Rows[i]["meter"].ToString(),
+                            matrics = dt.Rows[i]["odometer"].ToString(),
+                            condition = dt.Rows[i]["condition"].ToString(),
+                            uname = dt.Rows[i]["name"].ToString(),
+                            drive = dt.Rows[i]["drive"].ToString(),
+                            fuel = dt.Rows[i]["fuel"].ToString(),
+                            gstatus = dt.Rows[i]["gstatus"].ToString(),
+                            speedtype = dt.Rows[i]["speedtypename"].ToString(),
+                            star = Convert.ToInt32(dt.Rows[i]["carstar"].ToString()),
+                            img3 = dt.Rows[i]["img3"].ToString(),
+                            img4 = dt.Rows[i]["img4"].ToString(),
+                            img5 = dt.Rows[i]["img5"].ToString(),
+                            created_date = dt.Rows[i]["created_date"].ToString(),
+                            showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            orgname = dt.Rows[i]["orgname"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString()
+
+
+
+                        });
+                    }
+                }
+            }
+        }
+
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select * from tbl_login where id = '" + uid + "'", con);
+        dr = cmd.ExecuteReader();
+        if (dr.Read())
+        {
+
+            model.buslog = dr["buslogo"].ToString();
+        }
+
+        dr.Close();
+        model.carlist = carlist;
+
+        return View(model);
+    }
+
+    [AuthonticateUserHelper]
+
+    public ActionResult WatchList()
+    {
+        string uid = Session["id"].ToString();
+        DataTable dt = new DataTable();
+        List<CarModel> carlist = new List<CarModel>();
+        RegisterViewModel model = new RegisterViewModel();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetCarWatchlist", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        carlist.Add(new CarModel
+                        {
+                            cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
+                            price = dt.Rows[i]["price"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            engine = dt.Rows[i]["ensize_name"].ToString(),
+                            year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
+                            cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
+                            cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            bcolor = dt.Rows[i]["bcolor"].ToString(),
+                            icolor = dt.Rows[i]["icolor"].ToString(),
+                            list = dt.Rows[i]["list"].ToString(),
+                            material = dt.Rows[i]["material"].ToString(),
+                            body_type = dt.Rows[i]["bodytypename"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            make = dt.Rows[i]["make_type"].ToString(),
+                            badge = dt.Rows[i]["badge_type"].ToString(),
+                            series = dt.Rows[i]["series"].ToString(),
+                            currency = dt.Rows[i]["currencyname"].ToString(),
+                            model = dt.Rows[i]["model"].ToString(),
+                            tranmition = dt.Rows[i]["transmision"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            zipcode = dt.Rows[i]["zip"].ToString(),
+                            meter = dt.Rows[i]["meter"].ToString(),
+                            matrics = dt.Rows[i]["odometer"].ToString(),
+                            condition = dt.Rows[i]["condition"].ToString(),
+                            uname = dt.Rows[i]["name"].ToString(),
+                            drive = dt.Rows[i]["drive"].ToString(),
+                            fuel = dt.Rows[i]["fuel"].ToString(),
+                            gstatus = dt.Rows[i]["gstatus"].ToString(),
+                            speedtype = dt.Rows[i]["speedtypename"].ToString(),
+                            star = Convert.ToInt32(dt.Rows[i]["carstar"].ToString()),
+                            img3 = dt.Rows[i]["img3"].ToString(),
+                            img4 = dt.Rows[i]["img4"].ToString(),
+                            img5 = dt.Rows[i]["img5"].ToString(),
+                            created_date = dt.Rows[i]["created_date"].ToString(),
+                            showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            orgname = dt.Rows[i]["orgname"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            email = dt.Rows[i]["email"].ToString()
+
+
+
+                        });
+                    }
+                }
+            }
+        }
+
+        dt = new DataTable();
+
+        List<EventViewModel> eventlist1 = new List<EventViewModel>();
+        con = new SqlConnection(constr);
+        cmd = new SqlCommand("GetEventWatchList", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@uid", uid);
+        con.Open();
+        da = new SqlDataAdapter(cmd);
+        da.Fill(dt);
+        if (dt.Rows.Count > 0)
+        {
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                eventlist1.Add(new EventViewModel
+                {
+
+                    eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
+                    uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                    title = dt.Rows[i]["title"].ToString(),
+                    subject = dt.Rows[i]["subject"].ToString(),
+                    date = dt.Rows[i]["edate"].ToString(),
+                    time = dt.Rows[i]["etime"].ToString(),
+                    address = dt.Rows[i]["address"].ToString(),
+                    cno = dt.Rows[i]["cno"].ToString(),
+                    country = dt.Rows[i]["country_name"].ToString(),
+                    state = dt.Rows[i]["state_name"].ToString(),
+                    city = dt.Rows[i]["city"].ToString(),
+                    descr = dt.Rows[i]["descr"].ToString(),
+                    late = dt.Rows[i]["late"].ToString(),
+                    lonz = dt.Rows[i]["long"].ToString(),
+                    status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                    img = dt.Rows[i]["img"].ToString(),
+                    img1 = dt.Rows[i]["img1"].ToString(),
+                    img2 = dt.Rows[i]["img2"].ToString(),
+                    reason = dt.Rows[i]["reason"].ToString(),
+                    suburb = dt.Rows[i]["suburb"].ToString(),
+                    code = dt.Rows[i]["code"].ToString(),
+                    unit = dt.Rows[i]["unit"].ToString(),
+                    street = dt.Rows[i]["street"].ToString(),
+                    sname = dt.Rows[i]["sname"].ToString(),
+                    cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
+                    create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
+                    star = Convert.ToInt32(dt.Rows[i]["eventstar"].ToString())
+
+                });
+            }
+        }
+
+
+
+        model.carlist = carlist;
+        model.eventlist = eventlist1;
+        return View(model);
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult StateMaster()
+    {
+
+        con = new SqlConnection(constr);
+        List<StateMasterModel> statelist = new List<StateMasterModel>();
+        //JObject json = new JObject();
+        StateMasterModel model = new Models.StateMasterModel();
+        SqlCommand com = new SqlCommand("GetAllState", con);
+        com.CommandType = CommandType.StoredProcedure;
+        SqlDataAdapter da = new SqlDataAdapter(com);
+        DataTable dt = new DataTable();
+        con.Open();
+        da.Fill(dt);
+        con.Close();
+        foreach (DataRow dr in dt.Rows)
+        {
+            statelist.Add(
+                new StateMasterModel
+                {
+                    state_id = Convert.ToInt32(dr["state_id"].ToString()),
+                    count_id = Convert.ToInt32(dr["count_id"].ToString()),
+                    country_name = dr["country_name"].ToString(),
+                    state = dr["state_name"].ToString(),
+                    status = Convert.ToInt32(dr["status"].ToString())
+                });
+        }
+        model.statelist = statelist;
+        return View(model);
+    }
+    [AuthonticateUserHelper]
+    public ActionResult CountryMaster()
+    {
+
+        con = new SqlConnection(constr);
+        List<CountryMasterModel> countrylist = new List<CountryMasterModel>();
+        CountryMasterModel model = new CountryMasterModel();
+        SqlCommand com = new SqlCommand("GetCountry", con);
+        com.CommandType = CommandType.StoredProcedure;
+        SqlDataAdapter da = new SqlDataAdapter(com);
+        DataTable dt = new DataTable();
+        con.Open();
+        da.Fill(dt);
+        con.Close();
+        foreach (DataRow dr in dt.Rows)
+        {
+            countrylist.Add(
+                new CountryMasterModel
+                {
+                    count_id = Convert.ToInt32(dr["count_id"].ToString()),
+                    countryname = dr["country_name"].ToString(),
+                    status = Convert.ToInt32(dr["status"].ToString())
+                });
+        }
+        model.countrylist = countrylist;
+        // json["countrylist"] = JToken.FromObject(countrylist);
+        return View(model);
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult EventCatMaster()
+    {
+
+        DataTable dt = new DataTable();
+        List<EventCategoryModel> categorylist = new List<EventCategoryModel>();
+        EventCategoryModel model = new EventCategoryModel();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetCategory", con))
+            {
+                con.Open();
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        categorylist.Add(new EventCategoryModel
+                        {
+                            ecat_id = Convert.ToInt32(dt.Rows[i]["ecat_id"].ToString()),
+                            category = dt.Rows[i]["category"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString())
+                        });
+                    }
+                }
+
+            }
+        }
+        model.categorylist = categorylist;
+        return View("EventCatMaster", model);
+
+        //return View();
+    }
+
+    public ActionResult About()
+    {
+        RegisterViewModel model = new RegisterViewModel();
+        ViewBag.Message = "Your application description page.";
+        List<MakeTypeModel> list = new List<MakeTypeModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("GetMakeType", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list.Add(new MakeTypeModel
+            {
+                make_id = Convert.ToInt32(dr["make_id"].ToString()),
+                make = dr["make_type"].ToString(),
+                status = Convert.ToInt32(dr["status"].ToString())
+
+            });
+        }
+        dr.Close();
+        con.Close();
+        model.makelist = list;
+        return View(model);
+    }
+
+    public ActionResult Contact()
+    {
+        RegisterViewModel model = new RegisterViewModel();
+        ViewBag.Message = "Your application description page.";
+        List<MakeTypeModel> list = new List<MakeTypeModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("GetMakeType", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list.Add(new MakeTypeModel
+            {
+                make_id = Convert.ToInt32(dr["make_id"].ToString()),
+                make = dr["make_type"].ToString(),
+                status = Convert.ToInt32(dr["status"].ToString())
+
+            });
+        }
+        dr.Close();
+        con.Close();
+        model.makelist = list;
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public JObject PfreeUserCount()
+    {
+
+        JObject json = new JObject();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select count(*) from tbl_login where status = '0' and type = 'Free'", con);
+        dr = cmd.ExecuteReader();
+        if (dr.Read())
+        {
+
+            json["freetotalusers"] = dr[0].ToString();
+        }
+        else
+        {
+
+            json["freetotalusers"] = 0;
+        }
+        dr.Close();
+        con.Close();
+        List<UserListModel> list1 = new List<UserListModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select * from tbl_login where status = '0' and type = 'Free'", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list1.Add(new UserListModel
+            {
+                id = ConvertHelper.Encode(dr["id"].ToString()),
+                orgname = dr["orgname"].ToString(),
+                regdate = dr["reg_date"].ToString(),
+                name = dr["fname"].ToString(),
+                lname = dr["lname"].ToString(),
+                email = dr["email"].ToString()
+
+            });
+
+
+        }
+
+        json["freeuserlist"] = JToken.FromObject(list1);
+        dr.Close();
+        con.Close();
+
+        return json;
+    }
+    [HttpPost]
+    public JObject PUserCount()
+    {
+
+        JObject json = new JObject();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select count(*) from tbl_login where status = '2' and type = 'Paid'", con);
+        dr = cmd.ExecuteReader();
+        if (dr.Read())
+        {
+
+            json["totalusers"] = dr[0].ToString();
+        }
+        else
+        {
+
+            json["totalusers"] = 0;
+        }
+        dr.Close();
+        con.Close();
+        List<UserListModel> list = new List<UserListModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select * from tbl_login where status = '2' and type = 'Paid'", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list.Add(new UserListModel
+            {
+
+                id = ConvertHelper.Encode(dr["id"].ToString()),
+                orgname = dr["orgname"].ToString(),
+                regdate = dr["reg_date"].ToString(),
+                name = dr["fname"].ToString(),
+                lname = dr["lname"].ToString(),
+                email = dr["email"].ToString()
+
+            });
+
+
+        }
+
+        json["userlist"] = JToken.FromObject(list);
+        dr.Close();
+        con.Close();
+
+
+
+        return json;
+    }
+
+    [HttpPost]
+    public JObject UserCarCount()
+    {
+
+        JObject json = new JObject();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select count(*) from tbl_carmaster where status = '0'", con);
+        dr = cmd.ExecuteReader();
+        if (dr.Read())
+        {
+
+            json["carcount"] = dr[0].ToString();
+        }
+        else
+        {
+
+            json["carcount"] = 0;
+        }
+        dr.Close();
+        con.Close();
+        List<CarModel> list = new List<CarModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select a.*,b.make_type,c.model as 'ModelName' from tbl_carmaster a,MakeTypeMaster b,ModelMaster c where c.model_id=a.model and b.make_id=a.make and a.status = '0'", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list.Add(new CarModel
+            {
+                cid = ConvertHelper.Encode(dr["cid"].ToString()),
+                make = dr["make_type"].ToString(),
+                model = dr["modelname"].ToString()
+
+            });
+
+
+        }
+
+        json["carlist"] = JToken.FromObject(list);
+        dr.Close();
+        con.Close();
+
+
+
+        return json;
+    }
+
+    [HttpPost]
+    public JObject UserEventCount()
+    {
+
+        JObject json = new JObject();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select count(*) from tbl_eventmaster where status = '0'", con);
+        dr = cmd.ExecuteReader();
+        if (dr.Read())
+        {
+
+            json["eventcount"] = dr[0].ToString();
+        }
+        else
+        {
+
+            json["eventcount"] = 0;
+        }
+        dr.Close();
+        con.Close();
+        List<EventViewModel> list = new List<EventViewModel>();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("select * from tbl_eventmaster where status = '0'", con);
+        dr = cmd.ExecuteReader();
+        while (dr.Read())
+        {
+
+            list.Add(new EventViewModel
+            {
+                eid = ConvertHelper.Encode(dr["eid"].ToString()),
+                //subject = dr["subject"].ToString(),
+                title = dr["title"].ToString()
+
+            });
+
+
+        }
+
+        json["eventlist"] = JToken.FromObject(list);
+        dr.Close();
+        con.Close();
+
+
+
+        return json;
+    }
+
+    [HttpPost]
+    public JObject ChangeCarStatus(string cid, string status)
+    {
+
+        cid = ConvertHelper.Decode(cid);
+
+        JObject json = new JObject();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("ChangeCarStatus", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@cid", cid);
+        cmd.Parameters.AddWithValue("@status", status);
+        cmd.ExecuteNonQuery();
+        json["status"] = "Success";
+        con.Close();
+        return json;
+    }
+
+    [HttpPost]
+    public JObject ChangeCarGStatus(string cid, string status)
+    {
+        cid = ConvertHelper.Decode(cid);
+
+        JObject json = new JObject();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("ChangeCarGStatus", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@cid", cid);
+        cmd.Parameters.AddWithValue("@status", status);
+        cmd.ExecuteNonQuery();
+        json["status"] = "Success";
+        con.Close();
+        return json;
+    }
+
+    [HttpPost]
+    public JObject ChangeEventStatus(string eid, string status)
+    {
+        eid = ConvertHelper.Decode(eid);
+
+        JObject json = new JObject();
+        con = new SqlConnection(constr);
+        con.Open();
+        cmd = new SqlCommand("ChangeEventStatus", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@eid", eid);
+        cmd.Parameters.AddWithValue("@status", status);
+        cmd.ExecuteNonQuery();
+        json["status"] = "Success";
+        con.Close();
+        return json;
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult UserAboutUS()
+    {
+
+
+        return View();
+
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult UserContact()
+    {
+
+
+        return View();
+
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult ManageStore()
+    {
+        string uid = Session["id"].ToString();
+        UserListModel model = new UserListModel();
+        con = new SqlConnection(constr);
+        List<UserListModel> UserList = new List<UserListModel>();
+        JObject json = new JObject();
+        SqlCommand com = new SqlCommand("GetStoreByParentStore", con);
+        com.CommandType = CommandType.StoredProcedure;
+        com.Parameters.AddWithValue("@parentstore", uid);
+        SqlDataAdapter da = new SqlDataAdapter(com);
+        DataTable dt = new DataTable();
+        con.Open();
+        da.Fill(dt);
+        con.Close();
+        //Bind EmpModel generic list using dataRow 
+        foreach (DataRow dr in dt.Rows)
+        {
+            UserList.Add(
+                new UserListModel
+                {
+                    id = dr["id"].ToString(),
+                    name = Convert.ToString(dr["name"].ToString()),
+                    email = Convert.ToString(dr["email"].ToString()),
+                    type = dr["type"].ToString(),
+                    status = Convert.ToInt32(dr["status"].ToString()),
+                    regdate = Convert.ToDateTime(dr["reg_date"].ToString()).ToString("MM/dd/yyyy", CultureInfo.InvariantCulture),
+                    orgname = dr["orgname"].ToString(),
+                    customerid = dr["cust_id"].ToString()
 
 
 
@@ -5632,449 +5634,449 @@ namespace MyCarYard.Controllers
                         //eventcount = dt.Rows[i]["speedtypename"].ToString()
 
                     }
-                    );
+                );
+        }
+
+        model.userlist = UserList;
+
+        return View(model);
+    }
+
+    [AuthonticateUserHelper]
+    public JObject SwitchStore(string id, string name, string type, string status, string email)
+    {
+        Session["id"] = id;
+        Session["name"] = name;
+        Session["type"] = type;
+        Session["status"] = status;
+        Session["parentstore"] = id;
+        Session["email"] = email;
+        JObject json = new JObject();
+        json["status"] = "Success";
+        return json;
+    }
+
+    [AuthonticateUserHelper]
+    public ActionResult AddStore()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [WebMethod]
+    public JObject AddStore(int id, string dname, string fname, string lname, string email, string password, string cno, string city, string state, string country, string street, string streetname, string other, string other1, string other2, string zip, string regions, string gender, string late, string lonz, string showphone, string bname)
+    {
+        con = new SqlConnection(constr);
+        JObject json = new JObject();
+        SqlCommand com = new SqlCommand("AddStore", con);
+        com.CommandType = CommandType.StoredProcedure;
+        com.Parameters.AddWithValue("@id", id);
+        com.Parameters.AddWithValue("@dname", dname);
+        com.Parameters.AddWithValue("@fname", fname);
+        com.Parameters.AddWithValue("@lname", lname);
+        com.Parameters.AddWithValue("@email", email);
+        com.Parameters.AddWithValue("@pass", password);
+        com.Parameters.AddWithValue("@cno", cno);
+        com.Parameters.AddWithValue("@city", city);
+        com.Parameters.AddWithValue("@state", state);
+        com.Parameters.AddWithValue("@country", country);
+        com.Parameters.AddWithValue("@street", street);
+        com.Parameters.AddWithValue("@streetname", streetname);
+        com.Parameters.AddWithValue("@other", other);
+        com.Parameters.AddWithValue("@other1", other1);
+        com.Parameters.AddWithValue("@other2", other2);
+        com.Parameters.AddWithValue("@zip", zip);
+        com.Parameters.AddWithValue("@regions", regions);
+        //com.Parameters.AddWithValue("@suburb", suburb);
+        com.Parameters.AddWithValue("@gender", gender);
+        com.Parameters.AddWithValue("@late", late);
+        com.Parameters.AddWithValue("@long", lonz);
+        com.Parameters.AddWithValue("@showphone", showphone);
+        com.Parameters.AddWithValue("@bname", bname);
+        com.Parameters.AddWithValue("@errorCode", SqlDbType.Int);
+        com.Parameters.AddWithValue("@errorMessage", SqlDbType.NVarChar);
+        SqlParameter storeid = new SqlParameter("@storeid", SqlDbType.Int) { Direction = ParameterDirection.Output };
+        com.Parameters.Add(storeid);
+        con.Open();
+        com.ExecuteNonQuery();
+        con.Close();
+        json["status"] = "Success";
+        json["storeid"] = Convert.ToInt32(storeid.Value.ToString());
+
+        String htmlmessage = "<table border='0' cellpadding='5' cellspacing='0' style='font - family:arial; background - color: #fff; height:auto; width:800px; margin:30px auto; max-width:100%;'>";
+        htmlmessage = htmlmessage + "<tr><td align='left' style='border-bottom:10px solid #0098fa;padding:20px50px;'>";
+        htmlmessage = htmlmessage + "<img src='http://mycaryard.mobi96.org/content/images/logo.png' alt='logo'></td></tr><tr>";
+        htmlmessage = htmlmessage + "<td align='left' style='padding:30px 50px 20px; font-size: 24px;  color:#000;'> Welcome!</td></tr><tr>";
+        htmlmessage = htmlmessage + "<td align='left' style = 'padding:0px 50px 20px; color:#000;'>";
+        htmlmessage = htmlmessage + "A mycaryard account has been created for you. your account is in under review, mycaryard team will contact your shortly.";
+        htmlmessage = htmlmessage + "</tr><tr><td align='left' style='padding:0px 50px 20px; color:#000;'>";
+        htmlmessage = htmlmessage + "Login page: <a href='http://mycaryard.mobi96.org/Home/UserIndex' style='color: #0066CC;'> mycaryard.mobi96.org</a><br>";
+        htmlmessage = htmlmessage + "Email:<a href='mycaryard@gmail.com' style='color: #0066CC;'> mycaryard@gmail.com </a></td></tr><tr>";
+        htmlmessage = htmlmessage + "<td align='left' style='padding:0px 50px 20px; color:#000;'>";
+        htmlmessage = htmlmessage + "We are here to help. if you have any question about marcaryard, just visit<span style='color: #0066CC;text-decoration:underline'> <a href='http://mycaryard.mobi96.org/Home/UserIndex' style='color: #0066CC;'>support site</a> </span></td></tr><tr>";
+        htmlmessage = htmlmessage + "<td align='left' style='padding: 0px 50px 10px;line-height:24px; color:#0098FA;'><a href='http://mycaryard.mobi96.org/Home/UserIndex' style='color: #0066CC;'>Login to your account if you already have</a></td></tr><tr><td></td></tr></table>";
+
+        var msg = new MailMessage();
+        var htmlBody = AlternateView.CreateAlternateViewFromString(htmlmessage, Encoding.UTF8, "text/html");
+        MailAddress sender = new MailAddress("info@mobi96.org", "MYCARYARD");
+        msg.AlternateViews.Add(htmlBody);
+        msg.From = sender;
+        msg.Subject = "MYCARYARD New Registration";
+        msg.To.Add(email);
+
+
+        // MailMessage mail = new MailMessage("info@stums.in", model.RegEmail, "MyCarYard New Registration", htmlmessage);
+        msg.IsBodyHtml = true;
+        SmtpClient client = new SmtpClient("relay-hosting.secureserver.net");
+        try
+        {
+            client.Send(msg);
+        }
+        catch { }
+
+        return json;
+    }
+
+    public ActionResult UploadStoreBusinessLogo(FormCollection frm1)
+    {
+        string filePath = string.Empty;
+        var dataStr = String.Format("{0:d/M/yyyy HH:mm:ss}", DateTime.Now);
+        dataStr = dataStr.Replace(@"/", "").Trim(); dataStr = dataStr.Replace(@":", "").Trim(); dataStr = dataStr.Replace(" ", String.Empty);
+
+        if (!string.IsNullOrEmpty(frm1["hdoutput"]))
+        {
+            filePath = HostingEnvironment.MapPath("~/images/logos/");
+            var image = frm1["custlid"] + "_" + dataStr + ".png";
+            var valuefind = frm1["hdoutput"];
+            byte[] bytes = System.Convert.FromBase64String(valuefind);
+            using (FileStream fs = new FileStream(filePath + image, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            {
+                fs.Write(bytes, 0, bytes.Length);
+                fs.Close();
             }
-
-            model.userlist = UserList;
-
-            return View(model);
-        }
-
-        [AuthonticateUserHelper]
-        public JObject SwitchStore(string id, string name, string type, string status, string email)
-        {
-            Session["id"] = id;
-            Session["name"] = name;
-            Session["type"] = type;
-            Session["status"] = status;
-            Session["parentstore"] = id;
-            Session["email"] = email;
-            JObject json = new JObject();
-            json["status"] = "Success";
-            return json;
-        }
-
-        [AuthonticateUserHelper]
-        public ActionResult AddStore()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [WebMethod]
-        public JObject AddStore(int id, string dname, string fname, string lname, string email, string password, string cno, string city, string state, string country, string street, string streetname, string other, string other1, string other2, string zip, string regions, string gender, string late, string lonz, string showphone, string bname)
-        {
+            WebImage supermanImage = new WebImage(Server.MapPath("~/images/logos/" + image));
+            supermanImage.AddTextWatermark("MY CARYARD", "White", 40, "Regular", "Consolas", "Right", "Top", 20, 10);
+            supermanImage.Save(Server.MapPath("~/images/logos/" + image));
+            //Update Image Name1
             con = new SqlConnection(constr);
-            JObject json = new JObject();
-            SqlCommand com = new SqlCommand("AddStore", con);
-            com.CommandType = CommandType.StoredProcedure;
-            com.Parameters.AddWithValue("@id", id);
-            com.Parameters.AddWithValue("@dname", dname);
-            com.Parameters.AddWithValue("@fname", fname);
-            com.Parameters.AddWithValue("@lname", lname);
-            com.Parameters.AddWithValue("@email", email);
-            com.Parameters.AddWithValue("@pass", password);
-            com.Parameters.AddWithValue("@cno", cno);
-            com.Parameters.AddWithValue("@city", city);
-            com.Parameters.AddWithValue("@state", state);
-            com.Parameters.AddWithValue("@country", country);
-            com.Parameters.AddWithValue("@street", street);
-            com.Parameters.AddWithValue("@streetname", streetname);
-            com.Parameters.AddWithValue("@other", other);
-            com.Parameters.AddWithValue("@other1", other1);
-            com.Parameters.AddWithValue("@other2", other2);
-            com.Parameters.AddWithValue("@zip", zip);
-            com.Parameters.AddWithValue("@regions", regions);
-            //com.Parameters.AddWithValue("@suburb", suburb);
-            com.Parameters.AddWithValue("@gender", gender);
-            com.Parameters.AddWithValue("@late", late);
-            com.Parameters.AddWithValue("@long", lonz);
-            com.Parameters.AddWithValue("@showphone", showphone);
-            com.Parameters.AddWithValue("@bname", bname);
-            com.Parameters.AddWithValue("@errorCode", SqlDbType.Int);
-            com.Parameters.AddWithValue("@errorMessage", SqlDbType.NVarChar);
-            SqlParameter storeid = new SqlParameter("@storeid", SqlDbType.Int) { Direction = ParameterDirection.Output };
-            com.Parameters.Add(storeid);
             con.Open();
-            com.ExecuteNonQuery();
+            cmd = new SqlCommand("update tbl_login SET buslogo='" + image + "' where id= '" + frm1["custlid"] + "'", con);
+            cmd.ExecuteNonQuery();
             con.Close();
-            json["status"] = "Success";
-            json["storeid"] = Convert.ToInt32(storeid.Value.ToString());
-
-            String htmlmessage = "<table border='0' cellpadding='5' cellspacing='0' style='font - family:arial; background - color: #fff; height:auto; width:800px; margin:30px auto; max-width:100%;'>";
-            htmlmessage = htmlmessage + "<tr><td align='left' style='border-bottom:10px solid #0098fa;padding:20px50px;'>";
-            htmlmessage = htmlmessage + "<img src='http://mycaryard.mobi96.org/content/images/logo.png' alt='logo'></td></tr><tr>";
-            htmlmessage = htmlmessage + "<td align='left' style='padding:30px 50px 20px; font-size: 24px;  color:#000;'> Welcome!</td></tr><tr>";
-            htmlmessage = htmlmessage + "<td align='left' style = 'padding:0px 50px 20px; color:#000;'>";
-            htmlmessage = htmlmessage + "A mycaryard account has been created for you. your account is in under review, mycaryard team will contact your shortly.";
-            htmlmessage = htmlmessage + "</tr><tr><td align='left' style='padding:0px 50px 20px; color:#000;'>";
-            htmlmessage = htmlmessage + "Login page: <a href='http://mycaryard.mobi96.org/Home/UserIndex' style='color: #0066CC;'> mycaryard.mobi96.org</a><br>";
-            htmlmessage = htmlmessage + "Email:<a href='mycaryard@gmail.com' style='color: #0066CC;'> mycaryard@gmail.com </a></td></tr><tr>";
-            htmlmessage = htmlmessage + "<td align='left' style='padding:0px 50px 20px; color:#000;'>";
-            htmlmessage = htmlmessage + "We are here to help. if you have any question about marcaryard, just visit<span style='color: #0066CC;text-decoration:underline'> <a href='http://mycaryard.mobi96.org/Home/UserIndex' style='color: #0066CC;'>support site</a> </span></td></tr><tr>";
-            htmlmessage = htmlmessage + "<td align='left' style='padding: 0px 50px 10px;line-height:24px; color:#0098FA;'><a href='http://mycaryard.mobi96.org/Home/UserIndex' style='color: #0066CC;'>Login to your account if you already have</a></td></tr><tr><td></td></tr></table>";
-
-            var msg = new MailMessage();
-            var htmlBody = AlternateView.CreateAlternateViewFromString(htmlmessage, Encoding.UTF8, "text/html");
-            MailAddress sender = new MailAddress("info@mobi96.org", "MYCARYARD");
-            msg.AlternateViews.Add(htmlBody);
-            msg.From = sender;
-            msg.Subject = "MYCARYARD New Registration";
-            msg.To.Add(email);
-
-
-            // MailMessage mail = new MailMessage("info@stums.in", model.RegEmail, "MyCarYard New Registration", htmlmessage);
-            msg.IsBodyHtml = true;
-            SmtpClient client = new SmtpClient("relay-hosting.secureserver.net");
-            try
-            {
-                client.Send(msg);
-            }
-            catch { }
-
-            return json;
         }
+        return RedirectToAction("ManageStore", "Home");
+    }
 
-        public ActionResult UploadStoreBusinessLogo(FormCollection frm1)
+    public ActionResult CarListing(string uid, string option = "0")
+    {
+        if (option == "0")
         {
-            string filePath = string.Empty;
-            var dataStr = String.Format("{0:d/M/yyyy HH:mm:ss}", DateTime.Now);
-            dataStr = dataStr.Replace(@"/", "").Trim(); dataStr = dataStr.Replace(@":", "").Trim(); dataStr = dataStr.Replace(" ", String.Empty);
 
-            if (!string.IsNullOrEmpty(frm1["hdoutput"]))
+            option = "CID";
+        }
+        DataTable dt = new DataTable();
+        List<CarModel> carlist = new List<CarModel>();
+        RegisterViewModel model = new RegisterViewModel();
+        List<EventViewModel> eventlist1 = new List<EventViewModel>();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetCarListing", con))
             {
-                filePath = HostingEnvironment.MapPath("~/images/logos/");
-                var image = frm1["custlid"] + "_" + dataStr + ".png";
-                var valuefind = frm1["hdoutput"];
-                byte[] bytes = System.Convert.FromBase64String(valuefind);
-                using (FileStream fs = new FileStream(filePath + image, FileMode.CreateNew, FileAccess.Write, FileShare.None))
-                {
-                    fs.Write(bytes, 0, bytes.Length);
-                    fs.Close();
-                }
-                WebImage supermanImage = new WebImage(Server.MapPath("~/images/logos/" + image));
-                supermanImage.AddTextWatermark("MY CARYARD", "White", 40, "Regular", "Consolas", "Right", "Top", 20, 10);
-                supermanImage.Save(Server.MapPath("~/images/logos/" + image));
-                //Update Image Name1
-                con = new SqlConnection(constr);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@sortby", option);
+                cmd.Parameters.AddWithValue("@uid", ConvertHelper.Decode(uid));
                 con.Open();
-                cmd = new SqlCommand("update tbl_login SET buslogo='" + image + "' where id= '" + frm1["custlid"] + "'", con);
-                cmd.ExecuteNonQuery();
-                con.Close();
-            }
-            return RedirectToAction("ManageStore", "Home");
-        }
-
-        public ActionResult CarListing(string uid, string option = "0")
-        {
-            if (option == "0")
-            {
-
-                option = "CID";
-            }
-            DataTable dt = new DataTable();
-            List<CarModel> carlist = new List<CarModel>();
-            RegisterViewModel model = new RegisterViewModel();
-            List<EventViewModel> eventlist1 = new List<EventViewModel>();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCarListing", con))
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@sortby", option);
-                    cmd.Parameters.AddWithValue("@uid", ConvertHelper.Decode(uid));
-                    con.Open();
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        for (int i = 0; i < dt.Rows.Count; i++)
+                        carlist.Add(new CarModel
                         {
-                            carlist.Add(new CarModel
-                            {
-                                cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
-                                price = dt.Rows[i]["price"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                engine = dt.Rows[i]["ensize_name"].ToString(),
-                                year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
-                                cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
-                                cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                bcolor = dt.Rows[i]["bcolor"].ToString(),
-                                icolor = dt.Rows[i]["icolor"].ToString(),
-                                list = dt.Rows[i]["list"].ToString(),
-                                material = dt.Rows[i]["material"].ToString(),
-                                body_type = dt.Rows[i]["bodytypename"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                make = dt.Rows[i]["make_type"].ToString(),
-                                badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series"].ToString(),
-                                currency = dt.Rows[i]["currencyname"].ToString(),
-                                model = dt.Rows[i]["model"].ToString(),
-                                tranmition = dt.Rows[i]["transmision"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                zipcode = dt.Rows[i]["zip"].ToString(),
-                                meter = dt.Rows[i]["meter"].ToString(),
-                                matrics = dt.Rows[i]["odometer"].ToString(),
-                                condition = dt.Rows[i]["condition"].ToString(),
-                                uname = dt.Rows[i]["name"].ToString(),
-                                drive = dt.Rows[i]["drive"].ToString(),
-                                fuel = dt.Rows[i]["fuel"].ToString(),
-                                gstatus = dt.Rows[i]["gstatus"].ToString(),
-                                speedtype = dt.Rows[i]["speedtypename"].ToString(),
-                                star = Convert.ToInt32(dt.Rows[i]["star"].ToString()),
-                                img3 = dt.Rows[i]["img3"].ToString(),
-                                img4 = dt.Rows[i]["img4"].ToString(),
-                                img5 = dt.Rows[i]["img5"].ToString(),
-                                created_date = dt.Rows[i]["created_date"].ToString(),
-                                showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                orgname = dt.Rows[i]["orgname"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                email = dt.Rows[i]["email"].ToString()
+                            cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
+                            price = dt.Rows[i]["price"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            engine = dt.Rows[i]["ensize_name"].ToString(),
+                            year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
+                            cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
+                            cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            bcolor = dt.Rows[i]["bcolor"].ToString(),
+                            icolor = dt.Rows[i]["icolor"].ToString(),
+                            list = dt.Rows[i]["list"].ToString(),
+                            material = dt.Rows[i]["material"].ToString(),
+                            body_type = dt.Rows[i]["bodytypename"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            make = dt.Rows[i]["make_type"].ToString(),
+                            badge = dt.Rows[i]["badge_type"].ToString(),
+                            series = dt.Rows[i]["series"].ToString(),
+                            currency = dt.Rows[i]["currencyname"].ToString(),
+                            model = dt.Rows[i]["model"].ToString(),
+                            tranmition = dt.Rows[i]["transmision"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            zipcode = dt.Rows[i]["zip"].ToString(),
+                            meter = dt.Rows[i]["meter"].ToString(),
+                            matrics = dt.Rows[i]["odometer"].ToString(),
+                            condition = dt.Rows[i]["condition"].ToString(),
+                            uname = dt.Rows[i]["name"].ToString(),
+                            drive = dt.Rows[i]["drive"].ToString(),
+                            fuel = dt.Rows[i]["fuel"].ToString(),
+                            gstatus = dt.Rows[i]["gstatus"].ToString(),
+                            speedtype = dt.Rows[i]["speedtypename"].ToString(),
+                            star = Convert.ToInt32(dt.Rows[i]["star"].ToString()),
+                            img3 = dt.Rows[i]["img3"].ToString(),
+                            img4 = dt.Rows[i]["img4"].ToString(),
+                            img5 = dt.Rows[i]["img5"].ToString(),
+                            created_date = dt.Rows[i]["created_date"].ToString(),
+                            showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            orgname = dt.Rows[i]["orgname"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            email = dt.Rows[i]["email"].ToString()
 
 
-                            });
-                        }
+                        });
                     }
                 }
             }
-            model.carlist = carlist;
-            return View("CarListing", model);
-
         }
-
-        public ActionResult EventListing(string uid, string option = "0")
-        {
-            if (option == "0")
-            {
-
-                option = "CID";
-            }
-            DataTable dt = new DataTable();
-            RegisterViewModel model = new RegisterViewModel();
-            List<EventViewModel> eventlist1 = new List<EventViewModel>();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetEventListing", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@sortby", option);
-                    cmd.Parameters.AddWithValue("@uid", ConvertHelper.Decode(uid));
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            eventlist1.Add(new EventViewModel
-                            {
-
-                                eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                title = dt.Rows[i]["title"].ToString(),
-                                subject = dt.Rows[i]["subject"].ToString(),
-                                date = dt.Rows[i]["edate"].ToString(),
-                                time = dt.Rows[i]["etime"].ToString(),
-                                address = dt.Rows[i]["address"].ToString(),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                late = dt.Rows[i]["late"].ToString(),
-                                lonz = dt.Rows[i]["long"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                reason = dt.Rows[i]["reason"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                code = dt.Rows[i]["code"].ToString(),
-                                unit = dt.Rows[i]["unit"].ToString(),
-                                street = dt.Rows[i]["street"].ToString(),
-                                sname = dt.Rows[i]["sname"].ToString(),
-                                cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                                create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
-                                ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
-                                price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
-                                showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
-                                going = dt.Rows[i]["going"].ToString(),
-
-
-                            });
-                        }
-                    }
-
-                }
-            }
-            model.eventlist = eventlist1;
-            return View("EventListing", model);
-
-        }
-
-        public ActionResult CarListinglog(string uid, string option = "0")
-        {
-            if (option == "0")
-            {
-
-                option = "CID";
-            }
-            DataTable dt = new DataTable();
-            List<CarModel> carlist = new List<CarModel>();
-            RegisterViewModel model = new RegisterViewModel();
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetCarListing", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@sortby", option);
-                    cmd.Parameters.AddWithValue("@uid", ConvertHelper.Decode(uid));
-                    con.Open();
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            carlist.Add(new CarModel
-                            {
-                                cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
-                                price = dt.Rows[i]["price"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                engine = dt.Rows[i]["ensize_name"].ToString(),
-                                year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
-                                cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
-                                cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                bcolor = dt.Rows[i]["bcolor"].ToString(),
-                                icolor = dt.Rows[i]["icolor"].ToString(),
-                                list = dt.Rows[i]["list"].ToString(),
-                                material = dt.Rows[i]["material"].ToString(),
-                                body_type = dt.Rows[i]["bodytypename"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                make = dt.Rows[i]["make_type"].ToString(),
-                                badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series"].ToString(),
-                                currency = dt.Rows[i]["currencyname"].ToString(),
-                                model = dt.Rows[i]["model"].ToString(),
-                                tranmition = dt.Rows[i]["transmision"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                zipcode = dt.Rows[i]["zip"].ToString(),
-                                meter = dt.Rows[i]["meter"].ToString(),
-                                matrics = dt.Rows[i]["odometer"].ToString(),
-                                condition = dt.Rows[i]["condition"].ToString(),
-                                uname = dt.Rows[i]["name"].ToString(),
-                                drive = dt.Rows[i]["drive"].ToString(),
-                                fuel = dt.Rows[i]["fuel"].ToString(),
-                                gstatus = dt.Rows[i]["gstatus"].ToString(),
-                                speedtype = dt.Rows[i]["speedtypename"].ToString(),
-                                star = Convert.ToInt32(dt.Rows[i]["star"].ToString()),
-                                img3 = dt.Rows[i]["img3"].ToString(),
-                                img4 = dt.Rows[i]["img4"].ToString(),
-                                img5 = dt.Rows[i]["img5"].ToString(),
-                                created_date = dt.Rows[i]["created_date"].ToString(),
-                                showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                orgname = dt.Rows[i]["orgname"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                email = dt.Rows[i]["email"].ToString()
-
-
-                            });
-                        }
-                    }
-                }
-            }
-
-            model.carlist = carlist;
-            return View("CarListinglog", model);
-
-        }
-
-        public ActionResult EventListinglog(string uid, string option = "0")
-        {
-            if (option == "0")
-            {
-
-                option = "CID";
-            }
-            DataTable dt = new DataTable();
-            RegisterViewModel model = new RegisterViewModel();
-            List<EventViewModel> eventlist1 = new List<EventViewModel>();
-
-
-            using (SqlConnection con = new SqlConnection(constr))
-            {
-                using (SqlCommand cmd = new SqlCommand("GetEventListing", con))
-                {
-                    con.Open();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@sortby", option);
-                    cmd.Parameters.AddWithValue("@uid", ConvertHelper.Decode(uid));
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    da.Fill(dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            eventlist1.Add(new EventViewModel
-                            {
-
-                                eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
-                                uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
-                                title = dt.Rows[i]["title"].ToString(),
-                                subject = dt.Rows[i]["subject"].ToString(),
-                                date = dt.Rows[i]["edate"].ToString(),
-                                time = dt.Rows[i]["etime"].ToString(),
-                                address = dt.Rows[i]["address"].ToString(),
-                                cno = dt.Rows[i]["cno"].ToString(),
-                                country = dt.Rows[i]["country_name"].ToString(),
-                                state = dt.Rows[i]["state_name"].ToString(),
-                                city = dt.Rows[i]["cityname"].ToString(),
-                                descr = dt.Rows[i]["descr"].ToString(),
-                                late = dt.Rows[i]["late"].ToString(),
-                                lonz = dt.Rows[i]["long"].ToString(),
-                                status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
-                                img = dt.Rows[i]["img"].ToString(),
-                                img1 = dt.Rows[i]["img1"].ToString(),
-                                img2 = dt.Rows[i]["img2"].ToString(),
-                                reason = dt.Rows[i]["reason"].ToString(),
-                                suburb = dt.Rows[i]["regionname"].ToString(),
-                                code = dt.Rows[i]["code"].ToString(),
-                                unit = dt.Rows[i]["unit"].ToString(),
-                                street = dt.Rows[i]["street"].ToString(),
-                                sname = dt.Rows[i]["sname"].ToString(),
-                                cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                                create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
-                                ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
-                                price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
-                                showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
-                                going = dt.Rows[i]["going"].ToString(),
-
-
-                            });
-                        }
-                    }
-
-                }
-            }
-            model.eventlist = eventlist1;
-            return View("EventListinglog", model);
-
-        }
+        model.carlist = carlist;
+        return View("CarListing", model);
 
     }
+
+    public ActionResult EventListing(string uid, string option = "0")
+    {
+        if (option == "0")
+        {
+
+            option = "CID";
+        }
+        DataTable dt = new DataTable();
+        RegisterViewModel model = new RegisterViewModel();
+        List<EventViewModel> eventlist1 = new List<EventViewModel>();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetEventListing", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@sortby", option);
+                cmd.Parameters.AddWithValue("@uid", ConvertHelper.Decode(uid));
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        eventlist1.Add(new EventViewModel
+                        {
+
+                            eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            title = dt.Rows[i]["title"].ToString(),
+                            subject = dt.Rows[i]["subject"].ToString(),
+                            date = dt.Rows[i]["edate"].ToString(),
+                            time = dt.Rows[i]["etime"].ToString(),
+                            address = dt.Rows[i]["address"].ToString(),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            late = dt.Rows[i]["late"].ToString(),
+                            lonz = dt.Rows[i]["long"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            reason = dt.Rows[i]["reason"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            code = dt.Rows[i]["code"].ToString(),
+                            unit = dt.Rows[i]["unit"].ToString(),
+                            street = dt.Rows[i]["street"].ToString(),
+                            sname = dt.Rows[i]["sname"].ToString(),
+                            cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
+                            create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
+                            ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
+                            price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
+                            showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
+                            going = dt.Rows[i]["going"].ToString(),
+
+
+                        });
+                    }
+                }
+
+            }
+        }
+        model.eventlist = eventlist1;
+        return View("EventListing", model);
+
+    }
+
+    public ActionResult CarListinglog(string uid, string option = "0")
+    {
+        if (option == "0")
+        {
+
+            option = "CID";
+        }
+        DataTable dt = new DataTable();
+        List<CarModel> carlist = new List<CarModel>();
+        RegisterViewModel model = new RegisterViewModel();
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetCarListing", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@sortby", option);
+                cmd.Parameters.AddWithValue("@uid", ConvertHelper.Decode(uid));
+                con.Open();
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        carlist.Add(new CarModel
+                        {
+                            cid = ConvertHelper.Encode(dt.Rows[i]["cid"].ToString()),
+                            price = dt.Rows[i]["price"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            engine = dt.Rows[i]["ensize_name"].ToString(),
+                            year = Convert.ToInt32(dt.Rows[i]["year"].ToString()),
+                            cylinder = Convert.ToInt32(dt.Rows[i]["cylinder"].ToString()),
+                            cylinder_name = dt.Rows[i]["cylinder_name"].ToString(),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            bcolor = dt.Rows[i]["bcolor"].ToString(),
+                            icolor = dt.Rows[i]["icolor"].ToString(),
+                            list = dt.Rows[i]["list"].ToString(),
+                            material = dt.Rows[i]["material"].ToString(),
+                            body_type = dt.Rows[i]["bodytypename"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            make = dt.Rows[i]["make_type"].ToString(),
+                            badge = dt.Rows[i]["badge_type"].ToString(),
+                            series = dt.Rows[i]["series"].ToString(),
+                            currency = dt.Rows[i]["currencyname"].ToString(),
+                            model = dt.Rows[i]["model"].ToString(),
+                            tranmition = dt.Rows[i]["transmision"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            zipcode = dt.Rows[i]["zip"].ToString(),
+                            meter = dt.Rows[i]["meter"].ToString(),
+                            matrics = dt.Rows[i]["odometer"].ToString(),
+                            condition = dt.Rows[i]["condition"].ToString(),
+                            uname = dt.Rows[i]["name"].ToString(),
+                            drive = dt.Rows[i]["drive"].ToString(),
+                            fuel = dt.Rows[i]["fuel"].ToString(),
+                            gstatus = dt.Rows[i]["gstatus"].ToString(),
+                            speedtype = dt.Rows[i]["speedtypename"].ToString(),
+                            star = Convert.ToInt32(dt.Rows[i]["star"].ToString()),
+                            img3 = dt.Rows[i]["img3"].ToString(),
+                            img4 = dt.Rows[i]["img4"].ToString(),
+                            img5 = dt.Rows[i]["img5"].ToString(),
+                            created_date = dt.Rows[i]["created_date"].ToString(),
+                            showphone = Convert.ToInt32(dt.Rows[i]["showphone"].ToString()),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            orgname = dt.Rows[i]["orgname"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            email = dt.Rows[i]["email"].ToString()
+
+
+                        });
+                    }
+                }
+            }
+        }
+
+        model.carlist = carlist;
+        return View("CarListinglog", model);
+
+    }
+
+    public ActionResult EventListinglog(string uid, string option = "0")
+    {
+        if (option == "0")
+        {
+
+            option = "CID";
+        }
+        DataTable dt = new DataTable();
+        RegisterViewModel model = new RegisterViewModel();
+        List<EventViewModel> eventlist1 = new List<EventViewModel>();
+
+
+        using (SqlConnection con = new SqlConnection(constr))
+        {
+            using (SqlCommand cmd = new SqlCommand("GetEventListing", con))
+            {
+                con.Open();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@sortby", option);
+                cmd.Parameters.AddWithValue("@uid", ConvertHelper.Decode(uid));
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        eventlist1.Add(new EventViewModel
+                        {
+
+                            eid = ConvertHelper.Encode(dt.Rows[i]["eid"].ToString()),
+                            uid = Convert.ToInt32(dt.Rows[i]["uid"].ToString()),
+                            title = dt.Rows[i]["title"].ToString(),
+                            subject = dt.Rows[i]["subject"].ToString(),
+                            date = dt.Rows[i]["edate"].ToString(),
+                            time = dt.Rows[i]["etime"].ToString(),
+                            address = dt.Rows[i]["address"].ToString(),
+                            cno = dt.Rows[i]["cno"].ToString(),
+                            country = dt.Rows[i]["country_name"].ToString(),
+                            state = dt.Rows[i]["state_name"].ToString(),
+                            city = dt.Rows[i]["cityname"].ToString(),
+                            descr = dt.Rows[i]["descr"].ToString(),
+                            late = dt.Rows[i]["late"].ToString(),
+                            lonz = dt.Rows[i]["long"].ToString(),
+                            status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
+                            img = dt.Rows[i]["img"].ToString(),
+                            img1 = dt.Rows[i]["img1"].ToString(),
+                            img2 = dt.Rows[i]["img2"].ToString(),
+                            reason = dt.Rows[i]["reason"].ToString(),
+                            suburb = dt.Rows[i]["regionname"].ToString(),
+                            code = dt.Rows[i]["code"].ToString(),
+                            unit = dt.Rows[i]["unit"].ToString(),
+                            street = dt.Rows[i]["street"].ToString(),
+                            sname = dt.Rows[i]["sname"].ToString(),
+                            cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
+                            create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
+                            ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
+                            price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
+                            showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
+                            going = dt.Rows[i]["going"].ToString(),
+
+
+                        });
+                    }
+                }
+
+            }
+        }
+        model.eventlist = eventlist1;
+        return View("EventListinglog", model);
+
+    }
+
+}
 }
