@@ -1,0 +1,658 @@
+﻿
+@model MyCarYard.Models.UserListModel
+@{
+    ViewBag.Title = "Admin Profile";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+
+}
+<script>
+    var map;
+    function mapa()
+    {
+        var opts = {
+            'center': new google.maps.LatLng(22.730590425493833, 75.8770751953125),
+            'zoom':11, 'mapTypeId': google.maps.MapTypeId.ROADMAP }
+        map = new google.maps.Map(document.getElementById('mapdiv'),opts);
+        google.maps.event.addListener(map,'click',function(event)
+        {
+            //document.getElementById('latlongclicked').value = event.latLng.lat() + ', ' + event.latLng.lng()
+            $('#latitute').val(event.latLng.lat())
+            $('#longitute').val(event.latLng.lng())
+        })
+
+        google.maps.event.addListener(map,'mousemove',function(event)
+        {
+            //alert("Hi");
+            //$('#latitute').val(event.latLng.lat())
+            //$('#longitute').val(event.latLng.lng())
+           // document.getElementById('latlong').innerHTML = event.latLng.lat() + ', ' + event.latLng.lng()
+        });
+
+    }
+</script>
+<input type="hidden" id="custid" value="@Model.id" />
+<div class="wrapper">
+    <div class="content-wrapper">
+        <section class="content">
+            <!-- SELECT2 EXAMPLE -->
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Customer Edit</h3>
+                    <div class="box-tools pull-right">
+                        <a href="@Url.Action("UserList", "Home")">Back</a>
+                       <!--  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                       <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>-->
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            @if (Model.type == "Paid")
+                            {
+                                <div class="form-group">
+                                    <label>Assign Plan</label>
+                                    <select class="form-control" style="width: 100%;" id="plan" onchange="getValidDate();">
+                                        <option value="0">Select Plan</option>
+                                    </select>
+                                </div>
+                            }
+                            <div class="form-group">
+                                <label>Registration Date:</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" id="datepicker1" value="@Model.regdate" @(Model.type.Equals("Super") ? Html.Raw("disabled") : null)>
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                            <div class="form-group">
+                                <label> Name</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="name" value="@Model.name">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="email" value="@Model.email">
+                            </div>
+
+                            <div class="form-group">
+                                <label> Gender</label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="Male" @(Model.gender.Equals("M") ? Html.Raw("checked") : null)>
+                                        Male
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="Female" @(Model.gender.Equals("F") ? Html.Raw("checked") : null)>
+                                        Female
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Country</label>
+                                <select class="form-control" style="width: 100%;" id="country" onchange="loadState();">
+                                    <option value="0">Select Country</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>State</label>
+                                <select class="form-control" style="width: 100%;" id="state" onchange="loadCity();">
+                                    <option value="0">Select State</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>City</label>
+                                <select class="form-control " style="width: 100%;" id="city" onchange="loadRegion();">
+                                    <option value="0">Select City</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Region </label>
+                                <select class="form-control " style="width: 100%;" id="region" onchange="loadNewRegion();">
+                                    <option value="0">Select Region</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Suburb</label>
+                                <select class="form-control " style="width: 100%;" id="suburb">
+                                    <option value="0">Select Suburb</option>
+                                </select>
+
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="pass" value="@Model.pass">
+                            </div>
+
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-md-6">
+                            @if (Model.type == "Paid")
+                            {
+                                <div class="form-group">
+                                    <label> Plan Duration (In Months)</label>
+                                    <input type="text" class="form-control" style="width: 100%;" id="duration" value="0">
+                                </div>
+                            }
+                            <div class="form-group">
+                                <label>Valid Date:</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" id="datepicker" value="@Model.validdate" @(Model.type.Equals("Super") ? Html.Raw("disabled") : null)>
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                            <div class="form-group">
+                                <label>Customer ID</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="customerid" placeholder="Customer ID" value="@Model.customerid">
+                            </div>
+                            @if (Model.type == "Paid")
+                            {
+                                <div class="form-group">
+                                    <label>Business Name</label>
+                                    <input type="text" class="form-control" style="width: 100%;" id="bname" placeholder="Business Name" value="@Model.orgname">
+                                </div>
+                            }
+                            <div class="form-group">
+                                <label> Contact Number</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="cno" value="@Model.cno">
+                            </div>
+
+                            <div class="form-group">
+                                <label>User Type</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="usertype" value="@Model.type" @(Model.type.Equals("Super") ? Html.Raw("readonly") : null)>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>ZIP Code</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="zipcode" value="@Model.zip">
+                            </div>
+                            <div class="form-group">
+                                <label>Street</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="street" value="@Model.street">
+                            </div>
+                            <div class="form-group">
+                                <label>Street Name</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="streetname" value="@Model.streetname">
+                            </div>
+                            @if (Model.type == "Paid")
+                            {
+                                <div class="form-group">
+                                    <label>Latitute</label>
+                                    <input type="text" class="form-control" style="width: 100%;" id="latitute" value="@Model.late">
+                                </div>
+                            }
+                            @if (Model.type == "Paid")
+                            {
+                                <div class="form-group">
+                                    <label>Longitute</label>
+                                    <input type="text" class="form-control" style="width: 100%;" id="longitute" value="@Model.lonz">
+                                </div>
+                            }
+                            <div class="form-group">
+                                <label>Approve</label>
+                                <select class="form-control select2" style="width: 100%;" id="apprstatus" @(Model.type.Equals("Super") ? Html.Raw("disabled") : null)>
+                                    <option value="0">Select State</option>
+                                    @if (Model.status == 0)
+                                    {
+
+                                        <option value="1">Approve</option>
+                                            <option value="0" selected>Not Approve</option>
+                                    }
+                                    else
+                                    {
+
+                                        <option value="1" selected>Approve</option>
+                                            <option value="0">Not Approve</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        @if (Model.type == "Paid")
+                        {
+                            <div class="col-md-12">
+
+                                <div id="mapdiv" style="width:100%;height:400px;"></div>
+
+                                <script async defer
+                                        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI&callback=mapa">
+                                </script>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                    <div class="col-md-12">
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary" onclick="EditCustomer();">Edit Customer</button>
+            </div>
+
+
+            <!-- /.box -->
+            <!-- /.row -->
+        </section>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        loadPlan();
+    });
+
+    function loadPlan() {
+        var planid = '@Model.plan_id';
+       // alert(planid);
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/GetPlan',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#plan').empty();
+                $('#plan').append("<option value='0'>Select Plan</option>");
+                var j = 1;
+                for (var i = 0; i <= result.planlist.length -1; i++) {
+
+                    if (result.planlist[i].status == 1) {
+                        if (result.planlist[i].plan_id == planid) {
+
+                            $('#plan').append("<option selected value=" + result.planlist[i].plan_id + ">" + result.planlist[i].plan_name + "</option>");
+                            getValidDate();
+                        }
+                        $('#plan').append("<option value=" + result.planlist[i].plan_id + ">" + result.planlist[i].plan_name + "</option>");
+
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+               // alert("Data Not Found");
+            }
+        });
+
+    }
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadCountry();
+    });
+
+    function loadCountry() {
+        var countid = '@Model.country';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/GetCountry',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#country').empty();
+                $('#country').append("<option value='0'>Select Country</option>");
+
+                for (var i = 0; i <= result.countrylist.length - 1; i++) {
+                    if (result.countrylist[i].status == 1) {
+                        if (result.countrylist[i].count_id == countid) {
+
+                            $("#country").append($("<option selected ></option>").val(result.countrylist[i].count_id).html(result.countrylist[i].countryname));
+
+                            loadState();
+                        } else {
+
+                            $("#country").append($("<option></option>").val(result.countrylist[i].count_id).html(result.countrylist[i].countryname));
+                        }
+                    }
+                    // $("#tblDetails").append("<tr><td>" + j + "</td><td>" + result.countrylist[i].countryname + "</td><td>" + result.countrylist[i].status + "</td><td> <img src=@Url.Content("~/Content/admin/edit.gif") onclick=FetchCountry('" + result.countrylist[i].count_id + "')></a></td><td><img src=@Url.Content("~/Content/admin/delete.gif") ></td></tr>");
+
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+
+    }
+
+</script>
+
+
+<script type="text/javascript">
+    function loadState() {
+        var count_id = $('#country option:selected').val();
+        var stateid = '@Model.state';
+      //alert(count_id);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ count_id: '" + $("#country").val() + "' }",
+            url: '/Home/GetState',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#state').empty();
+                $('#state').append("<option value='0'>Select State</option>");
+
+
+                for (var i = 0; i <= result.statelist.length-1; i++) {
+                    //alert("Hello"+result[i]);
+                    if (result.statelist[i].status == 1) {
+                        if (result.statelist[i].state_id == stateid) {
+
+                            $("#state").append($("<option  selected value=" + result.statelist[i].state_id + ">" + result.statelist[i].state + "</option>"));
+                            loadCity();
+                        } else {
+
+                            $("#state").append($("<option value=" + result.statelist[i].state_id + ">" + result.statelist[i].state + "</option>"));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+
+    }
+
+</script>
+<script type="text/javascript">
+    function loadCity() {
+        // var make = $('#make option:selected').val();
+        var cityid = '@Model.city';
+        //  alert(count_id);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "' }",
+            url: '/Admin/LoadCity',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#city').empty();
+
+                    $("#city").append($("<option>Select City</option>"));
+
+                
+                    for (var i = 0; i <= result.citylist.length - 1 ; i++) {
+                        if (result.citylist[i].status == 1) {
+                            if (result.citylist[i].city_id == cityid) {
+
+                                $("#city").append($("<option selected></option>").val(result.citylist[i].city_id).html(result.citylist[i].city));
+                                loadRegion();
+                            } else {
+                                $("#city").append($("<option></option>").val(result.citylist[i].city_id).html(result.citylist[i].city));
+                            }
+                        }
+                    }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function loadRegion() {
+        // var make = $('#make option:selected').val();
+        var regionid = '@Model.regions';
+        //  alert(count_id);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "',city: '" + $('#city').val() + "' }",
+            url: '/Admin/LoadRegion',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#region').empty();
+                //$("#region").append($("<option>Select Region</option>"));
+
+                    $("#region").append($("<option>Select Region</option>"));
+
+                    for (var i = 0; i <= result.regionlist.length - 1 ; i++) {
+
+                        if (result.regionlist[i].status == 1) {
+                            if (result.regionlist[i].reas_id == regionid) {
+
+                                $("#region").append($("<option selected></option>").val(result.regionlist[i].reas_id).html(result.regionlist[i].reason));
+                                loadNewRegion();
+                            } else {
+                                $("#region").append($("<option></option>").val(result.regionlist[i].reas_id).html(result.regionlist[i].reason));
+                            }
+                        }
+                    }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+    }
+</script>
+<script>
+
+    function EditCustomer() {
+
+        var customerid = $('#customerid').val().trim();
+
+        var bname = "";
+        var plan_id = 0;
+        var latitute = "";
+        var longitute = "";
+        //alert('@Model.type');
+        if ('@Model.type' == "Paid") {
+
+            bname = $('#bname').val();
+            plan_id = $('#plan').val();
+            latitute = $('#latitute').val();
+            longitute = $('#longitute').val();
+
+        }
+
+
+        var custid = $('#custid').val();
+        //alert(custid);
+
+        var reg_date = $('#datepicker1').val();
+        var validdate = $('#datepicker').val();
+        var name = $('#name').val();
+        var cno = $('#cno').val();
+        var email = $('#email').val();
+        var gender = "";
+        if ($('#optionsRadios1:checked').val() == "Male") {
+            gender = "M";
+        } else if ($('#optionsRadios1:checked').val() == "Female") {
+            gender = "F";
+        }
+        //alert(gender);
+        //gender put here
+        var state = $('#state').val();
+        var country = $('#country').val();
+        var city = $('#city').val();
+        var region = $('#region').val();
+        var zipcode = $('#zipcode').val();
+        var suburb = $('#suburb').val();
+        var streetname = $('#streetname').val();
+        var street = $('#street').val();
+        var pass = $('#pass').val();
+        var apprstatus = $('#apprstatus').val();
+
+        var obj = { "cust_id": custid ,"plan_id": plan_id ,"regdate": reg_date ,"validdate": validdate ,"name": name ,"cno": cno ,"email": email ,"gender": gender ,"country": country ,"state": state ,"city": city ,"region": region ,"zipcode": zipcode ,"suburb": suburb ,"streetname": streetname ,"street": street ,"pass": pass ,"lat": latitute ,"longi": longitute ,"apprstatus": apprstatus ,"customerid": customerid ,"bname": bname ,"usertype": $('#usertype').val()  };
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: JSON.stringify(obj),
+            url: '/Admin/EditCustomer',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                if (result.status == "1") {
+                    lnv.alert({
+                        title: '',
+                        content: 'Customer Successfully Updated',
+                        alertBtnText: 'Okay',
+                        alertHandler: function () {
+
+                            var url = '@Url.Action("UserList", "Home")';
+                            window.location = url;
+
+
+                        }
+                    });
+                    $('.alert-btn').focus();
+
+                } else {
+
+                    //alert(result.status);
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+               // alert("Data Not Found");
+            }
+        });
+
+
+
+
+
+
+
+    }
+</script>
+<script>
+
+    function getValidDate() {
+
+        var plan_id = $('#plan').val();
+        //alert(plan_id);
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ plan_id: '" + plan_id + "' }",
+            url: '/Home/GetPlanById',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                for (var i = 0 ; i <= result.planlist.length -1 ; i++) {
+                    $('#duration').val(result.planlist[i].duration);
+                    var duration = result.planlist[i].duration;
+                    var jan312009 = new Date($('#datepicker1').val());
+                    //alert(jan312009);
+                    var eightMonthsFromJan312009 = new Date(new Date(jan312009).setMonth(jan312009.getMonth() + duration));
+                    //alert(eightMonthsFromJan312009);
+                    var validdate = (eightMonthsFromJan312009.getMonth() + 1) + '/' + eightMonthsFromJan312009.getDate() + '/' + eightMonthsFromJan312009.getFullYear();
+                    $('#datepicker').val(validdate);
+                    //alert(result.planlist[i].duration);
+                }
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+
+    }
+
+</script>
+
+<script type="text/javascript">
+    function loadNewRegion() {
+       // var make = $('#make option:selected').val();
+        //  alert(count_id);
+        var suburbid = '@Model.suburb';
+        var regionid = '@Model.regions';
+        //alert(regionid);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "',city: '" + $('#city').val() + "',region: '"+ $('#region').val() +"' }",
+            url: '/Admin/LoadNewRegion',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                $('#suburb').empty();
+                $("#suburb").append($("<option value='0'>Select Suburb</option>"));
+
+                for (var i = 0; i <= result.newregionlist.length -1 ; i++) {
+
+                    if(result.newregionlist[i].status == 1){
+                        if(result.newregionlist[i].regionid == regionid) {
+
+                            $("#suburb").append($("<option selected></option>").val(result.newregionlist[i].regionid).html(result.newregionlist[i].regionname));
+                        }else{
+                            $("#suburb").append($("<option></option>").val(result.newregionlist[i].regionid).html(result.newregionlist[i].regionname));
+                        }
+                    }
+                }
+
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#suburb').empty();
+                $("#suburb").append($("<option value = '0'>Select Region</option>"));
+
+            }
+        });
+    }
+</script>

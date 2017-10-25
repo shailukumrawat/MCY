@@ -1,0 +1,394 @@
+﻿@model MyCarYard.Models.ModelTypeModel
+@{
+    ViewBag.Title = "ModelMaster";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+}
+
+
+<input type="hidden" id="modelid" />
+<div class="wrapper">
+
+
+    <!-- Left side column. contains the logo and sidebar -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-default">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+
+
+                        <div class="alert alert-success alert-dismissible" id="myDiv" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucessfully!</h4>
+                            Model Added Successfully
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">New Model</h3>
+
+                    <div class="box-tools pull-right">
+                        @*<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Select Make Type<span style="color:red;font-size:large;">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id="make">
+                                    <option value="">Select Make Type</option>
+
+                                </select>
+                            </div>
+                      
+                            <div class="form-group">
+                                <label for="PlanName">Enter Model<span style="color:red;font-size:large;">*</span></label>
+                                <input type="text" class="form-control" id="model" placeholder="Enter Model" value="">
+                            </div>
+                            <div class="form-group">
+                                <label>Status<span style="color:red;font-size:large;">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="1">Activate</option>
+                                    <option value="0">Deactivate</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary" id="save" onclick="SaveModel();">Submit</button>
+                    <button type="submit" class="btn btn-primary hidden" id="update" onclick="UpdateModel();" >Update</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">ModelType List</h3>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-bordered table-striped" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Make</th>
+                                        <th>Model</th>
+
+                                        <th>Status</th>
+                                        <th>View/Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblDetails">
+
+
+                                    @if (Model.modellist.Any())
+                                    {
+
+                                        int j = 1;
+                                        for (int i = 0; i <= Model.modellist.Count - 1; i++)
+                                        {
+
+                                            <tr>
+                                                <td>@j</td>
+                                                <td>@Model.modellist[i].make</td>
+                                                <td>@Model.modellist[i].modeltype</td>
+                                                
+                                                <td>@Model.modellist[i].status</td>
+                                                <td><a href="" onclick="return getData('@Model.modellist[i].model_id','@Model.modellist[i].makeid','@Model.modellist[i].modeltype','@Model.modellist[i].status');">Edit</a> </td>
+                                                <td><a href="" onclick="return deleteModel('@Model.modellist[i].model_id')"> Delete</a></td>
+                                            </tr>
+                                            j++;
+                                        }
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+    function getData(modelid,makeid,model,status)
+    {
+
+        $('#modelid').val(modelid);
+        $('#make').val(makeid);
+        $('#model').val(model);
+        $('#status').val(status);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('#update').removeClass('hidden');
+        $('#save').addClass('hidden');
+        return false;
+    }
+
+</script>
+
+<script>
+
+    function UpdateModel() {
+
+        //alert($('#status').val());
+        var modelid = $('#modelid').val();
+        var obj = {"modelid": modelid ,"make": $("#make").val() ,"model": $("#model").val() ,"status": $("#status").val() };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Admin/UpdateModel',
+            data: JSON.stringify(obj),
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                if (response.status == "Success") {
+                    lnv.alert({
+                        title: '',
+                        content: 'Model Updated Successfully',
+                        alertBtnText: 'Okay',
+                        alertHandler: function () {
+                            var url = '@Url.Action("ModelMaster", "Admin")';
+                            window.location = url;
+
+                        }
+                    });
+                    $('.alert-btn').focus();
+                }
+            },
+            error: function () {
+                //  alert("Error");
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    function SaveModel() {
+
+        var isvalid = true;
+
+        try {
+
+            var make = $("#make").val();
+            var model = $("#model").val().trim();
+            var status = $('#status').val();
+            if (make == "" || make == "0" || make == undefined) {
+
+                /*lnv.alert({
+                          title: '',
+                          content: 'Please Select Make Type',
+                          alertBtnText: 'Okay',
+                          alertHandler: function () {
+                        
+                              $("#make").focus();
+                          }
+                      })
+                      */
+                $('#make').css('border-color', 'red');
+                isvalid = false;
+            } else {
+
+                $('#make').css('border-color', '');
+                isvalid = true;
+
+            }
+            if (model == "" || model == "0" || model == undefined) {
+
+                /*    lnv.alert({
+                        title: '',
+                        content: 'Please Enter Model',
+                        alertBtnText: 'Okay',
+                        alertHandler: function () {
+    
+                            $("#model").focus();
+    
+                        }
+                    })*/
+                $('#model').css('border-color', 'red');
+                isvalid = false;
+
+            } else {
+
+                $('#model').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (status == "" || status == null || status == undefined) {
+
+               /* lnv.alert({
+                    title: '',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                        $("#status").focus();
+
+                    }
+                })*/
+                $('#status').css('border-color', 'red');
+                isvalid = false;
+            }
+            else {
+                $('#status').css('border-color', '');
+                isvalid = true;
+            }
+            if (isvalid == true) {
+
+                var obj = {"make": $("#make").val() ,"model": $("#model").val() ,"status": $("#status").val() };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/AddModel',
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+                            lnv.alert({
+                                title: '',
+                                content: 'Model Added Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+                                    var url = '@Url.Action("ModelMaster", "Admin")';
+                                    window.location = url;
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        }
+                    },
+                    error: function () {
+                        //  alert("Error");
+                    }
+                });
+            }
+        } catch (e) {
+
+            isvalid = false;
+        }
+        return isvalid;
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadMake();
+    });
+
+    function loadMake() {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadMake',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $("#make").empty();
+                $("#make").append($("<option></option>").val("0").html("Select Make"));
+                for (var i = 0; i <= result.makelist.length - 1 ; i++) {
+                    if (result.makelist[i].status == 1) {
+                        $("#make").append($("<option></option>").val(result.makelist[i].make_id).html(result.makelist[i].make));
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $("#make").empty();
+                $("#make").append($("<option></option>").val("0").html("Select Make"));
+
+            }
+        });
+    }
+</script>
+<script>
+
+    function deleteModel(id) {
+
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to delete the Model ?',
+            confirmHandler: function () {
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Admin/DeleteModel',
+                data: "{modelid: '" + id + "'}",
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    if (response.status == "Success") {
+
+                        lnv.alert({
+                            title: '',
+                            content: 'Model Deleted Successfully',
+                            alertBtnText: 'Okay',
+                            alertHandler: function () {
+                                var url = '@Url.Action("ModelMaster", "Admin")';
+                                window.location = url;
+
+                            }
+                        });
+                        $('.alert-btn').focus();
+                    }
+                },
+                error: function () {
+                    //  alert("Error");
+                }
+            });
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+        return false;
+    }
+
+</script>

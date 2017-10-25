@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div id="fb-root"></div>
+<script>
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=134703570323238";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+<script>
+
+    function OnLogin() {
+        //if (response.authResponse) {
+            FB.api('/me?fields=id,name,gender,email,birthday', LoadValues);
+        //}
+    }
+
+    //This method will load the values to the labels
+    function LoadValues(me) {
+        if (me.name) {
+            document.getElementById('displayname').innerHTML = me.name;
+            document.getElementById('FBId').innerHTML = me.id;
+            document.getElementById('DisplayEmail').innerHTML = me.email;
+            document.getElementById('Gender').innerHTML = me.gender;
+            document.getElementById('DOB').innerHTML = me.birthday;
+            document.getElementById('auth-loggedin').style.display = 'block';
+        }
+    }
+</script>
+
+
+<div class="fb-login-button" autologoutlink="true" scope="user_birthday,email" onlogin="OnLogin();">
+    Login with Facebook
+</div> <!-- FB Login Button -->
+
+<div id="auth-status">
+    <div id="auth-loggedin" style="display: none">
+        Hi, <span id="displayname"></span><br />
+        Your Facebook ID : <span id="FBId"></span><br />
+        Your Email : <span id="DisplayEmail"></span><br />
+        Your Sex:, <span id="Gender"></span><br />
+        Your Date of Birth :, <span id="DOB"></span><br />
+    </div>
+</div>

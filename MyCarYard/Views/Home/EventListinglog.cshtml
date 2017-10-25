@@ -1,0 +1,150 @@
+﻿@model MyCarYard.Models.RegisterViewModel
+@{
+    ViewBag.Title = "EventListinglog";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+    int k = 0;
+}
+
+<div class="col-sm-7">
+    <div class="map_contain">
+        <ul class="nav nav-tabs">
+            @*<li ><a data-toggle="tab" href="#dealers">Car Listing</a></li>*@
+            <li class="active"><a data-toggle="tab" href="#events">events</a></li>
+            @*<div class="top_select">
+                    <ul>
+                        <li>
+                            <script>
+                                function getUrlVars() {
+                                    var vars = [], hash;
+                                    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                                    for (var i = 0; i < hashes.length; i++) {
+                                        hash = hashes[i].split('=');
+                                        vars.push(hash[0]);
+                                        vars[hash[0]] = hash[1];
+                                    }
+                                    return vars;
+                                }
+                                var me = getUrlVars()["option"];
+                            </script>
+
+                            <select class="top_selecefld" onchange="getfilter(this.value);">
+                                <option selected value="0">Sort by</option>
+                                <option value="edate">Recent Add(Default)</option>
+                                <option value="price">Price (High to Low)</option>
+                                <option value="pricel">Price (Low to High)</option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>*@
+        </ul>
+        <div class="tab-content">
+            <div id="dealers" class="tab-pane fade ">
+
+            </div>
+            <!--------end delears----------->
+            <div id="events" class="tab-pane fade in active">
+                <div class="newlis_contain">
+
+                    <div class="event_topbar">
+                        <div class="tab-content">
+                            <div id="upcoming_events" class="tab-pane fade in active">
+
+                                @if (Model.eventlist.Any())
+                                {
+
+                                    for (int i = 0; i <= Model.eventlist.Count - 1; i++)
+                                    {
+                                        <div class="describe_contain">
+                                            <div class="listing_slider">
+                                                <div id="@k" class="carousel slide" data-ride="carousel">
+                                                    <!-- Indicators -->
+                                                    <ol class="carousel-indicators">
+                                                        <li data-target="#@k" data-slide-to="0" class="active"></li>
+                                                        <li data-target="#@k" data-slide-to="1"></li>
+                                                        <li data-target="#@k" data-slide-to="2"></li>
+                                                    </ol>
+
+                                                    <!-- Wrapper for slides -->
+                                                    <div class="carousel-inner" role="listbox">
+                                                        <div class="item active"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img)"></a></div>
+                                                        <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)"></a></div>
+                                                        <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)"></a></div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="listing_detail">
+                                                <h5 class="manageev_head">@Model.eventlist[i].title </h5>
+                                                <div class="item_detail">
+                                                    <h5>Place:@Model.eventlist[i].suburb, @Model.eventlist[i].city, @Model.eventlist[i].state, @Model.eventlist[i].code, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</h5>
+                                                    <p>
+                                                        @if (Model.eventlist[i].subject.Length < 200)
+                                                        {
+                                                        @Model.eventlist[i].subject
+                                                        }
+                                                        else
+                                                        {
+                                                        @Model.eventlist[i].subject.Substring(0, 200)
+                                                        }
+                                                    </p>
+                                                    <ul></ul>
+                                                </div>
+                                                <div class="listing_btm">
+                                                    <ul>
+                                                        <li><a href="#" class="cmn_btn"><i class="flaticon-multiple-users-silhouette"></i> @(Convert.ToInt32(Model.eventlist[i].going))</a></li>
+                                                        <li><a href="#" class="fuel_btn" data-toggle="modal" data-target="#login_modal">Go!</a></li>
+                                                        <li><a class="fuel_btn" href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"> Full Detail</a></li>
+                                                    </ul>
+                                                    <ul class="newright">
+
+                                                        @*
+                                                            <li><a href="#" title="edit"><i class="flaticon-pencil-striped-symbol-for-interface-edit-buttons"></i></a></li>
+                                                            <li><a href="#" title="delete"><i class="flaticon-delete"></i></a></li>*@
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        k++;
+                                    }
+                                }
+                                else
+                                { <span>No Data Found....</span>}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var me = getUrlVars()["option"];
+        //alert(me);
+        if (me != null)
+            $('.top_selecefld').val(me);
+
+    });
+
+    function ShowContact(cno, orgname) {
+        $('#conorgname').val(orgname);
+        $('#concno').val(cno);
+    }
+
+    function getfilter(filter) {
+        location.href = '@Url.Action("CarListing", "Home")?option=' + filter;
+    }
+
+    function SetCustomerEmail(email) {
+        $('#custemail').val(email);
+        return false;
+    }
+</script>
+
+

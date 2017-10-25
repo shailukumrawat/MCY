@@ -1,0 +1,44 @@
+﻿@model MyCarYard.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_LayoutOuterHome.cshtml";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+
+<div class="col-sm-9">
+    <div class="map_contain">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#dealers" onclick="loadMapMarker(0)">dealers</a></li>
+            <li><a data-toggle="tab" href="#events" onclick="loadMapMarker(1)">events</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="dealers" class="tab-pane fade in active">
+               
+                @Html.Partial("~/Views/Partials/BlankMap.cshtml", null)
+               
+            </div>
+         
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

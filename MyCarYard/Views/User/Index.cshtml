@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewBag.Title = "UserIndex";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+<div class="main_container">
+    <section class="comn_sec containt_sec">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="left_bar">
+                        <div class="leftb_head">dashboard</div>
+                        <ul>
+                            <li><a href="profile.html"><i class="flaticon-people"></i> Profile</a></li>
+                            <li><a href="manage_yard.html"><i class="flaticon-computer"></i> Manage My Yard</a></li>
+                            <li><a href="manage_event.html"><i class="flaticon-megaphone"></i> Manage Events</a></li>
+                            <li><a href="#"><i class="flaticon-car-compact"></i> Add Car <span><i class="fa fa-plus"></i></span></a></li>
+                            <li><a href="#"><i class="flaticon-election-event-on-a-calendar-with-star-symbol"></i> Add Event <span><i class="fa fa-plus"></i></span></a></li>
+                            <li><a href="#"><i class="flaticon-office-list"></i> Watch  List</a></li>
+                            <li><a href="#"><i class="flaticon-close-envelope"></i> Message <span>5</span></a></li>
+                            <li><a href="#"><i class="flaticon-bell-musical-tool"></i> Notifications <span>5</span></a></li>
+                            <li class="active"><a href="#"><i class="flaticon-settings-work-tool"></i> Setting</a></li>
+                            <li><a href="#"><i class="flaticon-people-1"></i> Account Setting</a></li>
+                            <li><a href="#"><i class="flaticon-logout"></i> Log Out</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <div class="map_contain">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#home">dealers</a></li>
+                            <li><a data-toggle="tab" href="#menu1">events</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="home" class="tab-pane fade in active">
+
+                                <div class="map_img">
+                                    <img src="@Url.Content("~/Content/images/map.png")" class="img-responsive">
+                                </div>
+                            </div>
+                            <div id="menu1" class="tab-pane fade">
+                                <div class="map_img">
+                                    <img src="@Url.Content("~/Content/images/map.png")" class="img-responsive">
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="map_btn">
+                        <a href="#" class="cmn_btn">Maps</a>
+                        <a href="#" class="cmn_btn second_btn">Listing</a>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="right_bar clearfix">
+                            <div class="leftb_head">search tool</div>
+                            <form class="" role="form">
+                                <div class="col-sm-12">
+                                    <div class="form-group right_top">
+                                        <input type="checkbox"> Private Sales
+                                        <input type="checkbox"> Dealer Listings
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>make</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>Modal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>year from</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>year to</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>min price</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>max price</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>keyword</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>Country</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <select class="form-control">
+                                            <option>state/area</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                            </form>
+                            <div class="map_btn">
+                                <a href="#" class="cmn_btn second_btn">Search</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</div>
+

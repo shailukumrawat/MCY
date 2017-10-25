@@ -1,0 +1,195 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/css/bootstrap.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/css/plugin.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/css/font-awesome.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/css/slick-theme.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/css/slick.css")" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Play' rel='stylesheet' type='text/css'>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet">
+    <link href="@Url.Content("~/Content/css/custom.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/css/responsive.css")" rel="stylesheet">
+    <script src="@Url.Content("~/Content/js/modernizr-custom.js")"></script>
+
+
+
+    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <link href="@Url.Content("~/dialog/dialog.css")" rel="stylesheet">
+    <script src="@Url.Content("~/dialog/dialog.js")"></script>
+</head>
+<body>
+
+    <div id="fb-root"></div>
+    <main class="animsition">
+        <!--Header sec start-->
+        <header class="header_sec" id="header">
+            <div class="top_header">
+                <div class="main_nav">
+                    <nav class="navbar navbar-inverse">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <a class="navbar-brand" href="index.html">
+                                    <img src="@Url.Content("~/content/images/logo.png")" class="img-responsive">
+                                </a>
+                                </a>
+                            </div>
+
+                            <div class="collapse navbar-collapse" id="myNavbar">
+                                <ul class="nav navbar-nav">
+                                    @if (Session["id"] == null)
+                                    {
+                                        <li class="active"><a href="@Url.Action("Index", "Home")" title="home"><i class="fa fa-home"></i></a></li>
+                                        <li><a href="@Url.Action("About", "Home")" title="about us">About Us</a></li>
+                                        <li><a href="@Url.Action("Index", "Event")" title="events">Events</a></li>
+                                        <li><a href="@Url.Action("CarMaster", "Home")" title="cars">Cars</a></li>
+                                        <li><a href="@Url.Action("Contact", "Home")" title="contact">Contact us</a></li>
+                                    }
+                                    else
+                                    {
+                                        if (Session["type"].ToString() != "Super")
+                                        {
+                                            <li class="active"><a href="@Url.Action("UserIndex", "Home")" title="home"><i class="fa fa-home"></i></a></li>
+                                            <li><a href="@Url.Action("UserABoutUS", "Home")" title="about us">About Us</a></li>
+                                            <li><a href="@Url.Action("UserEventMaster", "Home")" title="events">Events</a></li>
+                                            <li><a href="@Url.Action("UserCarMaster", "Home")" title="cars">Cars</a></li>
+                                            <li><a href="@Url.Action("UserContact", "Home")" title="contact">Contact us</a></li>
+                                        }
+                                        else
+                                        {
+                                            <li class="active"><a href="@Url.Action("Dashboard", "Home")" title="home"><i class="fa fa-home"></i></a></li>
+                                            <li><a href="#" title="about us">About Us</a></li>
+                                            <li><a href="#" title="events">Events</a></li>
+                                            <li><a href="#" title="cars">Cars</a></li>
+                                            <li><a href="#" title="contact">Contact us</a></li>
+                                        }
+                                    }
+                                </ul>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <!-- <li class="top_searchbar">
+                                         <input type="search" placeholder="Search your Keywords" class="top_search"><span class="search_icon"><i class="fa fa-search"></i></span>
+                                     </li>-->
+                                    <li><a href="https://www.facebook.com/pages/Mycaryard/157976714271870?ref=hl" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                    <li>
+                                        <a href="#"> <i class="fa fa-google-plus"></i></a>
+                                    </li>
+                                    <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <div class="bottom_header">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="logo">
+                                <a href="#"><img src="@Url.Content("~/content/images/logo.png")" class="img-responsive"></a>
+                            </div>
+                        </div>
+                        <div class="col-sm-9 text-center">
+                            <div class="mobile_icon">
+                                <ul class="nav navbar-nav navbar-right mobile_nav">
+                                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                    <li>
+                                        <a href="#"> <i class="fa fa-google-plus"></i></a>
+                                    </li>
+                                    <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                                    <!--<li>
+                                          <a href="javascript:void()" class="srch_btn"><i class="fa fa-search"></i></a>
+                                        <div class="mobile_search">
+                                        <input type="search" placeholder="Search your Keywords" class="top_search"><span class="search_icon"><i class="fa fa-search"></i></span>
+                                        </div>
+                                    </li>-->
+                                </ul>
+                            </div>
+                            <div class="btm_hedrbar">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="main_container">
+            <section class="comn_sec containt_sec">
+                <div class="container">
+                    <div class="row">
+                        @RenderBody()
+                    </div>
+                </div>
+            </section>
+        </div>
+        <footer id="footer" class="footer_sec">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="footer_contain">
+
+                            <div class="ftr_box  social_icon">
+                                <h5>Social Network and feeds</h5>
+                                <ul>
+                                    <li><a href="https://www.facebook.com/pages/Mycaryard/157976714271870?ref=hl" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                                    <li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                                    <li>
+                                        <a href="#" target="_blank"> <i class="fa fa-google-plus"></i></a>
+                                    </li>
+                                    <li><a href="#" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btm_footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="copy_right">© 2013-2016 Mycaryard.com, All Rights Reserved </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </footer>
+
+    </main>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="@Url.Content("~/Content/js/jquery.min.js")"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="@Url.Content("~/Content/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/slick.js")"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <script src="@Url.Content("~/Content/js/plugin.js")"></script>
+    <script src="@Url.Content("~/Content/js/custom.js")"></script>
+
+
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+
+    <div class="loadingmodal"><!-- Place at bottom of page --></div>
+</body>
+</html>

@@ -1,0 +1,635 @@
+﻿<!DOCTYPE html>
+@{ 
+
+    if (Session["id"] == null) {
+
+        Response.Redirect("~/Home/Index");
+    }
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/css/bootstrap.min.css")">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="@Url.Content("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css")">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="@Url.Content("https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css")">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/css/AdminLTE.min.css")">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/css/skins/_all-skins.min.css")">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/iCheck/flat/blue.css")">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/morris/morris.css")">
+    <!-- jvectormap -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/jvectormap/jquery-jvectormap-1.2.2.css")">
+    <!-- Date Picker -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/datepicker/datepicker3.css")">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/daterangepicker/daterangepicker-bs3.css")">
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css")">
+
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/pace/pace.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/datatables/dataTables.bootstrap.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/iCheck/all.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin/plugins/select2/select2.min.css")">
+
+
+
+
+    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <link href="@Url.Content("~/dialog/dialog.css")" rel="stylesheet">
+    <script src="@Url.Content("~/dialog/dialog.js")"></script>
+
+    <link href="@Url.Content("~/Content/css/customeadmin.css")" rel="stylesheet">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="@Url.Action("Dashboard","Home")" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>MyCarYard</b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>MyCar</b>Yard</span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                        <li class="dropdown messages-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-users"></i>
+                                <span class="label label-success" id="pusercount"></span>
+                            </a>
+                             <ul class="dropdown-menu">
+                                 <li class="header">Awaiting Approval Premium Users</li>
+                               <li>
+
+                                 <ul class="menu" id="userlistitem">
+                                   
+
+                               
+                                 </ul>
+                               </li>
+                             </ul>    
+                        </li>
+
+                        <li class="dropdown messages-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa  fa-automobile"></i>
+                                <span class="label label-success" id="carcount"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">Car Listing Approval</li>
+                                <li>
+                                    <ul class="menu" id="carlistitem"></ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown messages-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa  fa-calendar-o"></i>
+                                <span class="label label-success" id="eventcount"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">Event Listing Approval</li>
+                                <li>
+                                    <ul class="menu" id="eventlistitem"></ul>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                        <li class="dropdown notifications-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa  fa-user"></i>
+                                <span class="label label-warning" id="freeusercouont"></span>
+                            </a>
+                             <ul class="dropdown-menu">
+                                 <li class="header">Awaiting Approval Free Users</li>
+                               <li>
+
+                                 <ul class="menu" id="freeuserlist">
+                                   
+                              
+                                 </ul>
+                               </li>
+                               <!--<li class="footer"><a href="#">View all</a></li>-->
+                             </ul>
+                        </li>
+                        <!-- Tasks: style can be found in dropdown.less -->
+                   
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="@Url.Content("~/Content/admin/img/user2-160x160.jpg")" class="user-image" alt="User Image">
+                                <span class="hidden-xs">Mohamed</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="@Url.Content("~/Content/admin/img/user2-160x160.jpg")" class="img-circle" alt="User Image">
+
+                                    <p>
+                                        Mohamed
+                                        <small></small>
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <!-- <li class="user-body">
+                                   <div class="row">
+                                     <div class="col-xs-4 text-center">
+                                       <a href="#">Followers</a>
+                                     </div>
+                                     <div class="col-xs-4 text-center">
+                                       <a href="#">Sales</a>
+                                     </div>
+                                     <div class="col-xs-4 text-center">
+                                       <a href="#">Friends</a>
+                                     </div>
+                                   </div>
+                                 </li>-->
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="@Url.Action("AdminProfile", "Admin")?custid=@Session["id"].ToString()" class="btn btn-default btn-flat"><b>Profile</b></a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="@Url.Action("Logout", "Account")" class="btn btn-default btn-flat"><b>Sign out</b></a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                        <!-- <li>
+                           <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                         </li>-->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="@Url.Content("~/Content/admin/img/user2-160x160.jpg")" class="img-circle" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p>Mohamed</p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    </div>
+                </div>
+                <!-- 
+
+                <form action="#" method="get" class="sidebar-form">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form> -->
+                <!-- /.search form -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li class="active treeview">
+                        <a href="@Url.Action("Dashboard","Home")">
+                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                        </a>
+
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class=" fa fa-fw fa-user">
+                            </i>
+                            <span>Users Management</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="@Url.Action("Plan","Home")"><i class="fa fa-fw fa-users"></i>Create Plan</a></li>
+                            <li><a href="@Url.Action("UserList","Home")"><i class="fa fa-fw fa-user-plus"></i> Edit Users</a></li>   
+                            <li><a href="@Url.Action("ApproveUsers","Home")"><i class="fa fa-fw fa-user-plus"></i> Approve Users</a></li>   
+                            <li><a href="@Url.Action("AddUser","Home")"><i class="fa fa-fw fa-user-plus"></i> Add Users</a></li>                      
+
+                        </ul>
+                    </li>
+
+                    <li class="treeview">
+                        <a href="#">
+                          <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                            <span>Masters</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="@Url.Action("CountryMaster","Home")"><i class="fa fa-fw fa-th-large"></i>Country Master</a></li>
+                            <li><a href="@Url.Action("StateMaster","Home")"><i class="fa fa-fw fa-list-alt"></i>State Master</a></li>
+                            <li><a href="@Url.Action("CityMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>City Master</a></li>
+                            <li><a href="@Url.Action("SuburbMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Suburb Master</a></li>
+                           <!-- <li><a href="@Url.Action("NewRegionMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Suburb Master</a></li>-->
+                            <li><a href="@Url.Action("Currency", "Home")"><i class="fa fa-fw fa-table"></i>Currency</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-car" aria-hidden="true"></i>
+                            <span>Car Masters</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="@Url.Action("MakeTypeMaster", "Admin")"><i class="fa fa-fw fa-table"></i>Make Type </a></li>
+                            <li><a href="@Url.Action("ModelMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Model </a></li>
+                            <li><a href="@Url.Action("SeriesMaster", "Admin")"><i class="fa fa-fw fa-table"></i> Series</a></li>
+                            <li><a href="@Url.Action("BadgeType", "Admin")"><i class="fa fa-fw fa-product-hunt "></i> Badge Type</a></li>
+                            <li><a href="@Url.Action("EngineSizeMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Engine Size </a></li>
+                            <li><a href="@Url.Action("ListedMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Listed As </a></li>
+                            <li><a href="@Url.Action("EngineMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Engine Cylinder</a></li>
+                            <li><a href="@Url.Action("ConditionMaster", "Admin")"><i class="fa fa-fw fa-table"></i>Condition </a></li>
+                            <li><a href="@Url.Action("BodyTypeMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Body Type </a></li>
+                            <li><a href="@Url.Action("BodyColorMaster", "Admin")"><i class="fa fa-fw fa-table"></i>Body Color </a></li>
+                            <li><a href="@Url.Action("InteriorColorMaster", "Admin")"><i class="fa fa-fw fa-table"></i>Interior Color </a></li>
+                            <li><a href="@Url.Action("InteriorMaterialMaster", "Admin")"><i class="fa fa-fw fa-table"></i>Interior Material </a></li>
+                            <li><a href="@Url.Action("FuelMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Fuel </a></li>
+                            <li><a href="@Url.Action("TransmisionMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Transmission </a></li>
+                            <li><a href="@Url.Action("SpeedTypeMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>Speed Type </a></li>
+                            <li><a href="@Url.Action("OdemeterMaster", "Admin")"><i class="fa fa-fw fa-table"></i>Matrics </a></li>
+                            <li><a href="@Url.Action("DriveTrainMaster", "Admin")"><i class="fa fa-fw fa-product-hunt "></i>DriveTrain </a></li>
+                            
+                        </ul>
+                    </li>
+                
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                            <span>Event Masters</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                          
+                            <li><a href="@Url.Action("EventCatMaster", "Home")"><i class="fa fa-fw fa-table"></i>Category</a></li>
+
+                        </ul>
+                    </li>
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-list" aria-hidden="true"></i>
+                            <span>Listing</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+
+                            <li><a href="@Url.Action("ApproveListing", "Home")?type=appr"><i class="fa fa-smile-o" aria-hidden="true"> </i>Approved Listing</a></li>
+                            <li><a href="@Url.Action("ApproveListing", "Home")?type=nappr"><i class="fa fa-fw fa-table"> </i>Not Approved</a></li>
+                            <li><a href="@Url.Action("ApproveListing", "Home")?type=await"><i class="fa fa-pause" aria-hidden="true"></i> Awaiting Approval</a></li>
+
+                        </ul>
+                    </li>
+
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        @RenderBody()
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.0.1
+            </div>
+            <strong>Copyright &copy; 2016-2017 <a href="#"></a></strong> All rights
+            reserved.
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+                <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+            </ul>
+            <!-- Tab panes -->
+
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed
+             immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+    </div>
+
+
+
+    <script src="@Url.Content("~/Content/admin/js/bootstrap.min.js")"></script>
+    <!-- Morris.js charts -->
+    <script src="@Url.Content("https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js")"></script>
+    <script src="@Url.Content("~/Content/admin/plugins/morris/morris.min.js")"></script>
+    <!-- Sparkline -->
+    <script src="@Url.Content("~/Content/admin/plugins/sparkline/jquery.sparkline.min.js")"></script>
+    <!-- jvectormap -->
+    <script src="@Url.Content("~/Content/admin/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js")"></script>
+    <script src="@Url.Content("~/Content/admin/plugins/jvectormap/jquery-jvectormap-world-mill-en.js")"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="@Url.Content("~/Content/admin/plugins/knob/jquery.knob.js")"></script>
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="@Url.Content("~/Content/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js")"></script>
+    <script src="@Url.Content("~/Content/admin/js/pages/dashboard.js")"></script>
+    <script src="@Url.Content("~/Content/admin/plugins/jQuery/jQuery-2.2.0.min.js")"></script>
+    <script src="@Url.Content("~/Content/admin/plugins/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/admin/plugins/datatables/dataTables.bootstrap.min.js")"></script>
+
+    <!-- page script -->
+    <script type="text/javascript">
+        $(function () {
+            $("#example1").DataTable();
+            $('#example2').DataTable();
+        });
+    </script>
+
+    <!-- jQuery UI 1.11.4 -->
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <!-- Bootstrap 3.3.6 -->
+    <!-- PACE -->
+    <script src="@Url.Content("~/Content/admin/plugins/pace/pace.min.js")"></script>
+    <!-- Select2 -->
+    <!-- page script -->
+    <script type="text/javascript">
+        // To make Pace works on Ajax calls
+        $(document).ajaxStart(function () { Pace.restart(); });
+    </script>
+    <!-- jQuery 2.2.0 -->
+    <!-- Bootstrap 3.3.6 -->
+    <!-- Select2 -->
+    <script src="@Url.Content("~/Content/admin/plugins/select2/select2.full.min.js")"></script>
+    <!-- InputMask -->
+    <script src="@Url.Content("~/Content/admin/plugins/input-mask/jquery.inputmask.js")"></script>
+    <script src="@Url.Content("~/Content/admin/plugins/input-mask/jquery.inputmask.date.extensions.js")"></script>
+    <script src="@Url.Content("~/Content/admin/plugins/input-mask/jquery.inputmask.extensions.js")"></script>
+    <!-- date-range-picker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="@Url.Content("~/Content/admin/plugins/daterangepicker/daterangepicker.js")"></script>
+    <!-- bootstrap datepicker -->
+    <script src="@Url.Content("~/Content/admin/plugins/datepicker/bootstrap-datepicker.js")"></script>
+    <!-- bootstrap color picker -->
+    <script src="@Url.Content("~/Content/admin/plugins/colorpicker/bootstrap-colorpicker.min.js")"></script>
+    <!-- bootstrap time picker -->
+    <script src="@Url.Content("~/Content/admin/plugins/timepicker/bootstrap-timepicker.min.js")"></script>
+    <!-- SlimScroll 1.3.0 -->
+    <script src="@Url.Content("~/Content/admin/plugins/slimScroll/jquery.slimscroll.min.js")"></script>
+    <!-- iCheck 1.0.1 -->
+    <script src="@Url.Content("~/Content/admin/plugins/iCheck/icheck.min.js")"></script>
+    <!-- FastClick -->
+    <script src="@Url.Content("~/Content/admin/plugins/fastclick/fastclick.js")"></script>
+    <!-- AdminLTE App -->
+    <script src="@Url.Content("~/Content/admin/js/app.min.js")"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="@Url.Content("~/Content/admin/js/demo.js")"></script>
+
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+            //Initialize Select2 Elements
+
+
+            //Datemask dd/mm/yyyy
+            $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+            //Datemask2 mm/dd/yyyy
+            $("#datemask2").inputmask("mm/dd/yyyy", { "placeholder": "mm/dd/yyyy" });
+            //Money Euro
+            $("[data-mask]").inputmask();
+
+            //Date range picker
+            $('#reservation').daterangepicker();
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({ timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A' });
+            //Date range as a button
+            $('#daterange-btn').daterangepicker(
+                {
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(29, 'days'),
+                    endDate: moment()
+                },
+                function (start, end) {
+                    $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                }
+            );
+
+            $('#datepicker').datepicker({
+                autoclose: true
+            });
+            
+            $('#datepicker1').datepicker({
+                autoclose: true
+            });
+           
+
+            //iCheck for checkbox and radio inputs
+            $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            });
+            //Red color scheme for iCheck
+            $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+                checkboxClass: 'icheckbox_minimal-red',
+                radioClass: 'iradio_minimal-red'
+            });
+
+            //Flat red color scheme for iCheck
+            $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            });
+
+            //Colorpicker
+            $(".my-colorpicker1").colorpicker();
+            //color picker with addon
+            $(".my-colorpicker2").colorpicker();
+
+            //Timepicker
+            $(".timepicker").timepicker({
+                showInputs: false
+            });
+        });
+    </script>
+
+
+
+</body>
+</html>
+
+<script type="text/javascript">
+                            $(document).ready(function () {
+
+                                pusecount();
+                                pfreeusecount();
+                                carcount();
+                                eventcount();
+                            });
+
+
+    function pusecount(){
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/PUserCount',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                var _html = "";
+                $('#pusercount').html(result.totalusers);
+
+                for (var i = 0; i <= result.userlist.length - 1 ; i++) {
+
+                    _html += "<li><a href='@Url.Action("EditCustomer","Admin")?custid=" + result.userlist[i].id + "'><div class='pull-left'><img src='/Content/images/avtar.png' class='img-circle' alt='User Image'></div><h4>" + result.userlist[i].email + "</h4><p><i class='fa fa-clock-o'></i>" + result.userlist[i].regdate + "</p></a></li>";
+                }
+
+                $('#userlistitem').html(_html);
+
+                
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+
+            }
+        });
+    }
+
+
+    function pfreeusecount() {
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/PfreeUserCount',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                var _html = "";
+
+                $('#freeusercouont').html(result.freetotalusers);
+
+
+                for (var i = 0; i <= result.freeuserlist.length - 1 ; i++) {
+
+
+                    _html += "<li><a href='@Url.Action("EditCustomer","Admin")?custid=" + result.freeuserlist[i].id + "'><i class='fa fa-users text-aqua'></i>" + result.freeuserlist[i].email + "</a></li>";
+                }
+                $('#freeuserlist').html(_html);
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+
+            }
+        });
+    }
+
+
+
+    function carcount() {
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/UserCarCount',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                var _html = "";
+
+                $('#carcount').html(result.carcount);
+
+
+                for (var i = 0; i <= result.carlist.length - 1 ; i++) {
+
+                    _html += "<li><a href='@Url.Action("ApproveCarDetail","Home")?cid=" + result.carlist[i].cid + "&type=await'><i class='fa fa-users text-aqua'></i>" + result.carlist[i].make + " " + result.carlist[i].model + "</a></li>";
+                }
+                $('#carlistitem').html(_html);
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+
+            }
+        });
+    }
+
+
+    function eventcount() {
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/UserEventCount',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                var _html = "";
+
+                $('#eventcount').html(result.eventcount);
+
+
+                for (var i = 0; i <= result.eventlist.length - 1 ; i++) {
+
+                    _html += "<li><a href='@Url.Action("ApproveEventDetail","Home")?eid=" + result.eventlist[i].eid + "&type=await'><i class='fa fa-users text-aqua'></i>" + result.eventlist[i].title + "</a></li>";
+                }
+                $('#eventlistitem').html(_html);
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+
+            }
+        });
+    }
+
+</script>

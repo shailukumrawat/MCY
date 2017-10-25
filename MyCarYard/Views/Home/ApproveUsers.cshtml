@@ -1,0 +1,477 @@
+﻿@model MyCarYard.Models.UserListModel
+@{
+    ViewBag.Title = "Approve Users";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+}
+
+<div class="wrapper">
+
+
+    <!-- Left side column. contains the logo and sidebar -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-default">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+
+
+                        <div class="alert alert-success alert-dismissible" id="myDiv" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucessfully!</h4>
+                            Approved Successfully
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Premium Users</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Free User</a></li>
+
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <table class="table table-bordered table-striped" id="example1">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Orgname</th>
+                                                    <th>Email</th>
+                                                    <th>CustomerID</th>
+                                                    <th>CreatedDate</th>
+                                                    <th>Status</th>
+                                                    <th>Approve</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody id="tblDetails">
+
+                                                @if (Model.userlist.Any())
+                                                {
+                                                    int j = 1;
+                                                    for (int i = 0; i <= Model.userlist.Count - 1; i++)
+                                                    {
+                                                        if (Model.userlist[i].type != "Free" && Model.userlist[i].status != 1)
+                                                        {
+                                                            <tr>
+                                                                <td>@j</td>
+                                                                <td>@Model.userlist[i].orgname</td>
+                                                                <td>@Model.userlist[i].email</td>
+                                                                <td>@Model.userlist[i].customerid</td>
+                                                                <td>@Model.userlist[i].regdate</td>
+                                                                <td>
+                                                                    <select id="apprstatus" onchange="return changeStatus('@Model.userlist[i].id',this.value);">
+                                                                        <option value="">Select Status</option>
+                                                                        @if (Model.userlist[i].status == 1)
+                                                                        {
+                                                                            <option value="1" selected>Approve</option>
+                                                                            <option value="2">Not Approve</option>
+                                                                            <option value="0">Under Review</option>
+                                                                        }
+                                                                        else if (Model.userlist[i].status == 2)
+                                                                        {
+
+                                                                            <option value="1">Approve</option>
+                                                                            <option value="2" selected>Not Approve</option>
+                                                                            <option value="0">Under Review</option>
+
+                                                                        }
+                                                                        else
+                                                                        {
+
+                                                                            <option value="1">Approve</option>
+                                                                            <option value="2" >Not Approve</option>
+                                                                            <option value="0" selected>Under Review</option>
+
+                                                                        }
+                                                                    </select>
+
+                                                                </td>
+                                                                <td>
+                                                                    <input type='submit' name='submit' value='View Customer Detail' class='btn btn-primary' onclick="EditUserProfile('@Model.userlist[i].id');">
+                                                                </td>
+                                                                <td>
+                                                                    <a href="" onclick="return deleteUser('@Model.userlist[i].id');">Delete</a>
+                                                                </td>
+                                                            </tr>
+                                                            j++;
+                                                        }
+                                                    }
+
+                                                }
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <table class="table table-bordered table-striped" id="example2">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Email</th>
+                                                    <th>CustomerID</th>
+                                                    <th>CreatedDate</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody id="tblDetails1">
+
+                                                @if (Model.userlist.Any())
+                                                {
+                                                    int j = 1;
+                                                    for (int i = 0; i <= Model.userlist.Count - 1; i++)
+                                                    {
+                                                        if (Model.userlist[i].type == "Free" && Model.userlist[i].status != 1)
+                                                        {
+                                                            <tr>
+                                                                <td>@j</td>
+                                                                <td>@Model.userlist[i].email</td>
+                                                                <td>@Model.userlist[i].customerid</td>
+                                                                <td>@Model.userlist[i].regdate</td>
+                                                                <td>
+                                                                    <select id="fapprstatus" onchange="return fchangeStatus('@Model.userlist[i].id',this.value);">
+                                                                        <option value="">Select Status</option>
+                                                                        @if (Model.userlist[i].status == 1)
+                                                                        {
+                                                                            <option value="1" selected>Approve</option>
+                                                                            <option value="2">Not Approve</option>
+                                                                            <option value="0">Under Review</option>
+
+                                                                        }
+                                                                        else if (Model.userlist[i].status == 2)
+                                                                        {
+
+                                                                            <option value="1">Approve</option>
+                                                                            <option value="2" selected>Not Approve</option>
+                                                                            <option value="0">Under Review</option>
+
+                                                                        }
+                                                                        else
+                                                                        {
+
+                                                                            <option value="1">Approve</option>
+                                                                            <option value="2" >Not Approve</option>
+                                                                            <option value="0" selected>Under Review</option>
+                                                                        }
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <input type='submit' name='submit' value='View Customer Detail' class='btn btn-primary' onclick="EditUserProfile('@Model.userlist[i].id');">
+                                                                </td>
+                                                                <td>
+                                                                    <a href="" onclick="return deleteUser('@Model.userlist[i].id');">Delete</a>
+
+                                                                </td>
+                                                            </tr>
+                                                            j++;
+                                                        }
+                                                    }
+
+                                                }
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+
+                </div>
+                <!-- /.tab-content -->
+            </div>
+
+
+        </section>
+
+    </div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+
+
+
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+//        loadtable();
+    });
+
+    function loadtable()
+    {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/GetAllUser',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#tblDetails').empty();
+                // $('#tblDetails').append("<option value='0'>--Select--</option>");
+                var j = 1;
+                for (var i = 0; i <= result.userlist.length; i++) {
+                    //alert("Hello"+result[i]);
+                    if (result.userlist[i].status == 1) {
+                        var s = "<span style='color: #008000;;'><b>Approved</b></span>";
+                        var d = "<td>" + j + "</td><td>" + result.userlist[i].name + "</td><td>" + result.userlist[i].email + "</td><td>" + result.userlist[i].type + "</td><td>" + s + "</td><td><input type='submit' name='submit' value='Approve' class='btn btn-primary' onClick=UpdateStatus('" + result.userlist[i].id + "') disabled='disabled' ></td>";
+                    }
+                    else {
+                        s = "<span style='color: Red;'><b>Not Approved</b></span>";
+                        var d = "<td>" + j + "</td><td>" + result.userlist[i].name + "</td><td>" + result.userlist[i].email + "</td><td>" + result.userlist[i].type + "</td><td>" + s + "</td><td><input type='submit' name='submit' value='Approve' class='btn btn-primary' onClick=UpdateStatus('" + result.userlist[i].id + "')></td>";
+                    }
+
+
+
+
+                       // var d = "<td>" + j + "</td><td>" + result.userlist[i].name + "</td><td>" + result.userlist[i].email + "</td><td>" + result.userlist[i].type + "</td><td>" + s + "</td><td><input type='submit' name='submit' value='Approve' class='btn btn-primary' onClick=UpdateStatus('" + result.userlist[i].id + "') ></td>";
+
+
+
+
+
+                    // $("#tblDetails").append($("<option></option>").val(value.plan_id).html(value.plan));
+                    $("#tblDetails").append("<tr>'"+ d  +"'</tr>");
+                    j++;
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                //alert("Data Not Found");
+            }
+        });
+
+    }
+
+</script>
+<script type="text/javascript">
+    function EditUserProfile(id){
+
+        //alert(id);
+        var url = '@Url.Action("EditCustomer", "Admin")?custid=' + id;
+        window.location = url;
+    }
+
+    function UpdateStatus(id) {
+        //var url = '/Home/UpdateUser';
+        $.ajax({
+            type: "POST",
+            url: '/Home/UpdateStatus',
+            data: "{id:'"+ id +"'}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async:false,
+            success: function (data) {
+                if (data.status == 'Success') {
+
+                    $("#myDiv").show() == true;
+
+                    loadtable();
+                } else {
+                   // alert("Error");
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+
+    function changeStatus(id,status) {
+        
+        //var status = $('#apprstatus').val();
+       
+       // alert(status);
+        //alert(sts)
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to change the status ?',
+            confirmHandler: function () {
+                // confirm callback
+
+            $.ajax({
+                type: "POST",
+                url: '/Home/UpdateStatus',
+                data: "{id:'" + id + "',status: '"+ status +"'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.status == 'Success') {
+
+                        lnv.alert({
+                            title: '',
+                            content: 'Status Successfully Updated',
+                            alertBtnText: 'Okay',
+                            alertHandler: function () {
+
+
+                            }
+                        });
+                        $('.alert-btn').focus();
+                    } else {
+                        //alert("Error");
+                    }
+                }
+            });
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+        
+        return false;
+    }
+
+    function fchangeStatus(id,status) {
+        
+        
+        // alert(status);
+        //alert(sts)
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to change the status ?',
+            confirmHandler: function () {
+                // confirm callback
+
+                $.ajax({
+                    type: "POST",
+                    url: '/Home/UpdateStatus',
+                    data: "{id:'" + id + "',status: '"+ status +"'}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.status == 'Success') {
+
+                            lnv.alert({
+                                title: '',
+                                content: 'Status Successfully Updated',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        } else {
+                            //alert("Error");
+                        }
+                    }
+                });
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+        
+        return false;
+    }
+
+</script>
+<script>
+
+    function deleteUser(id) {
+
+        //alert(sts)
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to Delete This?',
+            confirmHandler: function () {
+                // confirm callback
+                $.ajax({
+                    type: "POST",
+                    url: '/Home/DeleteUser',
+                    data: "{id:'" + id + "'}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.status == 'Success') {
+
+                            lnv.alert({
+                                title: '',
+                                content: 'Successfully Deleted',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        } else {
+                            //alert("Error");
+                        }
+                    }
+                });
+            
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+        
+        return false;
+    }
+
+</script>

@@ -1,0 +1,232 @@
+﻿@model MyCarYard.Models.ApproveListModel
+@{
+    ViewBag.Title = "Approve Listing";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+}
+
+<div class="wrapper">
+
+
+    <!-- Left side column. contains the logo and sidebar -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-default">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+
+
+                        <div class="alert alert-success alert-dismissible" id="myDiv" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucessfully!</h4>
+                            Approved Successfully
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Premium Users</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Free User</a></li>
+
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <table class="table table-bordered table-striped" id="example1">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Org Name</th>
+                                                    <th>Email</th>
+                                                    <th>ListingID</th>
+                                                    <th>Car Listing</th>
+                                                    <th>Event Listing</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody id="tblDetails">
+
+                                                @if (Model.userlist.Any())
+                                                {
+                                                    int j = 1;
+                                                    for (int i = 0; i <= Model.userlist.Count - 1; i++)
+                                                    {
+                                                        if (Model.userlist[i].type != "Free")
+                                                        {
+                                                            <tr>
+                                                                <td>@j</td>
+                                                                <td>@Model.userlist[i].name</td>
+                                                                <td>@Model.userlist[i].orgname</td>
+                                                                <td>@Model.userlist[i].email</td>
+                                                                <td>@Model.userlist[i].listid</td>
+                                                                <td>@Model.userlist[i].pendingcount</td>
+                                                                <td>@Model.userlist[i].eventcount</td>
+
+                                                                <td>
+                                                                    @if (Model.userlist[i].status == 1)
+                                                                    {
+                                                                        <span style='color: #008000;'><b>Approved</b></span>
+                                                                    }
+                                                                    else if (Model.userlist[i].status == 0)
+                                                                    {
+                                                                        <span style='color: Red;'><b>Awaiting Approval</b></span>
+                                                                    }
+                                                                    else
+                                                                    {
+
+                                                                        <span style='color: Red;'><b>Not Approved</b></span>
+                                                                    }
+
+                                                                </td>
+                                                                <td>
+                                                                    <input type='submit' name='submit' value='View Listing Detail' class='btn btn-primary' onclick="openListing('@Model.userlist[i].id');">
+                                                                </td>
+                                                            </tr>
+                                                            j++;
+                                                        }
+                                                    }
+
+                                                }
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <table class="table table-bordered table-striped" id="example2">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>OrgName</th>
+                                                    <th>Email</th>
+                                                    <th>ListingID</th>
+                                                    <th>Car Listing</th>
+                                                    <th>Event Listing</th>
+                                                    <th>Approve</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody id="tblDetails1">
+
+                                                @if (Model.userlist.Any())
+                                                {
+                                                    int j = 1;
+                                                    for (int i = 0; i <= Model.userlist.Count - 1; i++)
+                                                    {
+                                                        if (Model.userlist[i].type == "Free")
+                                                        {
+                                                            <tr>
+                                                                <td>@j</td>
+                                                                <td>@Model.userlist[i].name</td>
+                                                                <td>@Model.userlist[i].orgname</td>
+                                                                <td>@Model.userlist[i].email</td>
+                                                                <td>@Model.userlist[i].listid</td>
+                                                                <td>@Model.userlist[i].pendingcount</td>
+                                                                <td>@Model.userlist[i].eventcount</td>
+                                                                <td>
+                                                                    @if (Model.userlist[i].status == 1)
+                                                                    {
+                                                                        <span style='color: #008000;'><b>Approved</b></span>
+                                                                    }
+                                                                    else if (Model.userlist[i].status == 0)
+                                                                    {
+                                                                        <span style='color: Red;'><b>Awaiting Approval</b></span>
+                                                                    }
+                                                                    else
+                                                                    {
+
+                                                                        <span style='color: Red;'><b>Not Approved</b></span>
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    <input type='submit' name='submit' value='View Listing Detail' class='btn btn-primary' onclick="openListing('@Model.userlist[i].id');">
+                                                                </td>
+                                                            </tr>
+                                                            j++;
+                                                        }
+                                                    }
+
+                                                }
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+
+                </div>
+                <!-- /.tab-content -->
+            </div>
+
+
+        </section>
+
+    </div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+<script>
+
+    function openListing(id) {
+        //alert(id);
+        var url = '@Url.Action("ApproveUserListing", "Home")?cid=' + id + '&type=' + '@Model.listtype';
+        window.location = url;
+    }
+
+</script>
+
+
+

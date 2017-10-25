@@ -1,0 +1,472 @@
+﻿@model MyCarYard.Models.BadgeTypeModel
+@{
+    ViewBag.Title = "Series";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+}
+
+<input type="hidden" id="badid" />
+<div class="wrapper">
+
+
+    <!-- Left side column. contains the logo and sidebar -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-default">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+
+
+                        <div class="alert alert-success alert-dismissible" id="myDiv" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucessfully!</h4>
+                            Series Added Successfully
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">New Series</h3>
+
+                    <div class="box-tools pull-right">
+                       @* <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Select Make Type<span style="color:red;font-size:large;">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id="make" onchange="loadModel('0');">
+                                    <option value="">Select Make Type</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Select Model Type<span style="color:red;font-size:large;">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id="model">
+                                    <option value="">Select Model Type</option>
+
+                                </select>
+                            </div>
+
+
+                    
+                            <div class="form-group">
+                                <label for="PlanName">Enter Series<span style="color:red;font-size:large;">*</span></label>
+                                <input type="text" class="form-control" id="badge" placeholder="Enter Series" value="">
+                            </div>
+                            <div class="form-group">
+                                <label>Status<span style="color:red;font-size:large;">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="1">Activate</option>
+                                    <option value="0">Deactivate</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary" id="save" onclick="return SaveBadge();">Save Series</button>
+                    <button type="submit" class="btn btn-primary hidden" id="update" onclick="UpdateBadge();" >Update</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Series Type List</h3>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-bordered table-striped" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Make</th>
+                                        <th>Model</th>
+                                        <th>Series</th>
+
+                                        <th>Status</th>
+                                        <th>View/Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblDetails">
+                                    @if (Model.badgelist.Any())
+                                    {
+
+                                        int j = 1;
+                                        for (int i = 0; i <= Model.badgelist.Count - 1; i++)
+                                        {
+
+                                            <tr>
+                                                <td>@j</td>
+                                                <td>@Model.badgelist[i].make</td>
+                                                <td>@Model.badgelist[i].mod</td>
+                                                <td>@Model.badgelist[i].badge</td>
+                                                <td>@Model.badgelist[i].status</td>
+                                                <td><a href="" onclick="return getData('@Model.badgelist[i].bad_id','@Model.badgelist[i].makeid','@Model.badgelist[i].modid','@Model.badgelist[i].badge','@Model.badgelist[i].status')">Edit</a> </td>
+                                                <td><a href="" onclick="return deleteBadge('@Model.badgelist[i].bad_id')"> Delete</a></td>
+                                            </tr>
+                                            j++;
+                                        }
+                                    }
+
+
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+    function getData(badid, makeid, modid, badge, status) {
+
+        $('#badid').val(badid);
+        $('#make').val(makeid);
+        loadModel(modid);
+        $('#badge').val(badge);
+        $('#status').val(status);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('#update').removeClass('hidden');
+        $('#save').addClass('hidden');
+        return false;
+    }
+
+</script>
+
+<script>
+
+    function UpdateBadge() {
+
+        var badid = $('#badid').val();
+        var obj = {"badid": badid ,"make": $("#make").val() ,"model": $("#model").val() ,"badge": $("#badge").val() ,"status": $("#status").val() };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Admin/UpdateBadge',
+            data: JSON.stringify(obj),
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                if (response.status == "Success") {
+
+                    lnv.alert({
+                        title: '',
+                        content: 'Series Updated Successfully',
+                        alertBtnText: 'Okay',
+                        alertHandler: function () {
+                            var url = '@Url.Action("SeriesMaster", "Admin")';
+                            window.location = url;
+
+                        }
+                    });
+                    $('.alert-btn').focus();
+                }
+            },
+            error: function () {
+                //  alert("Error");
+            }
+        });
+
+    }
+
+</script>
+<script type="text/javascript">
+    function SaveBadge() {
+
+        var isvalid = true;
+        try {
+
+            var make = $("#make").val();
+            var model = $("#model").val();
+            var badge = $("#badge").val();
+            var status = $('#status').val();
+
+            if (make == "" || make == "0" || make == undefined) {
+                /*
+                lnv.alert({
+                    title: '',
+                    content: 'Please Select Make',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                       
+                        $("#make").focus();
+                    }
+                })
+                */
+                $('#make').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#make').css('border-color', '');
+
+                isvalid = true;
+            }
+
+            if (model == "" || model == "0" || model == undefined) {
+
+                /* lnv.alert({
+                     title: '',
+                     content: 'Please Select Model',
+                     alertBtnText: 'Okay',
+                     alertHandler: function () {
+ 
+                         $("#make").focus();
+                     }
+                 })
+                 */
+                $('#model').css('border-color', 'red');
+
+                isvalid = false;
+            } else {
+
+                $('#model').css('border-color', '');
+
+                isvalid = true;
+            }
+
+            if (badge.trim() == "" || badge == "0" || badge == undefined) {
+                /*
+                lnv.alert({
+                    title: '',
+                    content: 'Please Enter Series',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                        $("#badge").focus();
+                    }
+                })
+                */
+                $('#badge').css('border-color', 'red');
+
+                isvalid = false;
+            } else {
+
+                $('#badge').css('border-color', '');
+
+                isvalid = true;
+            }
+
+            if (status == "" || status == null || status == undefined) {
+                /*
+                lnv.alert({
+                    title: '',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                        $("#status").focus();
+                    }
+                })*/
+                $('#status').css('border-color', 'red');
+                isvalid = false;
+            } else {
+
+                $('#status').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (isvalid == true) {
+
+                var obj = { "make": $("#make").val(), "model": $("#model").val(), "badge": $("#badge").val(), "status": $("#status").val() };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/AddBadge',
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+
+                            lnv.alert({
+                                title: '',
+                                content: 'Series Added Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+                                    var url = '@Url.Action("SeriesMaster", "Admin")';
+                                    window.location = url;
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        }
+                    },
+                    error: function () {
+                        //  alert("Error");
+                    }
+                });
+            } else {
+
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please Fill all missing fields',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+
+                    }
+                });
+                $('.alert-btn').focus();
+            }
+        } catch (e) {
+
+            isvalid  = false;
+        }
+
+        return isvalid;
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadMake();
+    });
+
+    function loadMake() {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadMake',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                for (var i = 0; i <= result.makelist.length - 1; i++) {
+                    if (result.makelist[i].status == 1) {
+                        $("#make").append($("<option></option>").val(result.makelist[i].make_id).html(result.makelist[i].make));
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+               // alert("Data Not Found");
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    function loadModel(modelid) {
+        var make = $('#make option:selected').val();
+        //  alert(count_id);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ make: '" + $("#make").val() + "' }",
+            url: '/Admin/LoadModel',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#model').empty();
+                $("#model").append($("<option value = '0'>Select Model Type</option>"));
+                for (var i = 0; i <= result.modellist.length -1 ; i++) {
+                    if (result.modellist[i].status == 1) {
+                        if (result.modellist[i].model_id == modelid) {
+                            $("#model").append($("<option selected></option>").val(result.modellist[i].model_id).html(result.modellist[i].modeltype));
+                        } else {
+                            $("#model").append($("<option></option>").val(result.modellist[i].model_id).html(result.modellist[i].modeltype));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#model').empty();
+                $("#model").append($("<option value = '0'>Select Model Type</option>"));
+
+            }
+        });
+    }
+</script>
+
+<script>
+
+    function deleteBadge(id) {
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to delete Series ?',
+            confirmHandler: function () {
+                // confirm callback
+        
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Admin/DeleteBadge',
+                data: "{badid: '" + id + "'}",
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    if (response.status == "Success") {
+                        lnv.alert({
+                            title: '',
+                            content: 'Series Deleted Successfully',
+                            alertBtnText: 'Okay',
+                            alertHandler: function () {
+                                var url = '@Url.Action("SeriesMaster", "Admin")';
+                                window.location = url;
+
+                            }
+                        });
+                        $('.alert-btn').focus();
+                    }
+                },
+                error: function () {
+                    //  alert("Error");
+                }
+            });
+          },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+        return false;
+    }
+</script>

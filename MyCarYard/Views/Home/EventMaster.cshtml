@@ -1,0 +1,675 @@
+﻿@{
+    ViewBag.Title = "EventMaster";
+    Layout = "~/Views/Shared/_LayoutOuterHome.cshtml";
+}
+
+
+
+<div class="col-sm-9">
+    <div class="map_contain">
+        <ul class="nav nav-tabs">
+            <li><a data-toggle="tab" href="#dealers">dealers</a></li>
+            <li class="active"><a data-toggle="tab" href="#events">events</a></li>
+            <div class="top_select">
+                <ul>
+                    <li>
+                        <select class="top_selecefld">
+                            <option>Search Result</option>
+                        </select>
+                    </li>
+                    <li>
+                        <select class="top_selecefld">
+                            <option>Manage Listing</option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+        </ul>
+        <div class="event_topbar">
+            <div class="map_btn">
+                <a href="#" class="cmn_btn">Maps</a>
+                <a href="#" class="cmn_btn second_btn">Listing</a>
+            </div>
+            <div class="tab-content">
+                <div id="dealers" class="tab-pane fade">
+                    <div class="detail_head">
+                        <h4 class="detail_heading">1996 Nissan Skyline R33</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li><a href="#">AUD 500</a></li>
+                                <li><a href="#"><i class="fa fa-share-alt"></i></a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i></a></li>
+                                <li><a href="#"><i class="flaticon-shapes"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Engine: <span>  6 Cyl 2.5L Engine</span></li>
+                                    <li>Transmition Type: <span> Manual</span></li>
+                                    <li>KM : <span> 200000 km/s</span></li>
+                                    <li>
+                                        <span>
+                                            Part has been used however in a really good condition
+                                            and recently service. Will swap
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="fa fa-map-marker"></i> Adelaide, South Australia</a></li>
+                                    <li><a href="@Url.Action("CarDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">1996 Nissan Skyline R33</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li><a href="#">AUD 500</a></li>
+                                <li><a href="#"><i class="fa fa-share-alt"></i></a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i></a></li>
+                                <li><a href="#"><i class="flaticon-shapes"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Engine: <span>  6 Cyl 2.5L Engine</span></li>
+                                    <li>Transmition Type: <span> Manual</span></li>
+                                    <li>KM : <span> 200000 km/s</span></li>
+                                    <li>
+                                        <span>
+                                            Part has been used however in a really good condition
+                                            and recently service. Will swap
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="fa fa-map-marker"></i> Adelaide, South Australia</a></li>
+                                    <li><a href="@Url.Action("CarDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">1996 Nissan Skyline R33</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li><a href="#">AUD 500</a></li>
+                                <li><a href="#"><i class="fa fa-share-alt"></i></a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i></a></li>
+                                <li><a href="#"><i class="flaticon-shapes"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Engine: <span>  6 Cyl 2.5L Engine</span></li>
+                                    <li>Transmition Type: <span> Manual</span></li>
+                                    <li>KM : <span> 200000 km/s</span></li>
+                                    <li>
+                                        <span>
+                                            Part has been used however in a really good condition
+                                            and recently service. Will swap
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="fa fa-map-marker"></i> Adelaide, South Australia</a></li>
+                                    <li><a href="@Url.Action("CarDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">1996 Nissan Skyline R33</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li><a href="#">AUD 500</a></li>
+                                <li><a href="#"><i class="fa fa-share-alt"></i></a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i></a></li>
+                                <li><a href="#"><i class="flaticon-shapes"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Engine: <span>  6 Cyl 2.5L Engine</span></li>
+                                    <li>Transmition Type: <span> Manual</span></li>
+                                    <li>KM : <span> 200000 km/s</span></li>
+                                    <li>
+                                        <span>
+                                            Part has been used however in a really good condition
+                                            and recently service. Will swap
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="fa fa-map-marker"></i> Adelaide, South Australia</a></li>
+                                    <li><a href="@Url.Action("CarDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">1996 Nissan Skyline R33</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li><a href="#">AUD 500</a></li>
+                                <li><a href="#"><i class="fa fa-share-alt"></i></a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i></a></li>
+                                <li><a href="#"><i class="flaticon-shapes"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Engine: <span>  6 Cyl 2.5L Engine</span></li>
+                                    <li>Transmition Type: <span> Manual</span></li>
+                                    <li>KM : <span> 200000 km/s</span></li>
+                                    <li>
+                                        <span>
+                                            Part has been used however in a really good condition
+                                            and recently service. Will swap
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="fa fa-map-marker"></i> Adelaide, South Australia</a></li>
+                                    <li><a href="@Url.Action("CarDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">1996 Nissan Skyline R33</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li><a href="#">AUD 500</a></li>
+                                <li><a href="#"><i class="fa fa-share-alt"></i></a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i></a></li>
+                                <li><a href="#"><i class="flaticon-shapes"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/car_details.png")" alt="car"></div>
+
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Engine: <span>  6 Cyl 2.5L Engine</span></li>
+                                    <li>Transmition Type: <span> Manual</span></li>
+                                    <li>KM : <span> 200000 km/s</span></li>
+                                    <li>
+                                        <span>
+                                            Part has been used however in a really good condition
+                                            and recently service. Will swap
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="fa fa-map-marker"></i> Adelaide, South Australia</a></li>
+                                    <li><a href="@Url.Action("CarDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--------end delears----------->
+                <div id="events" class="tab-pane fade in active">
+                    <div class="detail_head">
+                        <h4 class="detail_heading">South West Carshow </h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li>Entry Fee: Free</li>
+                                <li>Event Date:02 Aug 2016</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Event Describtion : <span class="event_sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec erat dignissim, fermentum tellus ac; gravida felis. Quisque in enim ac velit </span></li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="flaticon-multiple-users-silhouette"></i> 99 People Going</a></li>
+                                    <li><a href="@Url.Action("EventDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                    <li><a href="#" class="cmn_btn">Go!</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">South West Carshow</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li>Entry Fee: Free</li>
+                                <li>Event Date:02 Aug 2016</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Event Describtion : <span class="event_sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec erat dignissim, fermentum tellus ac; gravida felis. Quisque in enim ac velit </span></li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="flaticon-multiple-users-silhouette"></i> 99 People Going</a></li>
+                                    <li><a href="@Url.Action("EventDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                    <li><a href="#" class="cmn_btn">Go!</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">South West Carshow</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li>Entry Fee: Free</li>
+                                <li>Event Date:02 Aug 2016</li>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Event Describtion : <span class="event_sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec erat dignissim, fermentum tellus ac; gravida felis. Quisque in enim ac velit </span></li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="flaticon-multiple-users-silhouette"></i> 99 People Going</a></li>
+                                    <li><a href="@Url.Action("EventDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">South West Carshow</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li>Entry Fee: Free</li>
+                                <li>Event Date:02 Aug 2016</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Event Describtion : <span class="event_sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec erat dignissim, fermentum tellus ac; gravida felis. Quisque in enim ac velit </span></li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="flaticon-multiple-users-silhouette"></i> 99 People Going</a></li>
+                                    <li><a href="@Url.Action("EventDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                    <li><a href="#" class="cmn_btn">Go!</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">South West Carshow</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li>Entry Fee: Free</li>
+                                <li>Event Date:02 Aug 2016</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Event Describtion : <span class="event_sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec erat dignissim, fermentum tellus ac; gravida felis. Quisque in enim ac velit </span></li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="flaticon-multiple-users-silhouette"></i> 99 People Going</a></li>
+                                    <li><a href="@Url.Action("EventDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                    <li><a href="#" class="cmn_btn">Go!</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail_head">
+                        <h4 class="detail_heading">South West Carshow</h4>
+                        <div class="detail_bar">
+                            <ul>
+                                <li>Entry Fee: Free</li>
+                                <li>Event Date:02 Aug 2016</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div class="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+                                <div class="item"> <img src="@Url.Content("~/Content/images/mng_slide.png")" alt="car"></div>
+
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail">
+                                <ul>
+                                    <li>Event Describtion : <span class="event_sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec erat dignissim, fermentum tellus ac; gravida felis. Quisque in enim ac velit </span></li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> 5 Day Ago</a></li>
+                                    <li><a href="#"><i class="flaticon-multiple-users-silhouette"></i> 99 People Going</a></li>
+                                    <li><a href="@Url.Action("EventDetails","Home")" class="fuel_btn">Full Details</a></li>
+                                    <li><a href="#" class="cmn_btn">Go!</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="map_btn">
+                <a class="cmn_btn" href="#">Maps</a>
+                <a class="cmn_btn second_btn" href="#">Listing</a>
+            </div>
+        </div>
+    </div>
+</div>
+                                            
+
+
+
+<div class="col-sm-3">
+    <div class="row">
+        <div class="right_bar clearfix">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#search_car" data-toggle="tab">Search Car</a></li>
+                <li><a href="#search_event" data-toggle="tab">Search Event</a></li>
+            </ul>
+            <div class="tab-content clearfix">
+                <div class="tab-pane fade in active" id="search_car">
+                    <form role="form" class="">
+                        <div class="col-sm-12">
+                            <div class="form-group right_top">
+                                <label>
+                                    <input type="checkbox"> Private Sales
+                                </label>
+                                <label>
+                                    <input type="checkbox"> Dealer Listings
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>make</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>Modal</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>year from</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>year to</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>min price</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>max price</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>keyword</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>Country</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>state/area</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="search_event">
+                    <form class="" role="form">
+                        <div class="col-sm-12">
+                            <div class="form-group right_top">
+                                <label>
+                                    <input type="checkbox"> Private Event
+                                </label>
+                                <label>
+                                    <input type="checkbox"> Sponserd Event
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>Event Category</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>Event Due in</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>Country</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>State/Area</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option>Key Word</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="map_btn">
+                <a class="cmn_btn second_btn" href="#">Search</a>
+            </div>
+        </div>
+    </div>
+</div>
+                  
+
+

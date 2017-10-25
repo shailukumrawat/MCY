@@ -1,0 +1,381 @@
+@charset "utf-8";
+/* CSS Document */
+@media (min-width:1200px){
+	
+
+}
+
+
+@media (min-width:992px) and (max-width:1199px){
+    .map_img {
+  width: 100% !important;
+}
+	.tab-content #dealers #map ,#map1{
+  height: 400px !important;
+  width: 100% !important;
+}
+.left_bar ul li a {
+  font-size: 13px;
+  padding: 9px 5px;
+}
+.left_bar ul li a i {
+  padding-right: 5px;
+}
+.event_upload ul li {
+  margin-right: 10px;
+	}
+}
+	
+	
+@media (min-width:768px) and (max-width:991px){
+    .main_nav ul.nav.navbar-nav li a {
+  padding: 15px 9px;
+}
+.detail_bar li {
+  padding: 8px 3px;
+}
+.right_bar ul.nav.nav-tabs li a {
+  padding: 10px;
+}
+	.ftr_box {
+  padding-right: 5px;
+}
+.ftr_box.social_icon ul li a {
+  font-size: 16px;
+  height: 30px;
+  line-height: 26px;
+  width: 30px;
+}
+.event_upload ul li {
+  margin-right: 5px;
+  padding: 10px;
+  width: 120px;
+}
+.ftr_box.social_icon li {
+  padding: 0;
+}
+.map_img {
+  padding: 0;
+  width: 100% !important;
+}
+.tab-content #dealers #map,#map1 {
+  height: 400px !important;
+  width: 100% !important;
+}
+.left_bar ul li a i {
+  display: none;
+}
+.left_bar ul li a {
+  font-size: 13px;
+  padding: 9px 2px;
+}
+.detail_bar {
+  display: inline-block;
+  float: none;
+}
+.detail_heading {
+  font-size: 12px;
+  padding: 12px 4px;
+}
+.detail_bar ul li a {
+  font-size: 12px;
+}
+.listing_detail {
+  width: 60%;
+}
+.listing_slider {
+  width: 38%;
+}
+.query_box ul li a {
+  font-size: 15px;
+  height: 36px;
+  width: 34px;
+}
+.top_select {
+  display: inline-block;
+  float: none;
+}
+.new_detail .item_detail ul li {
+  width: 210px;
+}
+a.cmn_btn {
+  padding: 10px 15px;
+}
+.leftb_head {
+  font-weight: 500;
+  padding: 10px 2px;
+}
+	}
+	
+@media (max-width:767px){
+	.map_img {
+  height: 200px !important;
+  padding: 0;
+  width: 100% !important;
+}
+.ftr_box {
+  float: left;
+  padding-right: 25px;
+  width: 100%;
+  padding-bottom: 15px;
+}
+.ftr_box h5 {
+  padding-bottom: 0;
+}
+.ftr_box.social_icon > ul {
+  padding-top: 15px;
+}
+.btm_footer {
+  margin-top: 10px;
+}
+.btm_hedrbar ul li:last-child a {
+  border-left: 0 none;
+  font-size: 18px;
+}
+.comn_sec.containt_sec {
+  padding: 10px 0;
+}
+.right_bar .nav.nav-tabs {
+  padding: 0 15px;
+}
+.modal-dialog.login_dilog {
+  width: 300px;
+}
+.or_login::after,.or_login::before{
+    display: none;
+}
+.top_select {
+  display: inline-block;
+  float: none;
+  padding: 1px;
+  width: 40%;
+}
+.event_upload > ul {
+  margin-top: 10px;
+}
+.nav.nav-tabs .top_selecefld {
+  padding-left: 2px;
+  width: 125px;
+}
+.logo {
+  display: none;
+}
+.detail_bar{
+  float: none;
+  display: inline-block;
+  text-align: left;
+  width: 100%;
+}
+.detail_bar li {
+  padding: 8px 5px;
+}
+.detail_bar li:first-child{
+  border: 0;
+}
+.detail_bar ul li a {
+    font-size: 14px;
+}
+.listing_slider,.listing_detail {
+    width: 100%;
+}
+ul.nav.navbar-nav.navbar-right,.mobile_search {
+    display: none;
+}
+ul.nav.navbar-nav.navbar-right.mobile_nav,.main_nav .navbar-brand {
+    display: block;
+}
+span.search_icon {
+  color: rgb(51, 122, 183);
+}
+.right_bar {
+    padding-top: 10px;
+}
+ul.nav.navbar-nav li.top_searchbar a {
+  padding: 10px 15px;
+}
+.nav.navbar-nav.navbar-right.mobile_nav > li {
+  display: inline-block;
+}
+.main_nav .nav.navbar-nav li {
+  border-bottom: 1px solid rgb(41, 86, 121);
+}
+.main_nav ul.nav.navbar-nav li:nth-child(5n) a {
+  border-right: 0 none;
+}
+.main_nav ul.nav.navbar-nav li a {
+  border-left: 0px;
+  padding: 10px 15px;
+}
+.main_nav .navbar-inverse .navbar-toggle {
+  border-color: rgb(41, 86, 121);
+}
+.main_nav .navbar-toggle {
+  background-color: rgb(41, 86, 121) !important;
+}
+.bottom_header {
+  background-color: rgb(244, 248, 253);
+  padding: 50px 0 15px;
+}
+.mobile_icon {
+  display: inline-block;
+  position: relative;
+  text-align: center;
+}
+.mobile_search {
+  position: absolute;
+  right: 0;
+  z-index: 99999;
+}
+.btm_hedrbar {
+  display: inline-block;
+  text-align: center;
+}
+.tab-content #dealers #map ,#map1{
+  height: 300px !important;
+  width: 100% !important;
+}
+.event_upldnew {
+  height: 100%;
+  width: 100%;
+}
+.event_upload ul li {
+  margin-bottom: 10px;
+  margin-right:5px;
+  padding: 5px;
+  width: 125px;
+}
+#mapdiv {
+  height: 200px !important;
+}
+.describe_contain textarea.form-control {
+  height: 130px;
+}
+.manageev_head {
+  font-size: 14px;
+}
+.item_detail ul li {
+  width: 100%;
+}
+.detail_head.event_head {
+  padding: 5px 0;
+}
+.new_message.dropdown {
+  float: none;
+  padding: 5px 10px;
+  text-align: right;
+}
+.map_contain {
+  padding-top: 10px;
+}
+.query_box {
+  width: 30px;
+}
+.query_box ul li a {
+  font-size: 15px;
+  width: 40px;
+}
+.item_detail.manage_dt {
+  width: 85%;
+}
+.map_btn {
+  display: block;
+  text-align: center;
+}
+.listing_slider .owl-item.active {
+  height: auto;
+ width: initial !important;
+}
+
+.right_bar ul.nav.nav-tabs li a {
+  padding: 5px 10px;
+}
+.event_head .top_selecefld {
+  width: 115px;
+}
+.map_contain ul.nav.nav-tabs li a {
+  padding: 10px;
+}
+#registration_modal .form-group {
+  vertical-align: top;
+  width: 100%;
+}
+.slide_detail li:first-child {
+  width: inherit;
+}
+.listing_slider .item > img {
+  height: auto;
+  max-height: 300px;
+  width: 100% !important;
+}
+.newdetail_bar {
+  display: inline-block;
+  float: none;
+  text-align: left;
+  width: 285px;
+}
+.newdetail_left {
+  width: 290px;
+}
+.new_detail .item_detail ul li {
+  width: 220px;
+}
+.new_detail .item_detail li:first-child {
+  font-size: 16px;;
+  padding: 6px 10px;
+}
+.item_detail ul li i {
+  font-size: 16px;
+}
+#car_detail .item > img {
+  height: auto;
+}
+.detail_heading {
+  font-size: 14px;
+  padding: 10px 5px;
+  width: 53%;
+}
+.new_detail .item_detail {
+  margin-bottom:0;
+}
+.newlis_contain .describe_contain {
+  margin-bottom: 0;
+}
+.top_search {
+  display: block;
+  position: absolute;
+  right: 80px;
+  top: 10px;
+}
+.srch_btn {
+  color: rgb(41, 86, 121);
+  display: inline-block;
+  font-size: 18px;
+  padding: 3px 0;
+}
+.main_nav .navbar-brand {
+  max-width: 205px;
+}
+.top_header {
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9;
+}
+.left_bar > ul {
+  display: none;
+}
+.leftb_head {
+  cursor: pointer;
+}
+.left_bar > ul.open_side {
+  display: block;
+}
+.myyrd .listing_slider .item > img {
+  height: auto;
+  max-height: 200px;
+}
+.myyrd .listing_detail .item_detail ul li {
+  width: 100%;
+}
+}	

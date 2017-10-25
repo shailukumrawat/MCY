@@ -1,0 +1,144 @@
+﻿@model MyCarYard.Models.RegisterViewModel
+@{
+    ViewBag.Title = "AddCar";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+<div class="col-sm-7">
+    <div class="map_contain">
+        
+        <div class="tab-content">
+            
+            <!--------end delears----------->
+            <div id="events" class="tab-pane fade in active">
+                <div class="newlis_contain">
+
+
+                    <div class="listing_tab">
+                        <ul class="nav nav-tabs">
+                            <li><a data-toggle="tab" href="#upcoming_events"> EVENTS</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="event_topbar">
+                        <div class="tab-content">
+                            <div id="upcoming_events" class="tab-pane fade in active">
+
+                                @if (Model.eventlist.Any())
+                                {
+
+                                    for (int i = 0; i <= Model.eventlist.Count - 1; i++)
+                                    {
+
+
+                                        <div class="describe_contain">
+                                            <div class="listing_slider">
+                                                <div class="car_detail">
+                                                    <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventlist[i].img)" alt="car"></div>
+                                                    <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventlist[i].img1)" alt="car"></div>
+                                                    <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventlist[i].img2)" alt="car"></div>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="listing_detail">
+                                                <h5 class="manageev_head">@Model.eventlist[i].title </h5>
+                                                <div class="item_detail">
+                                                    <h5>Place:@Model.eventlist[i].state, @Model.eventlist[i].country, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</h5>
+                                                    <p>@Model.eventlist[i].subject</p>
+                                                    <ul></ul>
+                                                </div>
+                                                <div class="listing_btm">
+                                                    <ul>
+                                                        <li><a href="#" class="cmn_btn"><i class="flaticon-multiple-users-silhouette"></i> @(Convert.ToInt32(Model.eventlist[i].going))</a></li>
+                                                        <li><a href="#" class="fuel_btn" data-toggle="modal" data-target="#login_modal" onclick="return EventGoing('@Session["id"].ToString()','@Model.eventlist[i].eid','@Session["email"].ToString()');">Go!</a></li>
+                                                        <li><a class="fuel_btn" href="@Url.Action("EventDetails", "Home")?eid=@Model.eventlist[i].eid"> Full Detail</a></li>
+                                                    </ul>
+                                                    <ul class="newright">
+
+                                                        @*
+                                                    <li><a href="#" title="edit"><i class="flaticon-pencil-striped-symbol-for-interface-edit-buttons"></i></a></li>
+                                                    <li><a href="#" title="delete"><i class="flaticon-delete"></i></a></li>*@
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <!--------end delears----------->
+                            <!--------end delears----------->
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="map_btn">
+            <a class="cmn_btn" href="@Url.Action("UserIndex","Home")">Maps</a>
+            <a class="cmn_btn second_btn" href="@Url.Action("UserEventMaster","Home")">Listing</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+    function EventGoing(uid, eid, email) {
+
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to Go there ?',
+            confirmHandler: function () {
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/GoindToEvent',
+                    data: "{uid: '" + uid + "',eid: '" + eid + "',email: '" + email + "'}",
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+
+                            lnv.alert({
+                                title: ' ',
+                                content: 'Your Entry feed Successfully',
+                                alertBtnText: 'Okey',
+                                alertHandler: function () {
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        } else {
+
+                            lnv.alert({
+                                title: ' ',
+                                content: response.status,
+                                alertBtnText: 'Okey',
+                                alertHandler: function () {
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        }
+
+                    },
+                    error: function () {
+                        //alert("Error");
+                    }
+                });
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+    }
+
+</script>

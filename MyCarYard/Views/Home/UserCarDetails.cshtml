@@ -1,0 +1,159 @@
+﻿@model MyCarYard.Models.RegisterViewModel
+@{
+    ViewBag.Title = "User Car Details";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+<div class="col-sm-7">
+    <div class="map_contain">
+        <ul class="nav nav-tabs">
+            @*  <li class="active"><a data-toggle="tab" href="#dealers">dealers</a></li>
+                <li><a data-toggle="tab" href="#events">events</a></li>*@
+        </ul>
+
+        <div class="tab-content">
+            <div id="dealers" class="tab-pane fade in active">
+
+                @if (Model.cardetailslist.Any())
+                {
+                    for (int i = 0; i <= Model.cardetailslist.Count - 1; i++)
+                    {
+
+                        <div class="detail_head">
+                            <h4 class="detail_heading">@Model.cardetailslist[i].year @Model.cardetailslist[i].make @Model.cardetailslist[i].model  @Model.cardetailslist[i].badge @Model.cardetailslist[i].series</h4>
+                            <div class="detail_bar">
+                                <ul>
+                                    <li><a href="#">@Model.cardetailslist[i].currency @(Convert.ToDouble(Model.cardetailslist[i].price).ToString("#,##0"))</a></li>
+                                    <li><a href="#" data-toggle="modal" data-target="#msg_modal" onclick="return SetCustomerEmail('@Model.cardetailslist[i].email')"><i class="fa fa-envelope-o"></i></a></li>
+                                    @if (Model.cardetailslist[i].showphone == 1)
+                                    {
+                                        <li><a href="#" data-toggle="modal" data-target="#mobile_modal" onclick="ShowContact('@Model.cardetailslist[i].cno','@Model.cardetailslist[i].orgname')"><i class="fa fa-phone"></i></a></li>
+                                    }
+                                    <li><div class="fb-share-button" data-href="http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.cardetailslist[i].cid&title=@Model.cardetailslist[i].year@Model.cardetailslist[i].make@Model.cardetailslist[i].model@Model.cardetailslist[i].badge@Model.cardetailslist[i].series&image=http://mycaryard.mobi96.org/images/cars/@Model.cardetailslist[i].img" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="http://www.facebook.com/sharer.php?s=100&p[url]=http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.cardetailslist[i].cid&p[images][0]=http://mycaryard.mobi96.org/images/cars/@Model.cardetailslist[i].img&p[title]=@Model.cardetailslist[i].year@Model.cardetailslist[i].make@Model.cardetailslist[i].model@Model.cardetailslist[i].badge@Model.cardetailslist[i].series">Share</a></div></li>
+
+
+
+
+                                    <li><a href="javascript:void()" onclick="return setWatchlist('@Model.cardetailslist[i].cid');" class="star_button @(Model.cardetailslist[i].star.Equals(1) ? Html.Raw("goldn") : null)" title="watch"><i class="fa fa-star"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="describe_contain">
+                            <div id="car_detail">
+                                <div class="item"> <img src="@Url.Content("~/images/cars/"+ @Model.cardetailslist[i].img)"></div>
+                                <div class="item"> <img src="@Url.Content("~/images/cars/"+ @Model.cardetailslist[i].img1)"></div>
+                                <div class="item"> <img src="@Url.Content("~/images/cars/"+ @Model.cardetailslist[i].img2)"></div>
+                                <div class="item"> <img src="@Url.Content("~/images/cars/"+ @Model.cardetailslist[i].img3)"></div>
+                                <div class="item"> <img src="@Url.Content("~/images/cars/"+ @Model.cardetailslist[i].img4)"></div>
+                                <div class="item"> <img src="@Url.Content("~/images/cars/"+ @Model.cardetailslist[i].img5)"></div>
+                            </div>
+
+                            <div class="slide_detail">
+                                <ul>
+                                    @if (!String.IsNullOrEmpty(Model.cardetailslist[i].orgname))
+                                    {
+                                        <li>@Model.cardetailslist[i].orgname</li>
+                                    }
+                                    @{
+
+                                        TimeSpan diff = DateTime.Now.Date - Convert.ToDateTime(Model.cardetailslist[i].created_date);
+                                        var totatdays = Math.Abs(diff.TotalDays);
+                                    }
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> @(Convert.ToInt32(totatdays)) Day Ago</a></li>
+                                    <li><a href="#"><i class="fa fa-map-marker"></i> @Model.cardetailslist[i].suburb, @Model.cardetailslist[i].city, @Model.cardetailslist[i].state, @Model.cardetailslist[i].zipcode, @Model.cardetailslist[i].country</a></li>
+                                </ul>
+                            </div>
+                            <div class="item_detail">
+                                <h4 class="seller_head">Vehicle Details</h4>
+                                <ul>
+
+                                    <li>Vehicle: <span>@Model.cardetailslist[i].year @Model.cardetailslist[i].make @Model.cardetailslist[i].model  @Model.cardetailslist[i].badge @Model.cardetailslist[i].series </span></li>
+                                    <li>Engine: <span>@Model.cardetailslist[i].cylinder_name  @Model.cardetailslist[i].engine</span></li>
+                                    <li>Transmission: <span>@Model.cardetailslist[i].tranmition </span></li>
+                                    <li>Price: <span>@Model.cardetailslist[i].currency @(Convert.ToDouble(Model.cardetailslist[i].price).ToString("#,##0"))</span></li>
+                                    <li>Condition: <span>@Model.cardetailslist[i].condition</span></li>
+                                    <li>Drivetrain: <span>@Model.cardetailslist[i].drive</span></li>
+
+
+                                    <li>Odometer : <span> @(Convert.ToDouble(Model.cardetailslist[i].meter).ToString("#,##0"))  @Model.cardetailslist[i].matrics</span></li>
+                                    <li>Enterior Color: <span>  @Model.cardetailslist[i].bcolor</span></li>
+                                    <li>Interior Material : <span>@Model.cardetailslist[i].material </span></li>
+
+
+                                    <li>Interior Color : <span> @Model.cardetailslist[i].icolor</span></li>
+                                </ul>
+                            </div>
+
+                            
+
+                            <!--<div class="seller_topdec">
+                                <i class="flaticon-people"></i> <em>
+                                “ These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. ” </em>
+                            </div>-->
+
+                            <div class="seller_decribtion">
+                                <h4 class="seller_head">Seller Comments</h4>
+                                <p>
+                                    @*@Model.cardetailslist[i].descr*@
+
+                                    @Html.Raw(Model.cardetailslist[i].descr)
+                                </p>
+
+                            </div>
+
+
+                        </div>
+                                            }
+                                        }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+    function setWatchlist(cid) {
+        // confirm callback
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Home/UpdateWatchlistStatus',
+            data: "{cid: '" + cid + "'}",
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                if (response.status == "Success") {
+
+
+                    $('.star_button').toggleClass('goldn');
+
+
+                }
+            },
+            error: function (response) {
+
+                alert(response.status);
+            }
+        });
+
+
+
+        return false;
+    }
+</script>
+<script>
+
+    function ShowContact(cno, orgname) {
+
+        $('#conorgname').val(orgname);
+        $('#concno').val(cno);
+    }
+
+    function SetCustomerEmail(email) {
+
+        $('#custemail').val(email);
+        return false;
+    }
+</script>

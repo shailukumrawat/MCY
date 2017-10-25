@@ -1,0 +1,1084 @@
+﻿@model MyCarYard.Models.ApproveUserListModel
+@{
+    ViewBag.Title = "Approve Event Details";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+}
+<script>
+    var map;
+    function mapa()
+    {
+        var opts = {
+            'center': new google.maps.LatLng(22.730590425493833, 75.8770751953125),
+            'zoom':11, 'mapTypeId': google.maps.MapTypeId.ROADMAP }
+        map = new google.maps.Map(document.getElementById('mapdiv'), opts);
+
+        google.maps.event.addListener(map,'click',function(event)
+        {
+
+
+            //document.getElementById('latlongclicked').value = event.latLng.lat() + ', ' + event.latLng.lng()
+            $('#late').val(event.latLng.lat())
+            $('#long').val(event.latLng.lng())
+        })
+
+        google.maps.event.addListener(map,'mousemove',function(event)
+        {
+            //alert("Hi");
+            //$('#latitute').val(event.latLng.lat())
+            //$('#longitute').val(event.latLng.lng())
+           // document.getElementById('latlong').innerHTML = event.latLng.lat() + ', ' + event.latLng.lng()
+        });
+
+    }
+</script>
+<input type="hidden" value="@Model.approveeventlist[0].eid" name="custid" id="custid" />
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <section class="content">
+            <!-- SELECT2 EXAMPLE -->
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Approve Event Detail</h3>
+                    <div class="box-tools pull-right">
+                      @*  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                       <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Select Category</label>
+                                <select class="form-control " style="width: 100%;" id="category"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Event Sponsorship</label>
+                                <select class="form-control " style="width: 100%;" id="sponsorship">
+                                    @if (Model.approveeventlist[0].sponsorship == "0")
+                                    {
+                                        <option value="0" selected>Yes</option>
+
+                                        <option value="1">No</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="0">Yes</option>
+
+                                        <option value="1" selected>No</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Event Title</label>
+                                <input type="text" class="form-control" style="width: 100%;"  placeholder="Title" id="title" value="@Model.approveeventlist[0].title" required>
+                                <!-- /.input group -->
+                            </div>
+                            <div class="form-group">
+                                <label> subject</label>
+
+                                <textarea  class="form-control" style="width: 100%;"  placeholder="Event subject" id="subject" >@Model.approveeventlist[0].subject</textarea>
+                               
+                            </div>
+                            <div class="form-group">
+                                <label> Listing ID</label>
+                                <input type="text" class="form-control" style="width: 100%;" placeholder="Listing ID" id="listid" value="@Model.approveeventlist[0].listingid" required>
+
+                            </div>
+                            <div class="form-group">
+                                <label> Date</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" style="width: 100%;" id="datepicker1" value="@Model.approveeventlist[0].date" required>
+                                </div>
+                                
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Time</label>
+                                <input type="email" class="form-control" style="width: 100%;" placeholder="Select Time" id="time" value="@Model.approveeventlist[0].time" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Contact Number</label>
+                                <input type="tel" placeholder="Contact Number" style="width: 100%;" class="form-control" id="cno" value="@Model.approveeventlist[0].cno" required>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Show Phone Number on Website?</label>
+                                    <input type="checkbox" id="showphone" @(Model.approveeventlist[0].showphone.Equals(1) ? Html.Raw("checked") : null)>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Post Code</label>
+                                <input type="number" placeholder="Post Code" style="width: 100%;" class="form-control" id="code" value="@Model.approveeventlist[0].code" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Unit/Building</label>
+                                <input type="text" placeholder="Unit/Building" style="width: 100%;" class="form-control" id="unit" value="@Model.approveeventlist[0].unit" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Event Longitude</label>
+                                <input type="text" placeholder="Event Longitude " style="width: 100%;" class="form-control" id="long" value="@Model.approveeventlist[0].lonz" required>
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Country</label>                                
+                                <select class="form-control " style="width: 100%;" onchange="loadtable();" id="country" required>
+                                    <option value="0">Select Country</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>State</label>
+                                <select class="form-control " style="width: 100%;" id="state" onchange="loadCity();" required>
+                                    <option value="0">Select State</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>City</label>
+                                <select class="form-control "  style="width: 100%;"  id="city" onchange="loadReason();" required>
+                                    <option value="0">Select City</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Suburb</label>
+                                <select class="form-control " style="width: 100%;" id="reason"  required>
+                                    <option value="0">Select Suburb</option>
+                                </select>
+                            </div>
+                            <!--
+                            <div class="form-group">
+                                <label>Region</label>
+                                <select class="form-control " style="width: 100%;" id="suburb" required>
+                                    <option value="0">Select Region</option>
+
+                                </select>
+                                
+                            </div>
+
+                                -->
+                            <div class="form-group">
+                                <label>Street</label>
+                                <input type="text" placeholder="Street #" style="width: 100%;" class="form-control" id="street" value="@Model.approveeventlist[0].street">
+                            </div>
+                            <div class="form-group">
+                                <label>Street Name</label>
+                                <input type="text" placeholder="Street Name" style="width: 100%;" class="form-control" id="sname" value="@Model.approveeventlist[0].sname">
+                            </div>
+                            <div class="form-group">
+                                <label>Approve</label>
+                                <select class="form-control " style="width: 100%;" id="apprstatus">
+                                    <option value="">Select State</option>
+                                    @if (Model.approveeventlist[0].status == 0)
+                                    {
+                                        <option value="1" >Approve</option>
+                                        <option value="2" >Not Approve</option>
+                                        <option value="0" selected>Awaiting Approval</option>
+                                    }
+                                    else if (Model.approveeventlist[0].status == 1)
+                                    {
+                                        <option value="1" selected>Approve</option>
+                                        <option value="2">Not Approve</option>
+                                        <option value="0" >Awaiting Approval</option>
+                                    }
+                                    else
+                                    {
+
+                                        <option value="1" >Approve</option>
+                                        <option value="2" selected>Not Approve</option>
+                                        <option value="0">Awaiting Approval</option>
+                                    }
+
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label> Entry Fee</label>
+                                <input type="checkbox" id="ispaid" @(Model.approveeventlist[0].ispaid.Equals(1) ? Html.Raw("checked") : null)>
+                            </div>
+                            <div id="pricebox" class="form-group  @(Model.approveeventlist[0].ispaid.Equals(0) ? Html.Raw("hidden"):null)">
+                                <label>Price</label>
+                                <input type="number" id="price" class="form-control" value="@Model.approveeventlist[0].price">
+                            </div>
+                            <div class="form-group">
+                                <label>Event Latitude</label>
+                                <input type="text" placeholder="Event Latitude" style="width: 100%;" class="form-control" id="late" value="@Model.approveeventlist[0].late">
+                            </div>
+
+
+                            
+                        </div>
+                        <form action="EditEventPicForAdmin" method="post" enctype="multipart/form-data" id="uploadeventpic" name="frm1">
+                            <input type="hidden" name="eventid" id="eventid" value="@Model.approveeventlist[0].eid" />
+                            <input type="hidden" name="cid" value="@Model.approveeventlist[0].uid" />
+                            <input type="hidden" name="type" value="@Model.listype" />
+                            <div class="col-md-6">
+                                <img src="~/images/events/@Model.approveeventlist[0].img" style="height:100px;width:100px;" id="blah" />
+                                <br />
+                                <input type="file" id="img" name="img" />
+                            </div>
+                            <script>
+
+                                function readURL(input) {
+                                    if (input.files && input.files[0]) {
+                                        var reader = new FileReader();
+
+                                        reader.onload = function (e) {
+                                            $('#blah').attr('src', e.target.result);
+                                        }
+
+                                        reader.readAsDataURL(input.files[0]);
+                                    }
+                                }
+
+                                $("#img").change(function () {
+                                    readURL(this);
+                                });
+                            </script>
+                            <div class="col-md-6">
+                                <img src="~/images/events/@Model.approveeventlist[0].img1" style="height:100px;width:100px;" id="blah1" />
+                                <br />
+                                <input type="file" id="img1" name="img1" />
+                            </div>
+                            <script>
+
+                                function readURL1(input) {
+                                    if (input.files && input.files[0]) {
+                                        var reader = new FileReader();
+
+                                        reader.onload = function (e) {
+                                            $('#blah1').attr('src', e.target.result);
+                                        }
+
+                                        reader.readAsDataURL(input.files[0]);
+                                    }
+                                }
+
+                                $("#img1").change(function () {
+                                    readURL1(this);
+                                });
+                            </script>
+                            <div class="col-md-6">
+                                <img src="~/images/events/@Model.approveeventlist[0].img2" style="height:100px;width:100px;" id="blah2" />
+                                <br />
+                                <input type="file" id="img2" name="img2" />
+                            </div>
+
+                            <script>
+
+                                function readURL2(input) {
+                                    if (input.files && input.files[0]) {
+                                        var reader = new FileReader();
+
+                                        reader.onload = function (e) {
+                                            $('#blah2').attr('src', e.target.result);
+                                        }
+
+                                        reader.readAsDataURL(input.files[0]);
+                                    }
+                                }
+
+                                $("#img2").change(function () {
+                                    readURL2(this);
+                                });
+                            </script>
+                     
+
+                        </form>
+                        <div class="col-md-12">
+                            <div class="form-group">
+
+                                <div id="mapdiv" style="width:100%;height:400px;"></div>
+
+                                <script async defer
+                                        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI&callback=mapa">
+                                </script>
+
+                            </div>
+                        </div>
+                        <!-- /.col -->
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input placeholder="Event Description" class="form-control" id="descr" rows="5" type="hidden"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /.row -->
+
+            </div>
+
+
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary" onclick="EditCar();">Edit Event Detail</button>
+            </div>
+
+
+            <!-- /.box -->
+            <!-- /.row -->
+        </section>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+    var ispaid = '@Model.approveeventlist[0].ispaid';
+    $("#ispaid").change(function () {
+        if (this.checked) {
+            ispaid = 1;
+            $('#pricebox').removeClass('hidden');
+        } else {
+            ispaid = 0;
+            $('#pricebox').addClass('hidden');
+
+        }
+    });
+    
+
+    function EditCar() {
+
+        try {
+        var isvalid = true;
+        var category = $("#category").val();
+
+        if (category == "0") {
+
+            /*    lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Category',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#category').focus();
+                    }
+                })*/
+
+            $('#category').css('border-color', 'red');
+            isvalid = false;
+
+        } else {
+            $('#category').css('border-color', '');
+            isvalid = true;
+        }
+
+        var title = $("#title").val();
+        //alert(title);
+        if (title == "") {
+            
+            /*lnv.alert({
+                title: ' ',
+                content: 'Please Enter Title',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $('#title').focus();
+                }
+            })*/
+            $('#title').css('border-color', 'red');
+            isvalid = false;
+        }else{
+            $('#title').css('border-color', '');
+            isvalid = true;
+        }
+        var subject = $("#subject").val();
+        //alert(subject);
+        if (subject == "") {
+
+            /*lnv.alert({
+                title: ' ',
+                content: 'Please Enter Subject',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $('#subject').focus();
+                }
+            })*/
+            $('#subject').css('border-color', 'red');
+            isvalid = false;
+        
+        }else{
+            $('#subject').css('border-color', '');
+            isvalid = true;
+        }
+
+        var date = $("#date").val();
+        if (date == "") {
+
+            /*
+            lnv.alert({
+                title: ' ',
+                content: 'Please Enter Date',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $('#date').focus();
+                }
+            })*/
+            $('#date').css('border-color', 'red');
+            isvalid = false;
+        }else{
+            $('#date').css('border-color', '');
+            isvalid = true;
+        }
+        var time = $("#time").val();
+        ///alert(time);
+        if (time == "") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Enter Time',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     $('#time').focus();
+                 }
+             })*/
+            $('#time').css('border-color', 'red');
+            isvalid = false;
+        }else{
+        
+            $('#time').css('border-color', '');
+            isvalid = true;
+        }
+
+        var cno = $("#cno").val();
+        if (cno == "") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Enter Contact Number',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     $('#cno').focus();
+                 }
+             })*/
+            $('#cno').css('border-color', 'red');
+            isvalid = false;
+        }else{
+            $('#cno').css('border-color', '');
+            isvalid = true;
+        }
+        //alert(cno);
+        var country = $("#country").val();
+        if (country == "0") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Enter Country',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     $('#country').focus();
+                 }
+             })*/
+            $('#country').css('border-color', 'red');
+            isvalid = false;
+        }else{
+        
+            $('#country').css('border-color', '');
+            isvalid = true;
+        }
+        //alert(country);
+        var state = $("#state").val();
+        if (state == "0") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Select State',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     $('#state').focus();
+                 }
+             })
+             */
+            $('#state').css('border-color', 'red');
+            isvalid = false;
+        }else{
+        
+            $('#state').css('border-color', '');
+            isvalid = true;
+        }
+        ///alert(state);
+        var city = $("#city").val();
+        if (city == "0") {
+
+            /*lnv.alert({
+                title: ' ',
+                content: 'Please Select City',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $('#city').focus();
+                }
+            })
+            */
+            $('#city').css('border-color', 'red');
+            isvalid = false;
+        }else{
+        
+            $('#city').css('border-color', '');
+            isvalid = true;
+        }
+        //alert(city);
+        var reason = $("#reason").val();
+        //alert(reason);
+        if (reason == "0") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Select Suburb',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     $('#reason').focus();
+                 }
+             })
+             */
+            $('#reason').css('border-color', 'red');
+            isvalid = false;
+        }else{
+        
+            $('#reason').css('border-color', '');
+            isvalid= true;
+        }
+        /*var suburb = $("#suburb").val();
+        //alert(suburb);
+        if (suburb == "0") {
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Select Region',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+
+                    $('#suburb').focus();
+                }
+            })
+
+            return false;
+        }*/
+        var code = $("#code").val();
+        //alert(code);
+        if (code == "") {
+
+            /*lnv.alert({
+                title: ' ',
+                content: 'Please Enter Code',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $('#code').focus();
+                }
+            })*/
+            $('#code').css('border-color', 'red');
+            isvalid = false;    
+        }else{
+        
+            $('#code').css('border-color', '');
+            isvalid = true;
+        }
+
+        var unit = $("#unit").val();
+        if (unit == "") {
+            /*
+            lnv.alert({
+                title: ' ',
+                content: 'Please Enter Unit/Building',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $('#unit').focus();
+                }
+            })*/
+            $('#unit').css('border-color', 'red');
+            isvalid = false;
+            
+        }else{
+        
+            $('#unit').css('border-color', '');
+            isvalid = true;
+        }
+        var street = $("#street").val();
+        if (street == "") {
+            /*
+            lnv.alert({
+                title: ' ',
+                content: 'Please Enter Street',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $('#street').focus();
+                }
+            })
+            */
+            $('#street').css('border-color', 'red');
+            isvalid = false;
+        }else{
+        
+            $('#street').css('border-color', '');
+            isvalid = true;
+        }
+
+        //alert(street);
+        var sname = $("#sname").val();
+        //alert(sname);
+        if (sname == "") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Street Name',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     $('#sname').focus();
+                 }
+             })*/
+            $('#sname').css('border-color', 'red');
+            isvalid = false;
+        }else{
+            $('#sname').css('border-color', '');
+            isvalid = true;
+        }
+        var descr = 'hi';//$("#descr").val();
+       /* //alert(descr);
+        if (descr == "") {
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Enter Description',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $('#descr').focus();
+                }
+            })
+            return false;
+        }*/
+        var late = $("#late").val();
+        //alert(late);
+        if (late == "") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Select Position from Map',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     //$('#sname1').focus();
+                 }
+             })*/
+            $('#late').css('border-color', 'red');
+            isvalid = false;
+        }else{
+            $('#late').css('border-color', '');
+            isvalid = true;
+
+        }
+
+
+        var long = $("#long").val();
+        if (long == "") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Select Position from MAP',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     //$('#sname1').focus();
+                 }
+             })*/
+            $('#long').css('border-color', 'red');
+            isvalid = false;
+        }else{
+        
+            $('#long').css('border-color', '');
+            isvalid = true;
+        }
+        // alert(long);
+        var showphonenew = '@Model.approveeventlist[0].showphone';
+        var price = 0;
+        var showphone = $('#showphone:checked').val();
+        if (showphone == "on") {
+
+            var price = $("#price").val();
+            if (price == "") {
+
+                /*lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Price',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#price').focus();
+                    }
+                })
+                */
+                $('#price').css('border-color', 'red');
+                isvalid = false;
+            } else {
+
+            
+                $('#price').css('border-color', '');
+                isvalid = true;
+            }
+
+            showphonenew = "1";
+        }
+        else {
+
+            showphonenew = "0";
+        }
+
+        var listid = $('#listid').val();
+        if (listid == "") {
+
+            /* lnv.alert({
+                 title: ' ',
+                 content: 'Please Enter Listing ID',
+                 alertBtnText: 'Okay',
+                 alertHandler: function () {
+                     $('#listid').focus();
+                 }
+             })*/
+            $('#listid').css('border-color', 'red');
+            isvalid = false;
+        }else{
+            $('#listid').css('border-color', '');
+            isvalid = true;
+        }
+
+        var eid = '@Model.approveeventlist[0].eid';
+            var sponsorship = $('#sponsorship').val();
+            if (isvalid == true) {
+                var obj = { "eid": eid, "title": $("#title").val(), "subject": $("#subject").val(), "date": $("#datepicker1").val(), "time": $("#time").val(), "cno": $("#cno").val(), "country": $("#country").val(), "state": $("#state").val(), "city": $("#city").val(), "reason": $("#reason").val(), "code": $("#code").val(), "unit": $("#unit").val(), "street": $("#street").val(), "sname": $("#sname").val(), "descr": $("#descr").val(), "late": $("#late").val(), "lonz": $("#long").val(), "cat": $("#category").val(), "price": price, "ispaid": ispaid, "status": $('#apprstatus').val(), "showphone": showphonenew, "listid": listid, "sponsorship": sponsorship };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/EditEvent',
+                    data: JSON.stringify(obj),
+
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+
+                            lnv.alert({
+                                title: ' ',
+                                content: 'Event Updated Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+
+                                    $('#uploadeventpic').submit();
+
+                                }
+                            })
+
+
+                        }
+                    },
+                    error: function () {
+                        alert("Error");
+                    }
+                });
+
+
+            } else {
+
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Fill All missing fields',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                       
+
+                    }
+                })
+
+            }
+            }catch(e){
+            
+            }
+    }
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadCat();
+    });
+
+    function loadCat() {
+        var catid = '@Model.approveeventlist[0].cat';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadEventCat',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                $('#category').empty();
+                $("#category").append($("<option></option>").val("0").html("Select Category"));
+                for (var i = 0; i <= result.catlist.length -1 ; i++) {
+                    if (result.catlist[i].status == 1) {
+                        if (result.catlist[i].ecat_id == catid) {
+
+                            $("#category").append($("<option selected></option>").val(result.catlist[i].ecat_id).html(result.catlist[i].category));
+
+
+                        } else {
+
+                            $("#category").append($("<option></option>").val(result.catlist[i].ecat_id).html(result.catlist[i].category));
+                        }
+                    }
+                    
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#category').empty();
+                $("#category").append($("<option></option>").val("0").html("Select Category"));
+
+            }
+        });
+    }
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadCountry();
+    });
+
+    function loadCountry() {
+        var countryid = '@Model.approveeventlist[0].country';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/GetCountry',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+               $('#country').empty();
+                
+               $("#country").append($("<option></option>").val("0").html("Select Country"));
+                for (var i = 0; i <= result.countrylist.length -1 ; i++) {
+                    if (result.countrylist[i].status == 1) {
+                        if (result.countrylist[i].count_id == countryid) {
+                            $("#country").append($("<option selected></option>").val(result.countrylist[i].count_id).html(result.countrylist[i].countryname));
+
+                            loadtable();
+
+                        } else {
+                            $("#country").append($("<option></option>").val(result.countrylist[i].count_id).html(result.countrylist[i].countryname));
+
+                        }
+                    }
+                    // $("#tblDetails").append("<tr><td>" + j + "</td><td>" + result.countrylist[i].countryname + "</td><td>" + result.countrylist[i].status + "</td><td> <img src=@Url.Content("~/Content/admin/edit.gif") onclick=FetchCountry('" + result.countrylist[i].count_id + "')></a></td><td><img src=@Url.Content("~/Content/admin/delete.gif") ></td></tr>");
+
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#country').empty();
+
+                $("#country").append($("<option></option>").val("0").html("Select Country"));
+
+            }
+        });
+
+    }
+
+</script>
+.
+<script type="text/javascript">
+    function loadtable() {
+        var count_id = $('#country option:selected').val();
+        var stateid = '@Model.approveeventlist[0].state';
+        //  alert(count_id);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ count_id: '" + $("#country").val() + "' }",
+            url: '/Home/GetState',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#state').empty();
+                $("#state").append($("<option></option>").val("0").html("Select State"));
+                for (var i = 0; i <= result.statelist.length - 1 ; i++) {
+
+                    if (result.statelist[i].status == 1) {
+                        if (result.statelist[i].state_id == stateid) {
+
+                            $("#state").append($("<option selected></option>").val(result.statelist[i].state_id).html(result.statelist[i].state));
+
+                            loadCity();
+                        } else {
+
+                            $("#state").append($("<option></option>").val(result.statelist[i].state_id).html(result.statelist[i].state));
+                        }
+                    }
+                    // $("#tblDetails").append("<tr><td>" + j + "</td><td>" + result.statelist[i].state + "</td><td>" + result.statelist[i].status + "</td><td> <img src=@Url.Content("~/Content/admin/edit.gif") onclick=FetchState('" + result.statelist[i].state_id + "')></a></td><td><img src=@Url.Content("~/Content/admin/delete.gif") ></td></tr>");
+                    // j++;
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#state').empty();
+                $("#state").append($("<option></option>").val("0").html("Select State"));
+
+            }
+        });
+
+    }
+
+</script>
+
+<script type="text/javascript">
+    function loadCity() {
+        // var make = $('#make option:selected').val();
+        //  alert(count_id);
+        var cityid = '@Model.approveeventlist[0].city';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "' }",
+            url: '/Admin/LoadCity',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#city').empty();
+                $("#city").append($("<option></option>").val("0").html("Select City"));
+                
+                for (var i = 0; i <= result.citylist.length-1; i++) {
+                    if (result.citylist[i].status == 1) {
+                        if (result.citylist[i].city_id == cityid) {
+
+                            $("#city").append($("<option selected></option>").val(result.citylist[i].city_id).html(result.citylist[i].city));
+
+                            loadReason();
+
+                        } else {
+
+                            $("#city").append($("<option></option>").val(result.citylist[i].city_id).html(result.citylist[i].city));
+                        }
+
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#city').empty();
+                $("#city").append($("<option></option>").val("0").html("Select City"));
+
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    function loadReason() {
+        var regnid = '@Model.approveeventlist[0].reason';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "' ,city:'" + $("#city").val() + "'}",
+            url: '/Admin/LoadReason',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#reason').empty();
+                $("#reason").append($("<option></option>").val("0").html("Select Region"));
+
+                for (var i = 0; i <= result.reasonlist.length - 1; i++) {
+                    if (result.reasonlist[i].status == 1) {
+                        if (regnid == result.reasonlist[i].reas_id) {
+                            $("#reason").append($("<option selected></option>").val(result.reasonlist[i].reas_id).html(result.reasonlist[i].reason));
+
+                            loadNewRegion();
+                        } else {
+
+                            $("#reason").append($("<option></option>").val(result.reasonlist[i].reas_id).html(result.reasonlist[i].reason));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#reason').empty();
+                $("#reason").append($("<option></option>").val("0").html("Select Region"));
+
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    function loadNewRegion() {
+       // var make = $('#make option:selected').val();
+        //  alert(count_id);
+       // var suburbid = $('#suburbid').val();
+       // var regionid = $('#regionid').val();
+        //alert(regionid);
+        var suburbid = '@Model.approveeventlist[0].suburb'
+        
+        //alerts(suburbid);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "',city: '" + $('#city').val() + "',region: '" + $('#reason').val() + "' }",
+            url: '/Admin/LoadNewRegion',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                $('#suburb').empty();
+                $("#suburb").append($("<option value='0'>Select Region</option>"));
+        
+                for (var i = 0; i <= result.newregionlist.length - 1 ; i++) {
+                
+                    if (result.newregionlist[i].status == 1) {
+                       // alert("hi");
+                        if (result.newregionlist[i].regionid == suburbid) {
+                            $("#suburb").append($("<option selected></option>").val(result.newregionlist[i].regionid).html(result.newregionlist[i].regionname));
+                        } else {
+
+                            $("#suburb").append($("<option></option>").val(result.newregionlist[i].regionid).html(result.newregionlist[i].regionname));
+                        }
+                    }
+                }
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+               
+
+            }
+        });
+    }
+</script>

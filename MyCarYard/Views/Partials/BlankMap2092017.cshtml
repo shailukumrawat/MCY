@@ -1,0 +1,167 @@
+﻿@*<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI"></script>*@
+<script type="text/javascript">
+    var userlistLocal = "";
+    var MaptypeLocal = '';
+    loadMapMarker(0);
+
+    function loadMapMarker(Maptype) {
+
+        MaptypeLocal = Maptype;
+        if (Maptype === 0) {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: '/Home/GetLeteLong',
+                asyn: false,
+                cache: false,
+                success: function (result) {
+                    userlistLocal = result.userlist;
+                    //console.log(">>Dealer Count : " + userlistLocal.length);
+                    initialize();
+                    // if (result.userlist.length == 0) { }
+                }
+            });
+        }
+        else {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: '/Home/GetLeteLongEvent',
+                asyn: false,
+                cache: false,
+                success: function (result) {
+                    userlistLocal = result.userlist;
+                    // console.log(">>Event Count : " + JSON.stringify(userlistLocal));
+                    initialize();
+                    // if (result.userlist.length == 0) { }
+                }
+            });
+        }
+    }
+    function initialize() {
+        navigator.geolocation.getCurrentPosition(function (p) { BindMap(new google.maps.LatLng(p.coords.latitude, p.coords.longitude), p.coords.latitude, p.coords.longitude); }, function (p) { BindMap(new google.maps.LatLng(51.508742, -0.120850), 51.508742, -0.120850); }, { timeout: 10000 });
+
+        function BindMap(LatLng, fun_latitude, fun_longitude) {
+
+            var mapOptions = {
+                center: LatLng,
+                zoom: 2,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                styles: [{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{ "color": "#444444" }] }, { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#f2f2f2" }] }, { "featureType": "poi", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road", "elementType": "all", "stylers": [{ "saturation": -100 }, { "lightness": 45 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "visibility": "simplified" }] }, { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "color": "#3599E6" }, { "visibility": "on" }] }],
+                gestureHandling: "greedy",
+
+            };
+            var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+
+            if (userlistLocal.length === 0) {
+                var marker = new google.maps.Marker({
+                    position: LatLng,
+                    map: map,
+                    title: "Your location, Latitude: " + fun_latitude + "Longitude: " + fun_longitude,
+                    icon: '/Content/images/marker.png'
+                });
+
+                google.maps.event.addListener(marker, "click", function (e) {
+                    var infoWindow = new google.maps.InfoWindow();
+                    infoWindow.setContent(marker.title);
+                    infoWindow.open(map, marker);
+                });
+
+
+            }
+            else {
+                //debugger;
+
+                for (var i = 0; i <= userlistLocal.length - 1; i++) {
+                    var data = userlistLocal[i];
+                    var titleName = ""; var prev_infowindow = false;
+                    if (MaptypeLocal === 0) { titleName = data.name; } else { titleName = data.title; }
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(userlistLocal[i].late, userlistLocal[i].lonz),
+                        map: map,
+                        title: titleName,
+                        icon: '/Content/images/marker.png'
+                    });
+                    (function (marker, data) {
+
+
+
+                        google.maps.event.addListener(marker, "click", function (e) {
+                            google.maps.event.addListener(infoWindow, 'domready', function() {
+                                      $('.gm-style-iw').parent('div').addClass('custom_iw');
+                                       $('.gm-style-iw').children('div').css('display', 'block');
+                                      $('.gm-style-iw').prev().addClass('custom_iw_inside');
+                              });
+                            var infoWindow = new google.maps.InfoWindow();
+                            //console.log(">>Event Count2 : " + JSON.stringify(data) + ">>> " );
+                            if (MaptypeLocal === 0) {
+
+                                var path = '@Url.Content("~/images/logos/")' + data.logo;
+                                if (data.logo == "") {
+                                    path = "/content/images/map_dealer_logo.png";
+                                }
+                                // infoWindow.setContent("<table class='table_view' celpading='1' celspacing='1' ><tr><td><b>" + data.name + "</b></td></tr><tr><td><a href='@Url.Action("CarMapListing","Home")?uid=" + data.id + "'><img src='" + path + "' style='width:100px;height:100px;margin:2px' ></a></td></tr><tr><td>" + data.street + ", " + data.resonname + ", " + data.zip + ", " + data.statename + " " + data.countryname + "</td></tr><tr><td><a href='@Url.Action("CarListing", "Home")?uid=" + data.id + "'>" + data.carcount + " Listings</a></td><td><a href='@Url.Action("EventListing", "Home")?uid=" + data.id + ">" + data.eventcount + " Events</a></td></tr></table>");
+                                infoWindow.setContent("<table class='table_view' celpading='1' celspacing='1'><tr><td colspan ='2'><b>" + data.name + "</b></td></tr><tr><td colspan ='2'><a href='@Url.Action("UserCarMapListing","Home")?uid=" + data.id + "'><img src='" + path + "' style='width:100px;height:100px;margin:2px' ></a></td></tr><tr><td colspan ='2'> <span>Address:</span>" + data.resonname + ", " + data.zip + ", " + data.street + ", " + data.statename + " " + data.countryname + "</td></tr><tr><td><a href='@Url.Action("CarListing", "Home")?uid=" + data.id + "'>" + data.carcount + " Listings</a></td><td><a href='@Url.Action("EventListing", "Home")?uid=" + data.id + "'>" + data.eventcount + " Events </a> </td></tr></table>");
+                            } else {
+                                var path = '@Url.Content("~/images/events/")' + data.img;
+                                if (data.img == "") {
+                                    path = "/content/images/map_dealer_logo.png";
+                                }
+                                //infoWindow.setContent("<table celpading='2' celspacing='2' ><tr><td rowspan='4'><a href='@Url.Action("EventDetails","Home")?eid=" + data.eid + "'><img src='" + path + data.img + "' style='width:100px;height:100px;margin:5px' ></a></td><td><b>" + data.category + " - " + data.title + "</b></td></tr><tr><td >" + data.subject.substring(0, 40) + "</td></tr><tr><td >" + data.going + " - People Going</td></tr><tr><td ><a href='@Url.Action("EventDetails","Home")?eid=" + data.eid + "'>View Detail</a></td></tr></table>");
+                                infoWindow.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data.category + " - " + data.title + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td>" + data.city_name + ", " + data.state_name + ", " + data.country_name + ", " + data.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data.eid + "'>View Detail</a></td></tr></tbody></table>");
+                            }
+                            if (prev_infowindow) {
+                                prev_infowindow.close();
+                            }
+
+                            map.setCenter(marker.getPosition());
+                            animateMapZoomTo(map, 7)
+                            prev_infowindow = infoWindow;
+                            infoWindow.open(map, marker);
+                            if (marker.getAnimation() !== null) {
+                                marker.setAnimation(null);
+                            } else {
+                                marker.setAnimation(google.maps.Animation.BOUNCE);
+                                setTimeout(function () {
+                                    marker.setAnimation(null)
+                                }, 1420);
+                            }
+
+                            function infoCallback(infowindowHtml, marker) {
+                                return function () {
+                                    infowindow.close();
+                                    // update the content of the infowindow before opening it
+                                    infowindow.setContent(infowindowHtml)
+                                    infowindow.open(map, marker);
+
+                                };
+                            }
+
+
+                        });
+
+                    })(marker, data);
+
+                    function animateMapZoomTo(map, targetZoom) {
+                        var currentZoom = arguments[2] || map.getZoom();
+                        if (currentZoom != targetZoom) {
+                            google.maps.event.addListenerOnce(map, 'zoom_changed', function (event) {
+                                animateMapZoomTo(map, targetZoom, currentZoom + (targetZoom > currentZoom ? 1 : -1));
+                            });
+
+                            setTimeout(function () { map.setZoom(currentZoom) }, 80);
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+
+</script>
+
+<div id="dvMap" style="width: 848px; height: 500px">
+</div>

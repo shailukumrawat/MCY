@@ -1,0 +1,341 @@
+﻿@model MyCarYard.Models.SpeedTypeModel
+@{
+    ViewBag.Title = "SpeedType Master";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+}
+<input type="hidden" id="transid" />
+<div class="wrapper">
+
+
+    <!-- Left side column. contains the logo and sidebar -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-default">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+
+
+                        <div class="alert alert-success alert-dismissible" id="myDiv" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucessfully!</h4>
+                            SpeedType Added Successfully
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">New SpeedType</h3>
+
+                    <div class="box-tools pull-right">
+                        @*<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label for="PlanName"> Speed Type<span style="color:red;font-size:large;">*</span></label>
+                                <input type="text" class="form-control" id="trans" placeholder="Speed Type" value="">
+
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label>Status<span style="color:red;font-size:large;">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="1">Activate</option>
+                                    <option value="0">Deactivate</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary" id="save" onclick="SaveTrans();">Save SpeedType</button>
+                    <button type="submit" class="btn btn-primary hidden" id="update" onclick="UpdateTrans();">Update SpeedType</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Transmision List</h3>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-bordered table-striped" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Speedtype</th>
+
+                                        <th>Status</th>
+                                        <th>View/Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblDetails">
+                                    @if (Model.speedtypelist.Any())
+                                    {
+
+                                        int j = 1;
+                                        for (int i = 0; i <= Model.speedtypelist.Count - 1; i++)
+                                        {
+
+                                            <tr>
+                                                <td>@j</td>
+                                                <td>@Model.speedtypelist[i].speedtypename</td>
+
+                                                <td>@Model.speedtypelist[i].status</td>
+                                                <td><a href="" onclick="return getData('@Model.speedtypelist[i].speedtypeid','@Model.speedtypelist[i].speedtypename','@Model.speedtypelist[i].status')">Edit</a> </td>
+                                                <td><a href="" onclick="return deleteTransmision('@Model.speedtypelist[i].speedtypeid')"> Delete</a></td>
+                                            </tr>
+                                            j++;
+                                        }
+                                    }
+
+
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+
+    function getData(transid, trans, status)
+    {
+        $('#transid').val(transid);
+        $('#trans').val(trans);
+        $('#status').val(status);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('#update').removeClass('hidden');
+        $('#save').addClass('hidden');
+        return false;
+
+    }
+</script>
+
+<script>
+
+    function UpdateTrans() {
+        var transid = $('#transid').val();
+        var obj = {"speedtypeid": transid ,"speedtypename": $("#trans").val() ,"status": $("#status").val() };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Admin/UpdateSpeedtype',
+            data: JSON.stringify(obj),
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                if (response.status == "Success") {
+
+                    lnv.alert({
+                        title: '',
+                        content: 'Speedtype Updated Successfully',
+                        alertBtnText: 'Okay',
+                        alertHandler: function () {
+                            var url = '@Url.Action("SpeedTypeMaster", "Admin")';
+                            window.location = url;
+
+                        }
+                    });
+                    $('.alert-btn').focus();
+
+
+                }
+            },
+            error: function () {
+                //alert("Error");
+            }
+        });
+
+    }
+
+</script>
+
+<script type="text/javascript">
+    function SaveTrans() {
+        
+        try {
+            var isvalid = true;
+            var speedtype = $("#trans").val();
+            var status = $("#status").val();
+
+            if (speedtype.trim() == "" || speedtype == undefined) {
+
+                /*
+                lnv.alert({
+                    title: '',
+                    content: 'Please Enter SpeedType',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                        $("#trans").focus();
+
+                    }
+                })*/
+                $('#trans').css('border-color', 'red');
+                isvalid = false;
+
+            } else {
+                $('#trans').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (status == "" || status == null || status == undefined) {
+
+                /*lnv.alert({
+                    title: '',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                        $("#status").focus();
+
+                    }
+                })*/
+                $('#status').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#trans').css('border-color', '');
+                isvalid = true;
+            }
+            if (isvalid == true) {
+                var obj = { "speedtypename": $("#trans").val(), "status": $("#status").val() };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Admin/AddSpeedType',
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+                            lnv.alert({
+                                title: '',
+                                content: 'Speedtype Added Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+                                    var url = '@Url.Action("SpeedTypeMaster", "Admin")';
+                                    window.location = url;
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        }
+                    },
+                    error: function () {
+                        //alert("Error");
+                    }
+                });
+            } else {
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please Fill All missing fields',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+
+                    }
+                });
+                $('.alert-btn').focus();
+            }
+        } catch (e) {
+
+        }
+    }
+</script>
+
+
+<script>
+
+    function deleteTransmision(id) {
+
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to Delete SpeedType ?',
+            confirmHandler: function () {
+                // confirm callback
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Admin/DeleteSpeedType',
+                data: "{speedtypeid: '" + id + "'}",
+                dataType: "json",
+                async: false,
+                success: function (response) {
+                    if (response.status == "Success") {
+                        lnv.alert({
+                            title: '',
+                            content: 'Transmission Deleted Successfully',
+                            alertBtnText: 'Okay',
+                            alertHandler: function () {
+                                var url = '@Url.Action("SpeedTypeMaster", "Admin")';
+                                window.location = url;
+
+                            }
+                        });
+                        $('.alert-btn').focus();
+                    }
+                },
+                error: function () {
+                    //alert("Error");
+                }
+            });
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+        return false;
+    }
+</script>

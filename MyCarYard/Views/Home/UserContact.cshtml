@@ -1,0 +1,170 @@
+﻿
+@{
+    ViewBag.Title = "Contact US";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+<div class="col-sm-7">
+    <div class="map_contain">
+        <div class="mngevnt_contain ">
+            <div class="describe_contain">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h4 class="seller_head">Get In Touch With Us</h4>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="name" id="cname">
+                                    <label id="cnamel" style="color:red;display:none"></label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <input type="email" class="form-control" placeholder="Email Address" id="cemailid">
+                                    <label id="cemaill" style="color:red;display:none"></label>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Subject" id="csubject">
+                                    <label id="csubjectl" style="color:red;display:none"></label>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <textarea placeholder="Message" class="form-control" id="cmessage"></textarea>
+                                    <label id="cmessagel" style="color:red;display:none"></label>
+                                    <label id="cmessage2" style="color:green;display:none"></label>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="map_btn">
+                                    <button class="cmn_btn second_btn" onclick="ContactUS();">Submit </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="contact_desc">
+                            <h4 class="seller_head">Contact info</h4>
+                            <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+                            <a href="#">info@mycaryard.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>     
+<script>
+
+    function ContactUS() {
+
+        try {
+            var isvalid = true;
+            var ename = $('#cname').val().trim();
+            if (ename == "" || ename == null || ename == undefined) {
+                $('#cnamel').css("display", "block");
+                $('#cnamel').html("Please Enter Name");
+                isvalid = false;
+            } else {
+                $('#cnamel').css("display", "none");
+                $('#cnamel').html("");
+
+            }
+            var regex = /^[a-z0-9\.\_%+-]+@@[a-z0-9\.\-]+\.[a-z]{2,4}$/i;
+
+            var emailid = $('#cemailid').val().trim();
+
+
+            if (emailid == "" || emailid == null || emailid == undefined) {
+                $('#cemaill').css("display", "block");
+                $('#cemaill').html("Please Enter Email Address");
+                isvalid = false;
+            } else {
+                $('#cemaill').css("display", "none");
+                $('#cemaill').html("");
+
+            }
+            if (emailid.search(regex)) {
+                $('#cemaill').css("display", "block");
+                $('#cemaill').html("Please Enter Valid Email Id");
+                isvalid = false;
+
+            } else {
+                $('#cemaill').css("display", "none");
+                $('#cemaill').html("");
+                //isvalid = true;
+
+            }
+
+
+            var csubject = $('#csubject').val().trim();
+            if (csubject == "" || csubject == null || csubject == undefined) {
+                $('#csubjectl').css("display", "block");
+                $('#csubjectl').html("Please Enter Subject");
+                isvalid = false;
+            } else {
+                $('#csubjectl').css("display", "none");
+                $('#csubjectl').html("");
+            }
+
+            var cmessage = $('#cmessage').val().trim();
+            if (cmessage == "" || cmessage == null || cmessage == undefined) {
+                $('#cmessagel').css("display", "block");
+                $('#cmessagel').html("Pleaes Enter Message");
+                isvalid = false;
+
+            } else {
+                $('#cmessagel').css("display", "none");
+                $('#cmessagel').html("");
+            }
+
+            if (isvalid == true) {
+
+                var obj = { "name": ename, "email": emailid, "subject": csubject, "msg": cmessage };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    //url is the path of our web method (Page name/function name)
+                    dataType: "json",
+                    data: JSON.stringify(obj),
+                    url: '/Admin/ContactUs',
+                    asyn: false,
+                    cache: false,
+                    //called on jquery ajax call success
+                    success: function (result) {
+                        if (result.status == "Success") {
+
+                            $('#cmessage2').html("Your Enquiry Sent Successfully.");
+                            $('#cname').val('');
+                            $('#cemailid').val('');
+                            $('#csubject').val('');
+                            $('#cmessage').val('');
+                        }
+                    },
+                    //called on jquery ajax call failure
+                    error: function ajaxError(result) {
+                        // alert("Invalid");
+                        isvalid = false;
+                    }
+                });
+
+
+
+            }
+
+
+            return isvalid;
+        } catch (e) {
+
+            console.log(e);
+        }
+    }
+</script>

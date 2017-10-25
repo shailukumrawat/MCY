@@ -1,0 +1,977 @@
+﻿
+@{
+    ViewBag.Title = "UserProfile";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+<script>
+    var map;
+    var country = "";
+    var geocoder;var marker;
+    function mapa(latval,longval)
+    {
+        geocoder = new google.maps.Geocoder();
+        var opts = {
+            'center': new google.maps.LatLng(latval, longval),
+            'zoom':11, 'mapTypeId': google.maps.MapTypeId.ROADMAP }
+        map = new google.maps.Map(document.getElementById('mapdiv'),opts);
+
+        google.maps.event.addListener(map,'click',function(event)
+        { placeMarker(event.latLng);
+            //document.getElementById('latlongclicked').value = event.latLng.lat() + ', ' + event.latLng.lng()
+            $('#late').val(event.latLng.lat())
+            $('#long').val(event.latLng.lng())
+        })
+
+        google.maps.event.addListener(map,'mousemove',function(event)
+        {
+            //alert("Hi");
+            //$('#latitute').val(event.latLng.lat())
+            //$('#longitute').val(event.latLng.lng())
+            // document.getElementById('latlong').innerHTML = event.latLng.lat() + ', ' + event.latLng.lng()
+        });
+        function placeMarker(location) {
+
+            if (marker == null)
+            {
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                }); } else {   marker.setPosition(location); } }
+    }
+</script>
+<input id="countryid" type="hidden" />
+<input id="stateid" type="hidden" />
+<input id="cityid" type="hidden" />
+<input id="regionid" type="hidden" />
+<input id="suburbid" type="hidden" />
+<div class="col-sm-7">
+    <div class="mngevnt_contain">
+        <div class="map_contain">
+            <div class="detail_head event_head prfl">
+
+                <h4 class="detail_heading">Welcome! <label id="username"></label> </h4>
+            </div>
+            <div class="describe_contain">
+                <h4 class="seller_head">Personal Info</h4>
+                <div class="row">
+                    @if (Session["type"].ToString() == "Paid")
+                    {
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <form action="UploadBusinessLogo" method="post" id="uploadlogo" name="frm1" enctype="multipart/form-data">
+                                    <input type="hidden" id="custlid" name="custlid" value="@Session["id"].ToString()" />
+                                    <div class="event_upload userprofile_upload">
+                                        <span>Company logo</span>
+                                        <ul>
+                                            <li>
+
+                                                <i class="flaticon1-arrows"></i>
+                                                @*<input type="file" class="event_upldnew" id="buslogo" name="buslogo" onchange="loadFile(event)">*@
+                                                <a href="#" data-toggle="modal" class="event_upldnew" id="img" data-id="0" data-target="#imgcrop_modal"></a>
+                                                Upload Company Logo
+                                                <img id="output" class="upload_img" />
+                                                <input type="hidden" id="hdoutput" name="hdoutput" />
+                                            </li>
+                                        </ul>
+                                        <input type="hidden" id="addcarid" name="addcarid" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    }
+
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Display Name</label>
+                            <input type="text" class="form-control" placeholder="Display  Name" id="dname" required>
+                        </div>
+                    </div>
+                    @if (Session["type"].ToString() == "Paid")
+                    {
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Business Name</label>
+                                <input type="text" class="form-control" placeholder="Business Name" id="bname" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" style="display:none;">
+                            <div class="form-group">
+                                <label>Customer ID</label>
+                                <input type="text" class="form-control" placeholder="Customer ID" id="customerid" required readonly>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-sm-12">
+                        <label class="profl_lbl">User Name to be displayed on website</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" class="form-control" placeholder="FirstName" id="fname" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" class="form-control" placeholder="Last Name" id="lname" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" placeholder="Email Address" value="@Session["email"]" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select class="form-control slt_cstm" id="gender" required>
+                                <option value="0">Gender</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="tel" placeholder="Contact Details" class="form-control" id="cno" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group my_fmg">
+                            <label><input type="checkbox" id="showphone" /> Show Phone Number Public ?</label>
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Country</label>
+                            <select class="form-control slt_cstm" id="country" onchange="loadtable(); loadCity(); loadRegion(); " required>
+                                <option value="0">Select Country</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>State</label>
+                            <select class="form-control slt_cstm" id="state" onchange="loadCity(); loadRegion(); " required>
+                                <option value="0">Select State</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>City</label>
+                            <select class="form-control slt_cstm" id="city" onchange="loadRegion();" required>
+                                <option value="0">Select City</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Region</label>
+                            <select class="form-control slt_cstm" id="region" required>
+                                <option value="0">Select Region</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Suburb</label>
+                            <select class="form-control slt_cstm" id="suburb" required>
+                                <option value="0">Select Suburb</option>
+                            </select>
+
+                        </div>
+                    </div>-->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Zip Code</label>
+                            <input type="number" placeholder="Zipcode" class="form-control" id="zip" required>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Street</label>
+                            <input type="text" placeholder="Street #" class="form-control" id="street" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Street Name</label>
+                            <input type="text" placeholder="Street Name" class="form-control" id="streetname" required>
+                        </div>
+                    </div>
+                    @if (Session["type"].ToString() == "Paid")
+                    {
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Latitude</label>
+                                <input type="text" placeholder="Latitude Details" class="form-control" id="late" readonly>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Longitude</label>
+                                <input type="text" placeholder="Longitude Details" class="form-control" id="long" readonly>
+                            </div>
+                        </div>
+                    }
+                    @*  <div class="col-sm-12">
+                            <h4 class="seller_head">Other Info</h4>
+                        </div>*@
+
+
+                    <input type="hidden" placeholder="Lorem Ipsum" class="form-control" id="other">
+
+                    <input type="hidden" placeholder="Lorem Ipsum" class="form-control" id="other1">
+
+                    <input type="hidden" placeholder="Lorem Ipsum" class="form-control" id="other2">
+
+                    @if (Session["type"].ToString() == "Paid")
+                    {
+                        <div class="col-sm-12">
+                            <div id="mapdiv" style="width:100%;height:400px;"></div>
+                            <script async defer
+                                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI&callback=mapa">
+                            </script>
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <div class="map_btn">
+
+                <button class="cmn_btn" onclick="return UpdateUserProfile();">Update Profile</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        UserDetails();
+        $('#profiletab').attr('class','active');
+    });
+
+
+    function UserDetails() {
+        $body = $("body");
+        $body.addClass("loading");
+        var id=@Session["id"].ToString();
+        var url = '/Home/UserDetails';
+        $.ajax({
+            type: "POST",
+            url: url ,
+            data: "{id: '" + id + "'}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                for(var i=0;i<=data.UserDetails.length;i++)
+                {
+                    $('#dname').val(data.UserDetails[i].name);
+                    $("#fname").val(data.UserDetails[i].fname);
+                    $("#lname").val(data.UserDetails[i].lname);
+                    $("#cityid").val(data.UserDetails[i].city);
+                    //alert($('#cityid').val());
+                    $("#stateid").val(data.UserDetails[i].state);
+                    //alert($('#stateid').val());
+                    $("#countryid").val(data.UserDetails[i].country);
+                    //alert($('#countryid').val());
+
+                    $("#zip").val(data.UserDetails[i].zip);
+                    $("#street").val(data.UserDetails[i].street);
+                    $("#streetname").val(data.UserDetails[i].streetname);
+                    //alert( $("#streetname").val());
+                    //$("#suburbid").val(data.UserDetails[i].suburb);
+                    $("#cno").val(data.UserDetails[i].cno);
+                    $("#gender").val(data.UserDetails[i].gender);
+                    $("#regionid").val(data.UserDetails[i].regions);
+                    //alert($('#regionid').val());
+
+                    $("#long").val(data.UserDetails[i].lonz);
+                    $("#late").val(data.UserDetails[i].late);
+
+                    $('#bname').val(data.UserDetails[i].orgname);
+                    //alert($('#bname').val());
+                    $('#customerid').val(data.UserDetails[i].customerid);
+                    //alert(data.UserDetails[i].name);
+                    $('#username').html(data.UserDetails[i].name);
+                    //alert($('#customerid').val());
+                    if(data.UserDetails[i].showphone == "1"){
+                        $('#showphone').prop('checked',true);
+                    }
+
+                    $body.removeClass("loading");
+                    //$('#output').attr("src", path);
+                    //alert( $('#username').html());
+                    loadCountry();
+                    var path = '@Url.Content("~/images/logos/")' + data.UserDetails[i].logo;
+                    //alert(path);
+
+                    var output = document.getElementById('output');
+                    if(data.UserDetails[i].logo != "")
+                        output.src =path;
+
+                    if(data.UserDetails[i].late!="" && data.UserDetails[i].lonz!="")
+                    {
+                        mapa(data.UserDetails[i].late,data.UserDetails[i].lonz);
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(data.UserDetails[i].late, data.UserDetails[i].lonz),
+                            map: map,
+                            title: 'Your Location'
+                        });
+                    }
+                    else
+                    {
+                        $.getJSON("http://freegeoip.net/json/", function (data) {
+                            country = data.country_name;
+                            var ip = data.ip;
+                            geocoder.geocode({ 'address': country }, function (results, status) {
+                                if (status == 'OK') {
+                                    map.setZoom(5);
+                                    map.setCenter(results[0].geometry.location);
+
+                                } else {
+                                    alert('Geocode was not successful for the following reason: ' + status);
+                                }
+                            });
+                        });
+                    }
+
+                    //$.getJSON("http://freegeoip.net/json/", function (data) {
+                    //    country = data.country_name;
+                    //    var ip = data.ip;
+                    //    geocoder.geocode({ 'address': country }, function (results, status) {
+                    //        if (status == 'OK') {
+                    //            map.setZoom(5);
+                    //            map.setCenter(results[0].geometry.location);
+
+                    //        } else {
+                    //            alert('Geocode was not successful for the following reason: ' + status);
+                    //        }
+                    //    });
+                    //});
+                }
+
+
+
+            }
+            // error: OnErrorCall
+        });
+
+
+    }
+</script>
+<script>
+    var loadFile = function(event) {
+        var output = document.getElementById('output');
+        output.src = URL.createObjectURL(event.target.files[0]);
+    };
+</script>
+
+<script type="text/javascript">
+    function UpdateUserProfile() {
+        //var url = '/Home/UpdateUser';
+        var id = @Session["id"].ToString();
+        var dname = $('#dname').val();
+        var bname = $('#bname').val();
+        if(dname == ""){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Enter Name',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#dname').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+        var fname = $("#fname").val();
+        if(fname == ""){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Enter First Name',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#fname').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+
+        }
+        var lname = $("#lname").val();
+        if(lname == ""){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Enter Last Name',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#lname').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+        var gender = $('#gender').val();
+        if(gender == "0"){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Select Gender',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#gender').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+
+        }
+
+        var cno = $("#cno").val();
+        if(cno == ""){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Enter Contact Number',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#cno').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+
+        var showphone = $('#showphone:checked').val();
+        if(showphone == "on"){
+
+            showphone = "1";
+        }
+        else{
+
+            showphone = "0";
+        }
+
+
+        var country = $("#country").val();
+        if(country == "0"){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Select Country',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#country').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+        var state = $("#state").val();
+        if(state == "0"){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Select State',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#state').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+        var city = $("#city").val();
+        if(city == "0"){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Select City',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#city').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+        var regions = $("#region").val();
+        if(regions == "0"){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Select Suburb',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#region').focus();
+
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+        /*var suburb = $("#suburb").val();
+        if(suburb == "0"){
+
+            lnv.alert({
+                title: ' ',
+                content: 'Please Select Suburb',
+                alertBtnText: 'Okay',
+                alertHandler: function(){
+
+                    $('#suburb').focus();
+
+                }
+            })
+            return false;
+        }*/
+        //alert(city);
+
+
+        var street = $("#street").val();
+        var streetname = $("#streetname").val();
+        var other = $("#other").val();
+        var other1 = $("#other1").val();
+        var other2 = $("#other2").val();
+        var zip = $("#zip").val();
+        var long=$("#long").val();
+        var late=$("#late").val();
+
+        var obj = { "id": id ,"dname": dname ,"fname": fname ,"lname": lname ,"cno": cno ,"city": city ,"state": state ,"country": country ,"street": street ,"streetname": streetname ,"other": other ,"other1": other1 ,"other2": other2 ,"zip": zip ,"regions": regions ,"gender": gender ,"late": late ,"lonz": long ,"showphone": showphone ,"bname": bname };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Home/UpdateUserProfile',
+            // data: "{gender:'"+ gender +"',,gender:'"+ gender +"',country:'"+ country +"',city:'"+ city +"',state:'"+ state +"',street:'"+ street +"',streetname:'"+ streetname +"',other:'"+ other +"',other1:'"+ other1 +"',other2:'"+ other2 +"',zip:'"+ zip +"',cno:'"+ cno +"',regions:'"+ regions +"',suburb:'"+ suburb +"'}",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.status == 'Success') {
+                    lnv.alert({
+                        title: ' ',
+                        content: 'User Profile Updated Successfully.',
+                        alertBtnText: 'Okay',
+                        alertHandler: function(){
+                            $body = $("body");
+                            $body.addClass("loading");
+                            UserDetails();
+                            if('@Session["type"].ToString()' == "Paid"){
+                                $('#uploadlogo').submit();
+                            }
+                        }
+                    });
+                    $('.alert-btn').focus();
+                } else {
+                    //alert("Error");
+                }
+            }
+        });
+
+        return false;
+    }
+</script>
+
+<script type="text/javascript">
+
+    function loadCountry() {
+
+        var countryid = $('#countryid').val();
+        //alert(countryid);
+
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/GetCountry',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#country').empty();
+                $('#country').append("<option value='0'>Select Country</option>");
+                for (var i = 0; i <= result.countrylist.length-1; i++) {
+
+                    if(result.countrylist[i].status == 1){
+
+                        if(result.countrylist[i].count_id == countryid){
+
+                            $("#country").append($("<option selected></option>").val(result.countrylist[i].count_id).html(result.countrylist[i].countryname));
+
+                            loadtable();
+
+                        }else{
+
+                            $("#country").append($("<option></option>").val(result.countrylist[i].count_id).html(result.countrylist[i].countryname));
+
+                        }
+                    }
+                }
+
+
+
+
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+
+    }
+
+</script>
+<script type="text/javascript">
+    function loadtable() {
+        $body = $("body");
+        $body.addClass("loading");
+
+        var stateid = $('#stateid').val();
+        //alert(stateid);
+
+
+        var count_id = $('#country option:selected').val();
+        //  alert(count_id);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ count_id: '" + $("#country").val() + "' }",
+            url: '/Home/GetState',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#state').empty();
+
+                $('#state').append("<option value='0'>Select State</option>");
+
+                for (var i = 0; i <= result.statelist.length - 1; i++) {
+
+                    if(result.statelist[i].status == 1){
+                        if(result.statelist[i].state_id == stateid)
+                        {
+                            $("#state").append($("<option selected></option>").val(result.statelist[i].state_id).html(result.statelist[i].state));
+                            loadCity();
+
+                        }else{
+                            $("#state").append($("<option></option>").val(result.statelist[i].state_id).html(result.statelist[i].state));
+
+                        }
+                    }
+                }
+
+                $body.removeClass("loading");
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+
+    }
+
+</script>
+
+
+<script type="text/javascript">
+    function loadCity() {
+        // var make = $('#make option:selected').val();
+        //  alert(count_id);
+        $body = $("body");
+        $body.addClass("loading");
+        var cityid = $('#cityid').val();
+        //alert(cityid);
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "' }",
+            url: '/Admin/LoadCity',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#city').empty();
+                $("#city").append($("<option value = '0'>Select City</option>"));
+                for (var i = 0; i <= result.citylist.length - 1; i++) {
+
+                    if(result.citylist[i].status == 1){
+                        if(result.citylist[i].city_id == cityid){
+                            $("#city").append($("<option selected></option>").val(result.citylist[i].city_id).html(result.citylist[i].city));
+                            loadRegion();
+                        }else{
+
+                            $("#city").append($("<option></option>").val(result.citylist[i].city_id).html(result.citylist[i].city));
+                        }
+                    }
+
+                }
+
+                $body.removeClass("loading");
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function loadRegion() {
+        $body = $("body");
+        $body.addClass("loading");
+        // var make = $('#make option:selected').val();
+        //  alert(count_id);
+        var regionid = $('#regionid').val();
+        //alert(regionid);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "',city: '" + $('#city').val() + "' }",
+            url: '/Admin/LoadRegion',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                $('#region').empty();
+                $("#region").append($("<option value='0'>Select Region</option>"));
+
+                for (var i = 0; i <= result.regionlist.length -1 ; i++) {
+
+                    if(result.regionlist[i].status == 1){
+
+                        if(result.regionlist[i].reas_id == regionid) {
+                            $("#region").append($("<option selected></option>").val(result.regionlist[i].reas_id).html(result.regionlist[i].reason));
+                            loadNewRegion();
+                        }else{
+                            $("#region").append($("<option></option>").val(result.regionlist[i].reas_id).html(result.regionlist[i].reason));
+                        }
+                    }
+                }
+
+                $body.removeClass("loading");
+
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#region').empty();
+                $("#region").append($("<option>Select suburb</option>"));
+
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function loadNewRegion() {
+        $body = $("body");
+        $body.addClass("loading");
+        // var make = $('#make option:selected').val();
+        //  alert(count_id);
+        var suburbid = $('#suburbid').val();
+        var regionid = $('#regionid').val();
+        //alert(regionid);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ country: '" + $("#country").val() + "',state:'" + $("#state").val() + "',city: '" + $('#city').val() + "',region: '"+ $('#region').val() +"' }",
+            url: '/Admin/LoadNewRegion',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                $('#suburb').empty();
+                $("#suburb").append($("<option value='0'>Select Suburb</option>"));
+
+                for (var i = 0; i <= result.newregionlist.length -1 ; i++) {
+                    if(result.newregionlist[i].status == 1){
+                        if(result.newregionlist[i].regionid == regionid) {
+
+                            $("#suburb").append($("<option selected></option>").val(result.newregionlist[i].regionid).html(result.newregionlist[i].regionname));
+                        }else{
+                            $("#suburb").append($("<option></option>").val(result.newregionlist[i].regionid).html(result.newregionlist[i].regionname));
+                        }
+                    }}
+
+                $body.removeClass("loading");
+
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#suburb').empty();
+                $("#suburb").append($("<option>Select Region</option>"));
+
+            }
+        });
+    }
+</script>
+
+
+<style>
+    .action {
+        width: 400px;
+        height: 30px;
+        margin: 10px 0;
+    }
+
+    .imageBox {
+        position: relative;
+        height: 400px;
+        width: 400px;
+        border: 1px solid #aaa;
+        background: #fff;
+        overflow: hidden;
+        background-repeat: no-repeat;
+        cursor: move;
+    }
+
+        .imageBox .thumbBox {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 200px;
+            margin-top: -100px;
+            margin-left: -100px;
+            box-sizing: border-box;
+            border: 1px solid rgb(102, 102, 102);
+            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+            background: none repeat scroll 0% 0% transparent;
+        }
+
+        .imageBox .spinner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            text-align: center;
+            line-height: 400px;
+            background: rgba(0,0,0,0.7);
+        }
+</style>
+
+
+
+<div id="imgcrop_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog userprofile_dilog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="login_head">Image Crop <div id="popupclose" class="close">x</div></div>
+            </div>
+            <div class="modal-body">
+                <div class="imageBox">
+                    <div class="thumbBox"></div>
+                    <div class="spinner" style="display: none">Loading...</div>
+                </div>
+                <div class="action">
+                    <input type="file" id="file" style="float:left; width: 250px">
+                    <input type="button" id="btnZoomIn" value="+" style="float: right">
+                    <input type="button" id="btnZoomOut" value="-" style="float: right">
+                </div>
+                <div class="action" style="text-align:center">
+                    <input type="button" id="btnCrop" value="Submit">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="~/dist/cropbox.js"></script>
+<script type="text/javascript">
+    window.onload = function() {
+        var options =
+        {
+            imageBox: '.imageBox',
+            thumbBox: '.thumbBox',
+            spinner: '.spinner',
+            imgSrc: 'avatar.png'
+        }
+        var cropper = new cropbox(options);
+        document.querySelector('#file').addEventListener('change', function(){
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                options.imgSrc = e.target.result;
+                cropper = new cropbox(options);
+            }
+            reader.readAsDataURL(this.files[0]);
+        })
+        document.querySelector('#btnCrop').addEventListener('click', function(){
+            var img = cropper.getDataURL();
+            document.getElementById('output').src = img;
+            var data = img.replace(/^data:image\/\w+;base64,/, "");
+            document.getElementById('hdoutput').value = data;
+            $('#imgcrop_modal').modal('hide');
+        })
+        document.querySelector('#btnZoomIn').addEventListener('click', function(){
+            cropper.zoomIn();
+        })
+        document.querySelector('#btnZoomOut').addEventListener('click', function(){
+            cropper.zoomOut();
+        })
+    };
+</script>
+
+
+
+
+

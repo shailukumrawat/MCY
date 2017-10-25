@@ -1,0 +1,343 @@
+﻿
+@{
+    ViewBag.Title = "UserIndex";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+
+    function initMap() {
+        var country = "";
+        var geocoder;
+        var map;
+
+
+
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/GetLeteLong',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                //$('#totalcars').html(result.userlist[0].late);
+                if (result.userlist.length > 0) {
+                    for (var i = 0; i <= result.userlist.length - 1; i++) {
+                        geocoder = new google.maps.Geocoder();
+                        var mapOptions = {
+                            center: new google.maps.LatLng(result.userlist[0].late, result.userlist[0].lonz),
+                            zoom: 2,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP,
+                            icon: 'Content/images/marker.png',
+                            styles: [{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{ "color": "#444444" }] }, { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#f2f2f2" }] }, { "featureType": "poi", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road", "elementType": "all", "stylers": [{ "saturation": -100 }, { "lightness": 45 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "visibility": "simplified" }] }, { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "color": "#3599E6" }, { "visibility": "on" }] }]
+
+                        };
+                        //var infoWindow = new google.maps.InfoWindow();
+                        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                        var infoWindow = new google.maps.InfoWindow({ maxWidth: 150, maxHeight: 250, });
+
+
+                        $.getJSON("http://freegeoip.net/json/", function (data) {
+                            country = data.country_name;
+                            var ip = data.ip;
+                            geocoder.geocode({ 'address': country }, function (results, status) {
+                                if (status == 'OK') {
+                                    map.setZoom(5);
+                                    map.setCenter(results[0].geometry.location);
+
+                                } else {
+                                    alert('Geocode was not successful for the following reason: ' + status);
+                                }
+                            });
+                        });
+
+
+                        var iconpath = '@Url.Content("~/Content/images/marker.png")';
+                        for (var i = 0; i <= result.userlist.length - 1; i++) {
+                            var data = result.userlist[i];
+                            var marker = new google.maps.Marker({
+                                position: new google.maps.LatLng(result.userlist[i].late, result.userlist[i].lonz),
+                                map: map,
+                                title: result.userlist[i].name,
+                                icon: iconpath
+                            });
+                            (function (marker, data) {
+                                google.maps.event.addListener(infoWindow, 'click', function () {
+                                    $('.gm-style-iw').parent('div').addClass('custom_iw');
+                                    $('.gm-style-iw').children('div').css('display', 'block');
+                                    $('.custom_iw').children().first().addClass('custom_iw_inside');
+                                });
+                                var path = '@Url.Content("~/images/logos/")' + data.logo;
+                                if (data.logo == "") {
+                                    path = "/content/images/map_dealer_logo.png";
+                                }
+                                google.maps.event.addListener(marker, "click", function (e) {
+
+                                    infoWindow.setContent("<table class='table_view' celpading='1' celspacing='1'><tr><td colspan ='2'><b>" + data.name + "</b></td></tr><tr><td colspan ='2'><a href='@Url.Action("UserCarMapListing","Home")?uid=" + data.id + "'><img src='" + path + "' style='width:100px;height:100px;margin:2px' ></a></td></tr><tr><td colspan ='2'> <span>Address:</span>" + data.resonname + ", " + data.zip + ", " + data.street + ", " + data.statename + " " + data.countryname + "</td></tr><tr><td><a href='@Url.Action("CarListinglog", "Home")?uid=" + data.id + "'>" + data.carcount + " Listings</a></td><td><a href='@Url.Action("EventListinglog", "Home")?uid=" + data.id + "'>" + data.eventcount + " Events</a></td></tr></table>");
+
+                                    map.setCenter(marker.getPosition());
+                                    // infowindow.position = marker.getPosition();
+                                    infoWindow.open(map, marker);
+                                    //map.setZoom(8);
+                                    //map.setCenter(marker.getPosition());
+                                    if (marker.getAnimation() !== null) {
+                                        marker.setAnimation(null);
+                                    } else {
+                                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                                        setTimeout(function () {
+                                            marker.setAnimation(null)
+                                        }, 1420);
+                                    }
+                                });
+                            })(marker, data);
+                        }
+
+
+                    }
+                } else {
+
+                    geocoder = new google.maps.Geocoder();
+                    var mapOptions = {
+                        center: new google.maps.LatLng(22.4959, 75.1545),
+                        zoom: 2,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        icon: 'Content/images/marker.png',
+                        styles: [{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{ "color": "#444444" }] }, { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#f2f2f2" }] }, { "featureType": "poi", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road", "elementType": "all", "stylers": [{ "saturation": -100 }, { "lightness": 45 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "visibility": "simplified" }] }, { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "color": "#3599E6" }, { "visibility": "on" }] }]
+
+                    };
+                    //var infoWindow = new google.maps.InfoWindow();
+                    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                    var infoWindow = new google.maps.InfoWindow({ map: map });
+
+                    $.getJSON("http://freegeoip.net/json/", function (data) {
+                        country = data.country_name;
+                        var ip = data.ip;
+                        geocoder.geocode({ 'address': country }, function (results, status) {
+                            if (status == 'OK') {
+                                map.setZoom(5);
+                                map.setCenter(results[0].geometry.location);
+
+                            } else {
+                                alert('Geocode was not successful for the following reason: ' + status);
+                            }
+                        });
+                    });
+                }
+
+
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+
+            }
+        });
+
+
+
+
+        //var myLatLng = { lat: -25.363, lng: 131.044 };
+
+        //var myLatLng1 = { lat: 22.4959, lng: 75.1545 };
+
+
+
+
+        /* var map1 = new google.maps.Map(document.getElementById('map1'), {
+             zoom: 4,
+             center: myLatLng1
+         });
+
+         var marker1 = new google.maps.Marker({
+             position: myLatLng1,
+             map: map1,
+             title: 'Hello World!'
+         });*/
+        initMap1();
+    }
+</script>
+
+
+
+
+<script>
+
+
+    function initMap1() {
+
+        var country1 = "";
+        var geocoder1 = "";
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/GetLeteLongEvent',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                if (result.userlist.length == 0) {
+                    geocoder1 = new google.maps.Geocoder();
+                    var mapOptions1 = {
+                        center: new google.maps.LatLng(51.508742, -0.120850),
+                        zoom: 2,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        styles: [{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{ "color": "#444444" }] }, { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#f2f2f2" }] }, { "featureType": "poi", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road", "elementType": "all", "stylers": [{ "saturation": -100 }, { "lightness": 45 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "visibility": "simplified" }] }, { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "color": "#3599E6" }, { "visibility": "on" }] }],
+
+                    };
+                    var map1 = new google.maps.Map(document.getElementById("map1"), mapOptions1);
+
+
+                    $.getJSON("http://freegeoip.net/json/", function (data) {
+                        country1 = data.country_name;
+                        var ip = data.ip;
+                        geocoder1.geocode({ 'address': country1 }, function (results, status) {
+                            if (status == 'OK') {
+                                map1.setZoom(5);
+                                map1.setCenter(results[0].geometry.location);
+
+                            } else {
+                                alert('Geocode was not successful for the following reason: ' + status);
+                            }
+                        });
+                    });
+
+                }
+                //$('#totalcars').html(result.userlist[0].late);
+                for (var i = 0; i <= result.userlist.length - 1; i++) {
+
+                    geocoder1 = new google.maps.Geocoder();
+
+                    var mapOptions1 = {
+                        center: new google.maps.LatLng(result.userlist[0].late, result.userlist[0].lonz),
+                        zoom: 2,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        styles: [{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{ "color": "#444444" }] }, { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#f2f2f2" }] }, { "featureType": "poi", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road", "elementType": "all", "stylers": [{ "saturation": -100 }, { "lightness": 45 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "visibility": "simplified" }] }, { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "color": "#3599E6" }, { "visibility": "on" }] }]
+
+
+                    };
+                    var infoWindow1 = new google.maps.InfoWindow({ maxWidth: 150, maxHeight: 250, });
+                    var map1 = new google.maps.Map(document.getElementById("map1"), mapOptions1);
+
+                    $.getJSON("http://freegeoip.net/json/", function (data) {
+                        country1 = data.country_name;
+                        var ip = data.ip;
+                        geocoder1.geocode({ 'address': country1 }, function (results, status) {
+                            if (status == 'OK') {
+                                map1.setZoom(5);
+                                map1.setCenter(results[0].geometry.location);
+
+                            } else {
+                                alert('Geocode was not successful for the following reason: ' + status);
+                            }
+                        });
+                    });
+                    var iconpath = '@Url.Content("~/Content/images/marker.png")';
+                    for (var i = 0; i <= result.userlist.length - 1; i++) {
+                        var data1 = result.userlist[i];
+                        var marker1 = new google.maps.Marker({
+                            position: new google.maps.LatLng(result.userlist[i].late, result.userlist[i].lonz),
+                            map: map1,
+                            title: result.userlist[i].title,
+                            icon: iconpath
+
+                        });
+
+                        (function (marker1, data1) {
+                            var path = '@Url.Content("~/images/events/")' + data1.img;
+                            if (data1.img == "") {
+                                path = "/content/images/map_dealer_logo.png";
+                            }
+                            google.maps.event.addListener(marker1, "click", function (e) {
+                                //map1.setZoom(8);
+                                //map1.setCenter(marker1.getPosition());
+                                //infoWindow1.setContent("<table celpading='2' celspacing='2'><tbody><tr><td rowspan='5'><a href='@Url.Action("UserEventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + data1.img + "' style='width:100px;height:100px;margin:5px'></a></td><td style='padding-left: 8px;'><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td style='padding-left: 8px;'>" + data1.city_name + "</td></tr><tr><td style='padding-left: 8px;'>" + data1.state_name + " " + data1.country_name + "</td></tr><tr><td style='padding-left: 8px;'>" + data1.going + " - People Going</td></tr><tr><td style='padding-left: 8px;'><a href='@Url.Action("UserEventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
+                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td><a href='@Url.Action("UserEventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td>" + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("UserEventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
+                                map1.setCenter(marker1.getPosition());
+                                //infowindow1.position = marker1.getPosition();
+                                infoWindow1.open(map1, marker1);
+                                if (marker1.getAnimation() !== null) {
+                                    marker1.setAnimation(null);
+                                } else {
+                                    marker1.setAnimation(google.maps.Animation.BOUNCE);
+                                    setTimeout(function () {
+                                        marker.setAnimation(null)
+                                    }, 1420);
+                                }
+                            });
+                        })(marker1, data1);
+                    }
+
+
+                }
+
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+
+            }
+        });
+
+
+    }
+
+    function resizemap() {
+        //alert("Hello");
+        initMap1();
+        google.maps.event.trigger(map1, 'resize');
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI&callback=initMap">
+</script>
+
+
+<div class="col-sm-7">
+    <div class="map_contain">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#dealers">dealers</a></li>
+            <li><a data-toggle="tab" href="#events" onclick="resizemap()">events</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="dealers" class="tab-pane fade in active">
+                <div id="map" style="width: 650px; height: 500px">
+
+                </div>
+            </div>
+            <div id="events" class="tab-pane fade in">
+                <div id="map1" style="width: 650px; height: 500px">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    $body = $("body");
+
+    $(document).on({
+        //ajaxStart: function () { $body.addClass("loading"); },
+        //ajaxStop: function () { $body.removeClass("loading"); }
+    });
+
+
+</script>
+
+
+
+
+

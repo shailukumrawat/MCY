@@ -1,0 +1,505 @@
+﻿@model MyCarYard.Models.PlanModel
+@{
+    ViewBag.Title = "Plan";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+}
+
+<div class="wrapper">
+
+
+    <!-- Left side column. contains the logo and sidebar -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-default">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="alert alert-danger alert-dismissible" id="myDiv1" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                            Some Field Required
+                        </div>
+
+                        <div class="alert alert-success alert-dismissible" id="myDiv" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucessfully!</h4>
+                            Plan Added Successfully
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">New Plan</h3>
+
+                    <div class="box-tools pull-right">
+                       @*  <button type="button" class="btn btn-box-tool" data-widget="collapse" onclick="demo();"><i class="fa fa-minus"></i></button>
+    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+
+
+
+                         
+                            <input type="hidden" id="planid" />
+                            <div class="form-group">
+                                <label for="PlanName">Enter Plan</label>
+                                <input type="text" class="form-control" id="plan" placeholder="Enter Plan" value="">
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="PlanName">Enter Plan Duration</label>
+                                <input type="text" class="form-control" id="dur" placeholder="Enter Plan Duration (In Month)" value="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="PlanName">Enter Plan Amount</label>
+                                <input type="text" class="form-control" id="amnt" placeholder="Enter Plan Amount" value="">
+                            </div>
+
+                            <input type="hidden" id="pid" />
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control select2" style="width: 100%;" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="1">Activate</option>
+                                    <option value="0">Deactivate</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary" id="save" onclick="SavePlan();">Save Plan</button>
+                    <button type="submit" class="btn btn-primary hidden" id="update" onclick="UpdatePlan();" >Update</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Plans List</h3>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-bordered table-striped" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Plan</th>
+                                        <th>Amnt</th>
+                                        <th>Duration</th>
+                                        <th>Status</th>
+                                        <th>View/Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblDetails">
+
+                                    @if (Model.planlist.Any()) {
+
+                                        int j = 1;
+                                        for (int i = 0; i <= Model.planlist.Count - 1; i++) {
+
+                                            <tr>
+
+                                                <td>
+                                                    @j
+                                                </td>
+                                                <td>@Model.planlist[i].plan_name</td>
+                                                <td>@Model.planlist[i].amnt</td>
+                                                <td>@Model.planlist[i].duration</td>
+                                                <td>@Model.planlist[i].status</td>
+                                                <td><a href="" onclick="return getData('@Model.planlist[i].plan_id','@Model.planlist[i].plan_name','@Model.planlist[i].amnt','@Model.planlist[i].duration','@Model.planlist[i].status');">Edit</a></td>
+                                                <td><a href="" onclick="return deletePlan('@Model.planlist[i].plan_id')">Delete</a></td>
+                                            </tr>
+                                            j++;
+                                        }
+                                    }
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+    function UpdatePlan() {
+
+        var planid = $('#planid').val();
+        var isvalid = true;
+
+        try {
+            var p = $("#plan").val();
+            var d = $("#dur").val();
+            var a = $("#amnt").val();
+            var s = $("#status").val();
+            if (p.trim() == "" || p == undefined) {
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please Enter Plan',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#plan").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                isvalid = false;
+
+
+            }else if (d.trim() == "" || d == undefined) {
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please Enter Duration',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#dur").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                isvalid = false;
+            }else if (a.trim() == "" || a == undefined) {
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please Enter Amount',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#amnt").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                isvalid = false;
+            }else if (s == "" || s == undefined) {
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                        $("#status").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                isvalid = false;
+
+            }else if (isvalid == true) {
+                var obj = {"planid": planid ,"planname": $("#plan").val() ,"duration": $("#dur").val() ,"amnt": $("#amnt").val() ,"status": $("#status").val() };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Home/EditPlan',
+            data: JSON.stringify(obj),
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                if (response.status == "1") {
+                    lnv.alert({
+                        title: ' ',
+                        content: 'Plan Updated Successfully',
+                        alertBtnText: 'Okay',
+                        alertHandler: function () {
+                            var url = '@Url.Action("Plan", "Home")';
+                            window.location = url;
+
+                        }
+                    });
+                    $('.alert-btn').focus();
+                }
+            },
+            error: function () {
+               
+            }
+        });
+            }
+        } catch (e) {
+
+            isvalid = false;
+        }
+
+        return isvalid;
+
+    }
+
+</script>
+<script>
+    function getData(planid,name,duration,amnt,status)
+    {
+        $('#planid').val(planid);
+        $('#plan').val(name);
+        $('#dur').val(duration);
+        $('#amnt').val(amnt);
+        $('#status').val(status);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('#update').removeClass('hidden');
+        $('#save').addClass('hidden');
+        return false;
+    }
+
+</script>
+<script type="text/javascript">
+    function SavePlan() {
+     
+        var isvalid = true;
+
+        try {
+            var p = $("#plan").val();
+            var d = $("#dur").val();
+            var a = $("#amnt").val();
+            var s = $("#status").val();
+            if (p == "" || p == undefined) {
+
+                /*lnv.alert({
+                    title: '',
+                    content: 'Please Enter Plan',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#plan").focus();
+                    }
+                })*/
+
+                $('#plan').css('border-color', 'red');
+                isvalid = false;
+
+
+            } else {
+                $('#plan').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (d == "" || d == undefined) {
+
+                /*lnv.alert({
+                    title: '',
+                    content: 'Please Enter Duration',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#dur").focus();
+                    }
+                })*/
+                $('#dur').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#dur').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (a == "" || a == undefined) {
+
+                /*lnv.alert({
+                    title: '',
+                    content: 'Please Enter Amount',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#amnt").focus();
+                    }
+                })*/
+                $('#amnt').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#amnt').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (s == "" || s == undefined) {
+
+                /*lnv.alert({
+                    title: '',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                        $("#status").focus();
+                    }
+                })*/
+                $('#status').css('border-color', 'red');
+                isvalid = false;
+
+            } else {
+                $('#status').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (isvalid == true) {
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/InsertPlan',
+                    data: "{plan_name: '" + $("#plan").val() + "',duration:'" + $("#dur").val() + "',amnt:'" + $("#amnt").val() + "',status:'" + $("#status").val() + "'}",
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+                            lnv.alert({
+                                title: ' ',
+                                content: 'Plan Added Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+                                    var url = '@Url.Action("Plan", "Home")';
+                                    window.location = url;
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                            //loadtable();
+                        }
+                    },
+                    error: function () {
+
+                        lnv.alert({
+                            title: '',
+                            content: 'Something is wrong',
+                            alertBtnText: 'Okay',
+                            alertHandler: function () {
+                                var url = '@Url.Action("Plan", "Home")';
+                                window.location = url;
+
+                            }
+                        });
+                        $('.alert-btn').focus();
+                        isvalid = false;
+                    }
+                });
+            } else {
+                lnv.alert({
+                    title: '',
+                    content: 'Please fill all missing fields',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+
+                    }
+                });
+                $('.alert-btn').focus();
+            }
+        } catch (e) {
+    
+            isvalid = false;
+        }
+
+        return isvalid;
+    }
+</script>
+
+
+<script type="text/javascript">
+    // JQUERY ".Class" SELECTOR.
+
+
+    $(document).ready(function () {
+
+        $("#dur, #amnt").keypress(function (event) {
+            return isNumber(event, this);
+        });
+    });
+    // THE SCRIPT THAT CHECKS IF THE KEY PRESSED IS A NUMERIC OR DECIMAL VALUE.
+    function isNumber(evt, element) {
+
+        var charCode = (evt.which) ? evt.which : event.keyCode
+
+        if (
+            (charCode != 45 || $(element).val().indexOf('-') != -1) &&      // “-” CHECK MINUS, AND ONLY ONE.
+            (charCode != 46 || $(element).val().indexOf('.') != -1) &&      // “.” CHECK DOT, AND ONLY ONE.
+            (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+</script>
+<script>
+
+    function deletePlan(id) {
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to change the status ?',
+            confirmHandler: function () {
+                // confirm callback
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/DeletePlan',
+                    data: "{planid: '" + id + "'}",
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+                            lnv.alert({
+                                title: ' ',
+                                content: 'Plan Deleted Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+                                    var url = '@Url.Action("Plan", "Home")';
+                                    window.location = url;
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        }
+                    },
+                    error: function () {
+                        //  alert("Error");
+                    }
+                });
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+
+        return false;
+    }
+</script>
+
+<style>
+    .required-text {
+        border: 1px solid red !Important;
+    }
+</style>

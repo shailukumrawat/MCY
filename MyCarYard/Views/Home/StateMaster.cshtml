@@ -1,0 +1,426 @@
+﻿@model MyCarYard.Models.StateMasterModel
+@{
+    ViewBag.Title = "StateMaster";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+}
+
+<div class="wrapper">
+    <!-- Left side column. contains the logo and sidebar -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-default">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="alert alert-success alert-dismissible" id="myDiv1" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucessfully!</h4>
+                            State Updated Successfully
+                        </div>
+
+                        <div class="alert alert-success alert-dismissible" id="myDiv" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucessfully!</h4>
+                            State Added Successfully
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Add New State</h3>
+
+                    <div class="box-tools pull-right">
+                       @* <button type="button" class="btn btn-box-tool" data-widget="collapse" ><i class="fa fa-minus"></i></button>
+    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+
+
+
+
+
+                            <div class="form-group">
+                                <label for="PlanName">Select Country<span style="color:red;font-size:large;">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id="country">
+                                    <option value="">Select Country</option>
+                                
+                                </select>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="PlanName">Enter State Name<span style="color:red;font-size:large;">*</span></label>
+                                <input type="text" class="form-control" id="state" placeholder="Enter State Name" value="">
+                            </div>
+
+                         
+                            <input type="hidden" id="sid" />
+                            <div class="form-group">
+                                <label>Status<span style="color:red;font-size:large;">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="1">Activate</option>
+                                    <option value="0">Deactivate</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary" id="save" onclick="SaveState();">Save State</button>
+                    <button type="submit" class="btn btn-primary hidden" id="update" onclick="UpdateState();">Update</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">State List</h3>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-bordered table-striped" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Country</th>      
+                                        <th>State</th>                                        
+                                        <th>Status</th>
+                                        <th>View/Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblDetails">
+                                    @if (Model.statelist.Any())
+                                    {
+                                        int j = 1;
+                                        for(int i = 0; i <= Model.statelist.Count - 1; i++) {
+                                    <tr>
+                                        <td>@j</td>
+                                        <td>@Model.statelist[i].country_name</td>
+                                        <td>@Model.statelist[i].state</td>
+                                        <td>@Model.statelist[i].status</td>
+                                        <td> <a href="" onclick="return getData('@Model.statelist[i].state_id','@Model.statelist[i].count_id','@Model.statelist[i].state','@Model.statelist[i].status')"> Edit</a></td>
+                                        <td> <a href="" onclick="return deleteState('@Model.statelist[i].state_id')"> Delete</a></td>
+                                    </tr>
+                                            j++;
+                                        }
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+        </section>
+    </div>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+            <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+
+    </aside>
+    <!-- /.control-sidebar -->
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+</div>
+
+
+<script>
+    function getData(stateid,contid, state, status) {
+
+        $('#sid').val(stateid);
+        $('#country').val(contid);
+        $('#state').val(state);
+        $('#status').val(status);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        $('#update').removeClass('hidden');
+        $('#save').addClass('hidden');
+        return false;
+
+    }
+
+</script>
+<script type="text/javascript">
+    function SaveState() {
+   
+        var isvalid = true;
+        
+        try {
+            var country = $("#country").val();
+            var state = $("#state").val();
+            var status = $("#status").val();
+            if (country == "" || country == "0" || country == undefined) {
+                /*
+                lnv.alert({
+                    title: '',
+                    content: 'Please Select Country',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#country").focus();
+                    }
+                })*/
+                $('#country').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#country').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (state.trim() == "" || state == undefined) {
+
+                /*lnv.alert({
+                    title: '',
+                    content: 'Please Enter State',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#state").focus();
+                    }
+                })*/
+                $('#state').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#state').css('border-color', '');
+                isvalid = true;
+            }
+
+            if (status == "" || status == "0" || status == undefined) {
+                /*
+                lnv.alert({
+                    title: '',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#status").focus();
+                    }
+                })*/
+                $('#status').css('border-color', 'red');
+                isvalid = false;
+            } else {
+
+                $('#status').css('border-color', '');
+                isvalid = true;
+            }
+            if (isvalid == true) {
+
+                var obj = { "count_id": $("#country").val(), "state": $("#state").val(), "status": $("#status").val() };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/InsertState',
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+                            lnv.alert({
+                                title: ' ',
+                                content: 'State Added Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+                                    var url = '@Url.Action("StateMaster", "Home")';
+                                    window.location = url;
+                                }
+                            });
+                            $('.alert-btn').focus();
+                            //  loadtable();
+                        }
+                        if (response.status == "Exists") {
+                            lnv.alert({
+                                title: '',
+                                content: 'State Already Exists',
+                                alertBtnText: 'Okay',
+                            });
+                            $('.alert-btn').focus();
+                        }
+                    },
+                    error: function () {
+                        //  alert("Error");
+                    }
+                });
+            } else {
+
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please fill all missing fields',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                    }
+                });
+                $('.alert-btn').focus();
+
+            }
+
+        } catch (e) {
+
+            isvalid = false;
+        }
+        return isvalid;
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadCountry();
+    });
+
+    function loadCountry() {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Home/GetCountry',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+               // $('#country').empty();
+              //  $('#country').append("<option value='0'>--Select--</option>");
+    
+                for (var i = 0; i <= result.countrylist.length -1 ; i++) {
+                    //alert("Hello"+result[i]);
+                    if (result.countrylist[i].status == 1) {
+                        $("#country").append($("<option></option>").val(result.countrylist[i].count_id).html(result.countrylist[i].countryname));
+                        // $("#tblDetails").append("<tr><td>" + j + "</td><td>" + result.countrylist[i].countryname + "</td><td>" + result.countrylist[i].status + "</td><td> <img src=@Url.Content("~/Content/admin/edit.gif") onclick=FetchCountry('" + result.countrylist[i].count_id + "')></a></td><td><img src=@Url.Content("~/Content/admin/delete.gif") ></td></tr>");
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                // alert("Data Not Found");
+            }
+        });
+
+    }
+
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function UpdateState() {
+        //var url = "/Home";
+        var obj = {"state_id": $("#sid").val() ,"count_id": $("#country").val() ,"state": $("#state").val() ,"status": $("#status").val() };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Home/UpdateState',
+            data: JSON.stringify(obj),
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                if (response.status == "Success") {
+                    lnv.alert({
+                        title: ' ',
+                        content: 'State Updated Successfully',
+                        alertBtnText: 'Okay',
+                        alertHandler: function () {
+                            var url = '@Url.Action("StateMaster", "Home")';
+                            window.location = url;
+                        }
+                    });
+                    $('.alert-btn').focus();
+                    //loadtable();
+                }
+            },
+            error: function () {
+                //  alert("Error");
+            }
+        });
+    }
+</script>
+
+<script>
+
+    function deleteState(id) {
+
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to Delete the State ?',
+            confirmHandler: function () {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/DeleteState',
+                    data: "{state_id:'" + id + "'}",
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+                            lnv.alert({
+                                title: ' ',
+                                content: 'State Deleted Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+                                    var url = '@Url.Action("StateMaster", "Home")';
+                                    window.location = url;
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+
+                            //loadtable();
+                        }
+                        if (response.status == "ExistsChild") {
+                            lnv.alert({
+                                title: '',
+                                content: 'Sorry!!. This State associated with some city, please delete that city first !!',
+                                alertBtnText: 'Okay',
+                            });
+                            $('.alert-btn').focus();
+                        }
+                    },
+                    error: function () {
+                        //  alert("Error");
+                    }
+                });
+
+
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+        return false;
+    }
+</script>
+
+
+
+
+
+
+
+
+
+

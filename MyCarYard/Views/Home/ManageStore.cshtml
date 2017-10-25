@@ -1,0 +1,98 @@
+﻿@model MyCarYard.Models.UserListModel
+
+@{
+    ViewBag.Title = "ManageStore";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+<div class="col-sm-7">
+    <div class="mngevnt_contain">
+        <div class="map_contain">
+            <div class="detail_head event_head prfl">
+                <h4 class="detail_heading">Welcome! <label id="username"></label> </h4>
+            </div>
+            <div class="describe_contain">
+                <div class="row">
+                    <p>@Html.ActionLink("Add Store", "AddStore", null, new { @class = "btn btn-primary", @style = "margin-bottom: 10px;" })</p>
+                </div>
+                <div class="row">
+                    @if (Model.userlist.Any())
+                    {
+                        <table class="table table-bordered table-striped" id="example1">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Email</th>
+                                    <th>Business Name</th>
+                                    <th>Name</th>
+                                    <th>CreatedDate</th>
+                                    <th>Status</th>
+                                    <th>Approve</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblDetails">
+                                @if (Model.userlist.Any())
+                                {
+                                    int j = 1;
+                                    for (int i = 0; i <= Model.userlist.Count - 1; i++)
+                                    {
+                                        <tr>
+                                            <td>@j</td>
+                                            <td>@Model.userlist[i].email</td>
+                                            <td>@Model.userlist[i].orgname</td>
+                                            <td>@Model.userlist[i].name</td>
+                                            <td>@Model.userlist[i].regdate</td>
+                                            <td>
+
+                                                @if (Model.userlist[i].status == 1)
+                                                {
+                                                    <span>Approve</span>
+                                                }
+                                                else if (Model.userlist[i].status == 0)
+                                                {
+                                                    <span>Under Review</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Not Approve</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <input type='submit' name='submit' value='Switch User' class='btn btn-primary' onclick="SwitchUser('@Model.userlist[i].id','@Model.userlist[i].name','@Model.userlist[i].type','@Model.userlist[i].status','@Model.userlist[i].email');">
+                                            </td>
+                                        </tr>
+                                        j++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <strong>No record found.....</strong>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function SwitchUser(id, name, type, status, email) {
+        //var url = '/Home/UpdateUser';
+        $.ajax({
+            type: "POST",
+            url: '/Home/SwitchStore',
+            data: "{id:'" + id + "',name:'" + name + "',type:'" + type + "',status:'" + status + "',email:'" + email + "'}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.status == 'Success') {
+                    window.location = '/Home/UserProfile';
+                } else {
+                    //alert("Error");
+                }
+            }
+        });
+    }
+</script>

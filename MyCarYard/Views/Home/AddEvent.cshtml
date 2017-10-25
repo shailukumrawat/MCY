@@ -1,0 +1,1603 @@
+﻿@{
+    ViewBag.Title = "AddEvent";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+<link href="@Url.Content("~/Css/bootstrap-datetimepicker.min.css")" rel="stylesheet">
+
+<script>
+
+    var geocoder;
+    var map; var marker;
+    function mapa() {
+        geocoder = new google.maps.Geocoder();
+        var opts = {
+            'center': new google.maps.LatLng(22.730590425493833, 75.8770751953125),
+            'zoom': 11, 'mapTypeId': google.maps.MapTypeId.ROADMAP
+        }
+        map = new google.maps.Map(document.getElementById('mapdiv'), opts);
+
+        google.maps.event.addListener(map, 'click', function (event) {
+
+            placeMarker(event.latLng);
+            //document.getElementById('latlongclicked').value = event.latLng.lat() + ', ' + event.latLng.lng()
+            $('#late1').val(event.latLng.lat())
+            $('#long1').val(event.latLng.lng())
+        })
+
+        google.maps.event.addListener(map, 'mousemove', function (event) {
+            //alert("Hi");
+            //$('#latitute').val(event.latLng.lat())
+            //$('#longitute').val(event.latLng.lng())
+            // document.getElementById('latlong').innerHTML = event.latLng.lat() + ', ' + event.latLng.lng()
+        });
+
+
+
+    }
+
+    function placeMarker(location) {
+
+        if (marker == null) {
+            marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+        } else { marker.setPosition(location); }
+    }
+    function codeAddress() {
+        var address = $("#country1 option:selected").text();
+
+        //alert(address);
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status == 'OK') {
+                map.setZoom(5);
+                map.setCenter(results[0].geometry.location);
+
+            } else {
+                //alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+
+    }
+</script>
+
+
+<div class="col-sm-7">
+    <div class="map_contain">
+        <div class="mngevnt_contain ">
+            <div class="detail_head event_head prfl">
+                <h4 class="detail_heading">Add New Event Here </h4>
+            </div>
+            <div class="describe_contain">
+                <h4 class="seller_head">Event Images</h4>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form action="UploadEventPic" method="post" enctype="multipart/form-data" id="uploadeventpic" name="frm1">
+
+                            <div class="event_upload">
+                                <ul>
+                                    <li>
+                                        <i class="flaticon1-arrows"> </i>
+                                        <a href="#" data-toggle="modal" class="event_upldnew" id="img" data-id="0" data-target="#imgcrop_modal"></a>
+                                        Upload Event Image Here
+                                        <img id="output0" class="upload_img" />
+                                        <input type="hidden" id="hdoutput0" name="hdoutput0" />
+                                    </li>
+                                    <li>
+                                        <i class="flaticon1-arrows"> </i>
+                                        <a href="#" data-toggle="modal" class="event_upldnew" id="img1" name="img1" data-id="1" data-target="#imgcrop_modal"></a>
+                                        Upload Event Image Here
+                                        <img id="output1" class="upload_img" />
+                                        <input type="hidden" id="hdoutput1" name="hdoutput1" value="" />
+                                    </li>
+                                    <li>
+                                        <i class="flaticon1-arrows"> </i>
+                                        <a href="#" data-toggle="modal" class="event_upldnew" id="img2" name="img2" data-id="2" data-target="#imgcrop_modal"></a>
+                                        Upload Event Image Here
+                                        <img id="output2" class="upload_img" />
+                                        <input type="hidden" id="hdoutput2" name="hdoutput2" value="" />
+                                    </li>
+                                </ul>
+                            </div>
+                            <input id="eventid" name="eventid" type="hidden" />
+                        </form>
+                    </div>
+                    <div class="col-sm-12">
+                        <h4 class="seller_head">Event Details</h4>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" class="form-control" placeholder="Title" id="title1" required maxlength="40">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-control slt_cstm" id="category1" required>
+                                <option value="0">Category</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label><input type="checkbox" id="issponsorship" checked>Is the event Sponsored?</label>
+                            @*<select class="form-control slt_cstm" id="sponsorship" required style="display:none;">
+                                    <option value="0">Yes</option>
+                                    <option value="1">No</option>
+                                </select>*@
+                        </div>
+                    </div>
+                    <div class="col-sm-6" id="sponsorshipbox">
+                        <div class="form-group">
+                            <label>Sponsorship Name</label>
+                            <input type="text" class="form-control" placeholder="Sponsorship Name" id="sponsorshipname" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group my_fmg">
+                            <label><input type="checkbox" id="ispaid1" checked> Entry Fee</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6" id="pricebox">
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="number" placeholder="Price " class="form-control" id="price1">
+                        </div>
+                    </div>
+                    <div class="col-sm-6" id="currencybox" style="display:none;">
+                        <div class="form-group">
+                            <label>Currency</label>
+                            <select class="form-control slt_cstm" id="currency1" disabled>
+                                <option value="0">Currency</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Overview</label>
+                            <textarea class="form-control" placeholder="Event Overview (Maximum 2000 Words) " id="subject1" required maxlength="4000" onkeyup='charLimit(this, 4000);'></textarea>
+                        </div>
+                    </div>
+                    <script>
+                        function charLimit(limitField, limitNum) {
+                            if (limitField.value.length > limitNum) {
+                                limitField.value = limitField.value.substring(0, limitNum);
+                            }
+                        }
+
+
+                    </script>
+                    <div class="col-sm-12">
+                        <h4 class="seller_head">Time and Date</h4>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <div class="input-group date form_date" data-date="" data-date-format="MM dd  yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                                <input type="text" class="form-control" placeholder="Select Date" id="date1" required readonly>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                            <input type="hidden" id="dtp_input2" value="" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Time</label>
+                            <div class="input-group date form_time" data-date-format="hh:ii P" data-link-field="dtp_input3" data-link-format="hh:ii">
+                                <input type="text" class="form-control" placeholder="Select Time" id="time1" required readonly>
+
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+                            </div>
+                            <input type="hidden" id="dtp_input3" value="" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="number" placeholder="Contact Number" class="form-control" id="cno1" min="0" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group my_fmg">
+                            <label><input type="checkbox" id="showphone" checked> Show Contact Number on Website?</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <h4 class="seller_head">Location</h4>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Country</label>
+                            <select class="form-control slt_cstm" onchange="loadtablenew(); loadCitynew(); loadReasonnew(); loadNewRegionnew();" id="country1" required>
+                                <option value="0">Country</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>State</label>
+                            <select class="form-control slt_cstm" id="state1" onchange="loadCitynew(); loadReasonnew(); loadNewRegionnew();" required>
+                                <option value="0">State</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>City</label>
+                            <select class="form-control slt_cstm" id="city1" onchange="loadReasonnew(); loadNewRegionnew();" required>
+                                <option value="0">City</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Suburb</label>
+                            <select class="form-control slt_cstm" id="reason1" required>
+                                <option value="0">Suburb</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Suburb</label>
+                            <select class="form-control slt_cstm" id="suburb1" required>
+                                <option value="0">Suburb</option>
+                            </select>
+
+                        </div>
+                    </div>
+                        -->
+                    <div class="col-sm-6" style="display:none">
+                        <div class="form-group">
+                            <label>Post Code</label>
+                            <input type="number" placeholder="Post Code" class="form-control" id="code1" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="display:none">
+                        <div class="form-group">
+                            <label>Unit/Building</label>
+                            <input type="text" placeholder="Unit/Building" class="form-control" id="unit1" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="display:none">
+                        <div class="form-group">
+                            <label>Street</label>
+                            <input type="text" placeholder="Street #" class="form-control" id="street1">
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="display:none">
+                        <div class="form-group">
+                            <label>Street Name</label>
+                            <input type="text" placeholder="Street Name" class="form-control" id="sname1">
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Street and post code</label>
+                            <input type="text" placeholder="Street and post code" class="form-control" id="streetpostcode">
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="display:none">
+                        <div class="form-group">
+                            <label>Latitude</label>
+                            <input type="text" placeholder="Event Latitude" class="form-control" id="late1" readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="display:none">
+                        <div class="form-group">
+                            <label>Longitude</label>
+                            <input type="text" placeholder="Event Longitude " class="form-control" id="long1" readonly>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div id="mapdiv" style="width:100%;height:400px;"></div>
+                            <script async defer
+                                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI&callback=mapa">
+                            </script>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+
+                            <input type="hidden" placeholder="Event Description" class="form-control" id="descr1" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="map_btn">
+                            <button class="cmn_btn" onclick="return AddEvent();">Add Event</button>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        $('select').on('change', function () {
+            if (this.value != "0" || this.value != "")
+                $(this).css('border-color', '');
+            else
+                $(this).css('border-color', 'red');
+        })
+
+
+        $("input,textarea")
+      .keyup(function () {
+          var value = $(this).val();
+          if (value != "")
+              $(this).css('border-color', '');
+          else
+              $(this).css('border-color', 'red');
+      })
+        //.keyup();
+
+    });
+
+
+
+</script>
+<script>
+    var loadFile = function (event) {
+        var fileUpload = $("#img")[0];
+
+        var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            //Check whether HTML5 is supported.
+            if (typeof (fileUpload.files) != "undefined") {
+                //Initiate the FileReader object.
+                var reader = new FileReader();
+                //Read the contents of Image File.
+                reader.readAsDataURL(fileUpload.files[0]);
+                reader.onload = function (e) {
+                    //Initiate the JavaScript Image object.
+                    var image = new Image();
+                    //Set the Base64 string return from FileReader as source.
+                    image.src = e.target.result;
+                    image.onload = function () {
+                        //Determine the Height and Width.
+                        var height = this.height;
+                        var width = this.width;
+
+                        var output = document.getElementById('output');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+
+
+
+
+                        //alert("Uploaded image has valid Height and Width.");
+                        return true;
+                    };
+                }
+            } else {
+                //alert("");
+                lnv.alert({
+                    title: '',
+                    content: 'This browser does not support HTML5.',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#img").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                return false;
+            }
+
+        } else {
+            // alert("Please select a valid Image file.");
+            lnv.alert({
+                title: '',
+                content: 'Please select a valid Image 1',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $("#img").focus();
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+    };
+</script>
+<script>
+    var loadFile1 = function (event) {
+        var fileUpload1 = $("#img1")[0];
+
+        var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+
+        if (regex.test(fileUpload1.value.toLowerCase())) {
+            //Check whether HTML5 is supported.
+            if (typeof (fileUpload1.files) != "undefined") {
+                //Initiate the FileReader object.
+                var reader = new FileReader();
+                //Read the contents of Image File.
+                reader.readAsDataURL(fileUpload1.files[0]);
+                reader.onload = function (e) {
+                    //Initiate the JavaScript Image object.
+                    var image = new Image();
+                    //Set the Base64 string return from FileReader as source.
+                    image.src = e.target.result;
+                    image.onload = function () {
+                        //Determine the Height and Width.
+                        var height = this.height;
+                        var width = this.width;
+
+                        var output = document.getElementById('output1');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+
+
+
+                        //alert("Uploaded image has valid Height and Width.");
+                        return true;
+                    };
+                }
+            } else {
+                //alert("");
+                lnv.alert({
+                    title: '',
+                    content: 'This browser does not support HTML5.',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#img1").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                return false;
+            }
+
+        } else {
+            // alert("Please select a valid Image file.");
+            lnv.alert({
+                title: '',
+                content: 'Please select a valid Image 2',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $("#img1").focus();
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+    };
+</script>
+<script>
+    var loadFile2 = function (event) {
+        var fileUpload2 = $("#img2")[0];
+
+        var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+
+        if (regex.test(fileUpload2.value.toLowerCase())) {
+            //Check whether HTML5 is supported.
+            if (typeof (fileUpload2.files) != "undefined") {
+                //Initiate the FileReader object.
+                var reader = new FileReader();
+                //Read the contents of Image File.
+                reader.readAsDataURL(fileUpload2.files[0]);
+                reader.onload = function (e) {
+                    //Initiate the JavaScript Image object.
+                    var image = new Image();
+                    //Set the Base64 string return from FileReader as source.
+                    image.src = e.target.result;
+                    image.onload = function () {
+                        //Determine the Height and Width.
+                        var height = this.height;
+                        var width = this.width;
+
+                        var output = document.getElementById('output2');
+                        output.src = URL.createObjectURL(event.target.files[0]);
+
+
+
+                        //alert("Uploaded image has valid Height and Width.");
+                        return true;
+                    };
+                }
+            } else {
+                //alert("");
+                lnv.alert({
+                    title: '',
+                    content: 'This browser does not support HTML5.',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#img2").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                return false;
+            }
+
+        } else {
+            // alert("Please select a valid Image file.");
+            lnv.alert({
+                title: '',
+                content: 'Please select a valid Image 3',
+                alertBtnText: 'Okay',
+                alertHandler: function () {
+                    $("#img2").focus();
+                }
+            });
+            $('.alert-btn').focus();
+            return false;
+        }
+    };
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#addeventtab').attr('class', 'active');
+    });
+
+    var ispaid = 0;
+    $("#ispaid1").change(function () {
+        if (this.checked) {
+
+            ispaid = 1;
+            $('#pricebox').show();
+            // $('#currencybox').show();
+
+        } else {
+            ispaid = 0;
+            $('#pricebox').hide();
+            // $('#currencybox').hide();
+        }
+    });
+    var sponsorship = 0;
+    $("#issponsorship").change(function () {
+        if (this.checked) {
+
+            sponsorship = 1;
+            $('#sponsorshipbox').show();
+            // $('#currencybox').show();
+
+        } else {
+            sponsorship = 0;
+            $('#sponsorshipbox').hide();
+            // $('#currencybox').hide();
+        }
+    });
+
+    function AddEvent() {
+
+
+        try {
+            var isvalid = true;
+            var imgisvalid = true;
+            var img = $('#hdoutput0').val();
+            var img1 = $('#hdoutput1').val();
+            var img2 = $('#hdoutput2').val();
+
+
+            var category = $("#category1").val();
+            if (category == "0") {
+                $('#category1').css('border-color', 'red');
+                /*   lnv.alert({
+                       title: ' ',
+                       content: 'Please Select Category',
+                       alertBtnText: 'Okay',
+                       alertHandler: function () {
+                           $('#category1').focus();
+                       }
+                   })*/
+                isvalid = false;
+
+            } else {
+                $('#category1').css('border-color', '');
+                isvalid = true;
+            }
+
+            var title = $("#title1").val();
+            //alert(title);
+            if (title.trim() == "") {
+
+                $('#title1').css('border-color', 'red');
+                /*lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Title',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#title1').focus();
+                    }
+                })*/
+
+                isvalid = false;
+            }
+            else {
+                $('#title1').css('border-color', '');
+                isvalid = true;
+            }
+            var subject = $("#subject1").val();
+            //alert(subject);
+            if (subject.trim() == "") {
+
+                /*lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Description',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#subject1').focus();
+                    }
+                })*/
+                $('#subject1').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#subject1').css('border-color', '');
+                isvalid = true;
+            }
+
+            var date = $("#date1").val();
+            if (date.trim() == "") {
+
+
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Date',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#date1').focus();
+                    }
+                })
+                */
+                $('#date1').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#date1').css('border-color', '');
+                isvalid = true;
+            }
+            var time = $("#time1").val();
+            ///alert(time);
+            if (time.trim() == "") {
+
+
+
+                /*lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Time',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#time1').focus();
+                    }
+                })*/
+                $('#time1').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#time1').css('border-color', '');
+                isvalid = true;
+            }
+
+            var cno = $("#cno1").val();
+            if (cno.trim() == "") {
+
+
+                /* lnv.alert({
+                     title: ' ',
+                     content: 'Please Enter Contact Number',
+                     alertBtnText: 'Okay',
+                     alertHandler: function () {
+                         $('#cno1').focus();
+                     }
+                 })*/
+                $('#cno1').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#cno1').css('border-color', '');
+                isvalid = true;
+            }
+            //alert(cno);
+            var country = $("#country1").val();
+            if (country == "0") {
+
+
+                /*lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Country',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#country1').focus();
+                    }
+                })*/
+                $('#country1').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#country1').css('border-color', '');
+                isvalid = true;
+            }
+            //alert(country);
+            var state = $("#state1").val();
+            if (state == "0") {
+
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select State',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#state1').focus();
+                    }
+                })*/
+                $('#state1').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#state1').css('border-color', '');
+                isvalid = true;
+            }
+            ///alert(state);
+            //alert($("#city1 option:selected").val());
+            var city = $("#city1").val();
+            if (city == "0") {
+
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select City',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#city1').focus();
+                    }
+                })
+                */
+                $('#city1').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#city1').css('border-color', '');
+                isvalid = true;
+
+            }
+            //alert(city);
+            var reason = $("#reason1").val();
+            //alert(reason);
+            if (reason == "0") {
+
+
+
+                /*lnv.alert({
+
+                    title: ' ',
+                    content: 'Please Select Suburb',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#reason1').focus();
+                    }
+                })*/
+                $('#reason1').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#reason1').css('border-color', '');
+                isvalid = true;
+            }
+            /* var suburb = $("#suburb1").val();
+             //alert(suburb);
+             if (suburb == "0") {
+
+                 lnv.alert({
+                     title: ' ',
+                     content: 'Please Select Region',
+                     alertBtnText: 'Okay',
+                     alertHandler: function () {
+
+                         $('#suburb1').focus();
+                     }
+                 })
+
+                 return false;
+             }*/
+
+            //var code = $("#code1").val();
+            ////alert(code);
+            //if (code.trim() == "") {
+
+
+            //    /* lnv.alert({
+            //         title: ' ',
+            //         content: 'Please Enter Code',
+            //         alertBtnText: 'Okay',
+            //         alertHandler: function () {
+            //             $('#code1').focus();
+            //         }
+            //     })*/
+            //    $('#code1').css('border-color', 'red');
+            //    isvalid = false;
+            //} else {
+            //    $('#code1').css('border-color', '');
+            //    isvalid = true;
+
+            //}
+            //var unit = $("#unit1").val();
+            //if (unit.trim() == "") {
+
+            //    /*lnv.alert({
+            //        title: ' ',
+            //        content: 'Please Enter Unit/Building',
+            //        alertBtnText: 'Okay',
+            //        alertHandler: function () {
+            //            $('#unit1').focus();
+            //        }
+            //    })*/
+            //    $('#unit1').css('border-color', 'red');
+            //    isvalid = false;
+            //} else {
+
+            //    $('#unit1').css('border-color', '');
+            //    isvalid = true;
+            //}
+            //var street = $("#street1").val();
+            //if (street.trim() == "") {
+
+
+            //    /*lnv.alert({
+            //        title: ' ',
+            //        content: 'Please Enter Street',
+            //        alertBtnText: 'Okay',
+            //        alertHandler: function () {
+            //            $('#street1').focus();
+            //        }
+            //    })*/
+            //    $('#street1').css('border-color', 'red');
+            //    isvalid = false;
+            //} else {
+            //    $('#street1').css('border-color', '');
+            //    isvalid = true;
+            //}
+
+            ////alert(street);
+            //var sname = $("#sname1").val();
+            ////alert(sname);
+            //if (sname.trim() == "") {
+
+            //    /*
+            //    lnv.alert({
+            //        title: ' ',
+            //        content: 'Please Street Name',
+            //        alertBtnText: 'Okay',
+            //        alertHandler: function () {
+            //            $('#sname1').focus();
+            //        }
+            //    })*/
+            //    $('#sname1').css('border-color', 'red');
+            //    isvalid = false;
+            //} else {
+            //    $('#sname1').css('border-color', '');
+            //    isvalid = true;
+            //}
+
+            var descr = $("#descr1").val();
+            /* //alert(descr);
+             if (descr == "") {
+
+                 lnv.alert({
+                     title: ' ',
+                     content: 'Please Enter Description',
+                     alertBtnText: 'Okay',
+                     alertHandler: function () {
+                         $('#descr1').focus();
+                     }
+                 })
+                 return false;
+             }*/
+
+            var late = $("#late1").val();
+            ////alert(late);
+            //if (late.trim() == "") {
+
+            //    /*
+            //    lnv.alert({
+            //        title: ' ',
+            //        content: 'Please Select Location from Map',
+            //        alertBtnText: 'Okay',
+            //        alertHandler: function () {
+            //            //$('#sname1').focus();
+            //        }
+            //    })*/
+            //    $('#late1').css('border-color', 'red');
+            //    isvalid = false;
+            //} else {
+            //    $('#late1').css('border-color', '');
+            //    isvalid = true;
+
+            //}
+
+
+            var long = $("#long1").val();
+            //if (long.trim() == "") {
+
+
+            //    /*lnv.alert({
+            //        title: ' ',
+            //        content: 'Please Select Position from MAP',
+            //        alertBtnText: 'Okay',
+            //        alertHandler: function () {
+            //            //$('#sname1').focus();
+            //        }
+            //    })*/
+            //    $('#long1').css('border-color', 'red');
+            //    isvalid = false;
+            //} else {
+            //    $('#long1').css('border-color', '');
+            //    isvalid = true;
+            //}
+            //// alert(long);
+
+
+            var price = 0;
+
+
+            var isprice = $('#ispaid1:checked').val();
+
+            if (isprice == "on") {
+                ispaid = 1;
+
+                if ($('#price1').val() == "" || $('#price1').val() == "0") {
+                    /*  lnv.alert({
+                          title: ' ',
+                          content: 'Please Enter Price',
+                          alertBtnText: 'Okay',
+                          alertHandler: function () {
+                              $('#price1').focus();
+                          }
+                      })
+                      */
+                    $('#price1').css('border-color', 'red');
+                    isvalid = false;
+                } else {
+                    $('#price1').css('border-color', '');
+                    isvalid = true;
+                    price = $('#price1').val();
+                }
+            }
+            var showphone = $('#showphone:checked').val();
+            if (showphone == "on") {
+
+                showphone = "1";
+            }
+            else {
+
+                showphone = "0";
+            }
+            var sponsorshipname = null;
+            var sponsorship = $('#issponsorship:checked').val();
+            if (sponsorship == "on") {
+                sponsorship = "1";
+                sponsorshipname = $('#sponsorshipname').val();
+            }
+            else {
+
+                sponsorship = "0";
+            }
+            var streetpostcode = $('#streetpostcode').val();
+            if (streetpostcode.trim() == "") {
+                $('#streetpostcode').css('border-color', 'red');
+                isvalid = false;
+            } else {
+                $('#streetpostcode').css('border-color', '');
+                isvalid = true;
+            }
+
+
+            if (img == "") {
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please select Image 1',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#img").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                imgisvalid = false;
+            } else if (img1 == "") {
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please select Image 2',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#img1").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                imgisvalid = false;
+            } else if (img2 == "") {
+
+                lnv.alert({
+                    title: '',
+                    content: 'Please select Image 3',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $("#img2").focus();
+                    }
+                });
+                $('.alert-btn').focus();
+                imgisvalid = false;
+            }
+                //else if (category == "0" || title.trim() == "" || subject.trim() == "" || date.trim() == "" || time.trim() == "" || cno.trim() == "" || country == "0" || state == "0" || city == "0" || reason == "0" || code.trim() == "" || unit.trim() == "" || street.trim() == "" || sname.trim() == "" || late.trim() == "" || long.trim() == "") {
+            else if (category == "0" || title.trim() == "" || subject.trim() == "" || date.trim() == "" || time.trim() == "" || cno.trim() == "" || country == "0" || state == "0" || city == "0" || reason == "0" || streetpostcode.trim() == "") {
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Update red cells',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                    }
+                });
+                $('.alert-btn').focus();
+                isvalid = false;
+            }
+            if (isvalid == true && imgisvalid == true) {
+
+                //var obj = { "title": title, "subject": $("#subject1").val(), "eventdate": date, "eventtime": time, "address": streetpostcode, "cno": cno, "country": country, "state": state, "city": city, "reason": reason, "code": code, "unit": unit, "street": street, "sname": sname, "descr": descr, "late": late, "lonz": long, "cat": category, "price": price, "ispaid": ispaid, "showphone": showphone, "sponsorship": sponsorship, "sponsorname": sponsorname };
+                var obj = { "title": title, "subject": $("#subject1").val(), "eventdate": date, "eventtime": time, "address": streetpostcode, "cno": cno, "country": country, "state": state, "city": city, "reason": reason, "descr": descr, "late": late, "lonz": long, "cat": category, "price": price, "ispaid": ispaid, "showphone": showphone, "sponsorship": sponsorship, "sponsorname": sponsorshipname };
+                // console.log("Comming");
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/AddNewEvent',
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+                            // console.log("CommingSuccess");
+                            var eventid = response.eid;
+                            $('#eventid').val(eventid);
+                            if (eventid == -1) {
+                                lnv.alert({
+                                    title: ' ',
+                                    content: 'Your have already added 3 Event.',
+                                    alertBtnText: 'Okay'
+                                });
+                            }
+                            else {
+                                lnv.alert({
+                                    title: ' ',
+                                    content: 'Your listing has been submitted to the MYCARYARD team and you will be notified as soon your listing has been reviewed. Please Wait For a moment while pictures are uploading.',
+                                    alertBtnText: 'Okay',
+                                    alertHandler: function () {
+                                        $body = $("body");
+                                        $body.addClass("loading");
+                                        $('#uploadeventpic').submit();
+                                    }
+                                });
+                            }
+                            $('.alert-btn').focus();
+
+
+                        }
+                    },
+                    error: function (response) {
+                        //alert(response.status);
+                    }
+                });
+            } else {
+                lnv.alert({
+                    title: '',
+                    content: 'Please Fill All Red Mark Fields',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+                    }
+                });
+
+                $('.alert-btn').focus();
+            }
+        } catch (e) {
+
+
+        }
+
+    }
+</script>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadCatnew();
+
+        loadCountrynew();
+
+    });
+
+    function loadCatnew() {
+        try {
+            $body = $("body");
+            $body.addClass("loading");
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //url is the path of our web method (Page name/function name)
+                dataType: "json",
+                url: '/Admin/LoadEventCat',
+                asyn: false,
+                cache: false,
+                //called on jquery ajax call success
+                success: function (result) {
+                    $("#category1").empty();
+                    $("#category1").append($("<option value='0'></option>").val("0").html("select Category"));
+                    for (var i = 0; i <= result.catlist.length - 1 ; i++) {
+                        if (result.catlist[i].status == "1") {
+                            $("#category1").append($("<option></option>").val(result.catlist[i].ecat_id).html(result.catlist[i].category));
+                        }
+                    }
+                    $body.removeClass("loading");
+                    //alert("hi");
+                },
+                //called on jquery ajax call failure
+                error: function ajaxError(result) {
+                    $("#category1").empty();
+                    $("#category1").append($("<option value='0'></option>").val("0").html("select Category"));
+                }
+            });
+        } catch (e) {
+
+            console.log(e);
+        }
+    }
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+
+
+
+    function loadCountrynew() {
+        try {
+            //alert('hi');
+            $body = $("body");
+            $body.addClass("loading");
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //url is the path of our web method (Page name/function name)
+                dataType: "json",
+                url: '/Home/GetCountry',
+                asyn: false,
+                cache: false,
+                //called on jquery ajax call success
+                success: function (result) {
+                    $('#country1').empty();
+                    $('#country1').append("<option value='0'>Select Country</option>");
+
+                    for (var i = 0; i <= result.countrylist.length - 1; i++) {
+                        //alert("Hello"+result[i]);
+                        if (result.countrylist[i].status == "1") {
+                            $("#country1").append($("<option></option>").val(result.countrylist[i].count_id).html(result.countrylist[i].countryname));
+                            // $("#tblDetails").append("<tr><td>" + j + "</td><td>" + result.countrylist[i].countryname + "</td><td>" + result.countrylist[i].status + "</td><td> <img src=@Url.Content("~/Content/admin/edit.gif") onclick=FetchCountry('" + result.countrylist[i].count_id + "')></a></td><td><img src=@Url.Content("~/Content/admin/delete.gif") ></td></tr>");
+                        }
+                    }
+                    $body.removeClass("loading");
+                },
+                //called on jquery ajax call failure
+                error: function ajaxError(result) {
+                    $('#country1').empty();
+                    $('#country1').append("<option value='0'>Select Country</option>");
+                }
+            });
+        } catch (e) {
+
+            console.log(e);
+        }
+    }
+
+</script>
+.
+<script type="text/javascript">
+    function loadtablenew() {
+        try {
+            $body = $("body");
+            $body.addClass("loading");
+
+            //ajaxStop: function () { $body.removeClass("loading"); }
+
+            var count_id = $('#country1 option:selected').val();
+            //  alert(count_id);
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //url is the path of our web method (Page name/function name)
+                dataType: "json",
+                data: "{ count_id: '" + $("#country1").val() + "' }",
+                url: '/Home/GetState',
+                asyn: false,
+                cache: false,
+                //called on jquery ajax call success
+                success: function (result) {
+                    $('#state1').empty();
+                    $('#state1').append("<option value='0'>Select State</option>");
+                    // var j = 1;
+                    for (var i = 0; i <= result.statelist.length - 1 ; i++) {
+                        if (result.statelist[i].status == 1) {
+                            $("#state1").append($("<option></option>").val(result.statelist[i].state_id).html(result.statelist[i].state));
+                        }
+                    }
+                    $body.removeClass("loading");
+                },
+                //called on jquery ajax call failure
+                error: function ajaxError(result) {
+                    // alert("Data Not Found");
+                }
+            });
+
+            loadCurrencynew($("#country1").val());
+            //loadCitynew();
+            //loadReasonnew();
+            //loadNewRegionnew();
+            codeAddress();
+        } catch (e) {
+
+            console.log(e);
+        }
+    }
+
+</script>
+
+<script type="text/javascript">
+    function loadCitynew() {
+        try {
+            // var make = $('#make option:selected').val();
+            //  alert(count_id);
+            $body = $("body");
+            $body.addClass("loading");
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //url is the path of our web method (Page name/function name)
+                dataType: "json",
+                data: "{ country: '" + $("#country1").val() + "',state:'" + $("#state1").val() + "' }",
+                url: '/Admin/LoadCity',
+                asyn: false,
+                cache: false,
+                //called on jquery ajax call success
+                success: function (result) {
+                    $('#city1').empty();
+                    $("#city1").append($("<option value='0'>Select City</option>"));
+                    for (var i = 0; i <= result.citylist.length - 1 ; i++) {
+                        if (result.citylist[i].status == 1) {
+                            $("#city1").append($("<option></option>").val(result.citylist[i].city_id).html(result.citylist[i].city));
+                        }
+                    }
+                    $body.removeClass("loading");
+                },
+                //called on jquery ajax call failure
+                error: function ajaxError(result) {
+                    $('#city1').empty();
+                    $("#city1").append($("<option value='0'>Select City</option>"));
+                }
+            });
+        } catch (e) {
+
+            console.log(e);
+        }
+        //loadReasonnew();
+        //loadNewRegionnew();
+    }
+</script>
+<script type="text/javascript">
+    function loadReasonnew() {
+        try {
+            // var make = $('#make option:selected').val();
+            //  alert(count_id);
+            $body = $("body");
+            $body.addClass("loading");
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //url is the path of our web method (Page name/function name)
+                dataType: "json",
+                data: "{ country: '" + $("#country1").val() + "',state:'" + $("#state1").val() + "' ,city:'" + $("#city1").val() + "'}",
+                url: '/Admin/LoadReason',
+                asyn: false,
+                cache: false,
+                //called on jquery ajax call success
+                success: function (result) {
+                    $('#reason1').empty();
+                    $("#reason1").append($("<option value='0'>Select Suburb</option>"));
+                    for (var i = 0; i <= result.reasonlist.length - 1 ; i++) {
+                        if (result.reasonlist[i].status == 1) {
+                            $("#reason1").append($("<option></option>").val(result.reasonlist[i].reas_id).html(result.reasonlist[i].reason));
+                        }
+                    }
+                    $body.removeClass("loading");
+                },
+                //called on jquery ajax call failure
+                error: function ajaxError(result) {
+                    $('#reason1').empty();
+                    $("#reason1").append($("<option value='0'>Select Suburb</option>"));
+                }
+            });
+
+        } catch (e) {
+
+            console.log(e);
+        }
+    }
+</script>
+<script type="text/javascript">
+    function loadNewRegionnew() {
+        try {
+            // var make = $('#make option:selected').val();
+            //  alert(count_id);
+            // var suburbid = $('#suburbid').val();
+            // var regionid = $('#regionid').val();
+            //alert(regionid);
+            $body = $("body");
+            $body.addClass("loading");
+            //alert($("#country1").val());
+            //alert($("#state1").val());
+            //alert($("#city1").val());
+            //alert($('#reason1').val());
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //url is the path of our web method (Page name/function name)
+                dataType: "json",
+                data: "{ country: '" + $("#country1").val() + "',state:'" + $("#state1").val() + "',city: '" + $('#city1').val() + "',region: '" + $('#reason1').val() + "' }",
+                url: '/Admin/LoadNewRegion',
+                asyn: false,
+                cache: false,
+                //called on jquery ajax call success
+                success: function (result) {
+
+                    $('#suburb1').empty();
+                    $("#suburb1").append($("<option value='0'>Select Suburb</option>"));
+
+                    for (var i = 0; i <= result.newregionlist.length - 1 ; i++) {
+
+
+                        if (result.newregionlist[i].status == 1) {
+
+                            $("#suburb1").append($("<option></option>").val(result.newregionlist[i].regionid).html(result.newregionlist[i].regionname));
+                        }
+                    }
+                    $body.removeClass("loading");
+
+
+                },
+                //called on jquery ajax call failure
+                error: function ajaxError(result) {
+                    $('#suburb1').empty();
+                    $("#suburb1").append($("<option>Select Suburb</option>"));
+
+                }
+            });
+        } catch (e) {
+
+            console.log(e);
+        }
+    }
+</script>
+<script>
+    function loadCurrencynew(countid) {
+        // alert("hi");
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadCurrency',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#currency1').empty();
+                $("#currency1").append($("<option selected></option>").val("").html("Select Currency"));
+                for (var i = 0; i <= result.currencylist.length - 1 ; i++) {
+                    if (result.currencylist[i].count_id == countid) {
+
+
+                        $("#currency1").append($("<option selected></option>").val(result.currencylist[i].cur_id).html(result.currencylist[i].currency));
+                    }
+
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#currency1').empty();
+                $("#currency1").append($("<option selected></option>").val("").html("Select Currency"));
+            }
+        });
+    }
+</script>
+<script src="@Url.Content("~/Css/bootstrap-datetimepicker.min.js")"></script>
+<script type="text/javascript">
+    $('.form_time').datetimepicker({
+        language: 'fr',
+        weekStart: 0,
+        todayBtn: 0,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 1,
+        minView: 0,
+        maxView: 1,
+        forceParse: 0
+    });
+</script>
+<script type="text/javascript">
+    $(".form_date").datetimepicker({
+        format: 'mm/dd/yyyy',
+        language: 'fr',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        startDate: '+0d',
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+</script>
+
+
+<style>
+    .cropit-preview {
+        background-color: #f8f8f8;
+        background-size: cover;
+        border: 5px solid #ccc;
+        border-radius: 3px;
+        margin-top: 7px;
+        /*width: 663px;*/
+        width: 850px;
+        height: 400px;
+    }
+
+    .cropit-preview-image-container {
+        cursor: move;
+    }
+
+    .cropit-preview-background {
+        opacity: .2;
+        cursor: auto;
+    }
+
+    .image-size-label {
+        margin-top: 10px;
+    }
+
+    input, .export {
+        /* Use relative position to prevent from being covered by image background */
+        position: relative;
+        z-index: 10;
+        display: block;
+    }
+
+    button {
+        margin-top: 10px;
+    }
+</style>
+
+
+<div id="imgcrop_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog login_dilog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="login_head">Image Crop <div id="popupclose" class="close">x</div></div>
+            </div>
+            <div class="modal-body">
+                <div class="image-editor">
+                    <div id="ImageErrorMessage" class="text-danger hide"> </div>
+                    <input type="file" id="fucrop" class="cropit-image-input select-image-btn" accept=".png,.jpg,.jpeg,.gif" />
+
+                    <div class="cropit-preview" id="cropdiv"></div>
+                    <div class="image-size-label">
+                        Resize image
+                    </div>
+                    <input type="range" id="croprange" class="cropit-image-zoom-input">
+                    <button class="rotate-ccw">Rotate counterclockwise</button>
+                    <button class="rotate-cw">Rotate clockwise</button>
+                    <button class="export">Export</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    $(function () {
+        $("input:file").change(function () {
+            //Get reference of FileUpload.
+            var fileUpload = $("#fucrop")[0];
+
+            //Check whether the file is valid Image.
+            var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+            if (regex.test(fileUpload.value.toLowerCase())) {
+                //Check whether HTML5 is supported.
+                if (typeof (fileUpload.files) != "undefined") {
+                    //Initiate the FileReader object.
+                    var reader = new FileReader();
+                    //Read the contents of Image File.
+                    reader.readAsDataURL(fileUpload.files[0]);
+                    reader.onload = function (e) {
+                        //Initiate the JavaScript Image object.
+                        var image = new Image();
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+                        image.onload = function () {
+                            //Determine the Height and Width.
+                            var height = this.height;
+                            var width = this.width;
+                            if (height < 600 || width < 1050) {
+                                $('#ImageErrorMessage').removeClass("hide").text("Failed to upload Image, should be width 1050px and height 600px.");
+                                return false;
+                            }
+                            $('#ImageErrorMessage').removeClass("hide").text("");
+                            return true;
+                        };
+                    }
+                } else {
+                    alert("This browser does not support HTML5.");
+                    return false;
+                }
+            } else {
+                //alert("Please select a valid Image file.");
+                $('#ImageErrorMessage').removeClass("hide").text("Failed to upload Image, the format is not supported.");
+
+                return false;
+            }
+        });
+    });
+
+    $('#popupclose').click(function () {
+        $('#imgcrop_modal').modal('hide');
+        $('#ImageErrorMessage').removeClass("hide").text("");
+    })
+
+    var myBookId;
+    $(document).on("click", ".event_upldnew", function () {
+        myBookId = $(this).data('id');
+    });
+
+    $(function () {
+        $('.image-editor').cropit({
+            exportZoom: 1.25,
+            imageBackground: true,
+            imageBackgroundBorderWidth: 20,
+            imageState: {
+                src: 'http://lorempixel.com/500/400/',
+            },
+        });
+
+        $('.rotate-cw').click(function () {
+            $('.image-editor').cropit('rotateCW');
+        });
+
+        $('.rotate-ccw').click(function () {
+            $('.image-editor').cropit('rotateCCW');
+        });
+
+        $('.export').click(function () {
+            var imageData = $('.image-editor').cropit('export');
+            document.getElementById('output' + myBookId).src = imageData;
+            var data = imageData.replace(/^data:image\/\w+;base64,/, "");
+            document.getElementById('hdoutput' + myBookId).value = data;
+            $('#imgcrop_modal').modal('hide');
+            document.getElementById("fucrop").value = "";
+            document.getElementById("croprange").value = "";
+            $("#cropdiv img").attr("src", "img.png");
+        });
+    });
+</script>

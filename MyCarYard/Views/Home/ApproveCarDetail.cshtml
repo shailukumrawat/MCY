@@ -1,0 +1,1845 @@
+﻿@using MyCarYard.ActionHelper
+@model MyCarYard.Models.ApproveUserListModel
+@{
+    ViewBag.Title = "Approve Car Details";
+    Layout = "~/Views/Shared/_LayoutSuperAdmin.cshtml";
+
+}
+
+<input type="hidden" value="@Model.cid" name="custid" id="custid" />
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <section class="content">
+            <!---list-->
+            <!---modal-->
+
+            <div id="mypopup" class="modal fade" role="dialog">
+                <div class="modal-dialog dtl">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+
+                        <div class="modal-body clearfix">
+                            <div class="detail_head">
+                                <h4 class="detail_heading"> <label id="cartitle"></label> </h4>
+                                <div class="detail_bar">
+                                    <ul>
+                                        <li><a href="#"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="describe_contain">
+                                <div class="listing_slider">
+
+                                    <div class="item"> <img src="~/images/cars/@Model.img1" class="img-responsive"></div>
+                                </div>
+                                <div class="listing_detail">
+                                    <div class="item_detail">
+                                        <ul>
+                                            <li>Transmission: <span>  <label id="titlespeedtype"></label></span></li>
+                                            <li>Engine: <span> <label id="titleengine"></label></span></li>
+
+                                            <li>Odometer : <span> <label id="titleodometer"></label></span></li>
+
+                                            <li>Body Type : <span> <label id="titlebodytype"></label> </span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="listing_btm">
+                                        <ul>
+
+                                            @* <li><a href="#"><i class="fa fa-clock-o"></i> 26 Day Ago</a></li>
+                                                <li><a href="#"><i class="fa fa-map-marker"></i><label id="titleaddress"></label> </a></li>*@
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---modal-->
+            <!-- SELECT2 EXAMPLE -->
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Approve Car Detail</h3>
+                    <div class="box-tools pull-right">
+                        <a href="javascript:void" data-toggle="modal" data-target="#mypopup" onclick="return viewDetail()">View Listing</a>  &nbsp;&nbsp;
+                        <a href="@Url.Action("ApproveUserListing", "Home")?cid=@(ConvertHelper.Encode( Model.uid.ToString()))&type=@Model.listype">Back</a>
+                        @*  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div class="form-group" style="margin: 0">
+
+                                <input class="form-control " style="width: 100%;" id="currency" type="hidden">
+
+                            </div>
+                            <div class="form-group">
+                                <label>Added Date:</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" id="datepicker1" value="@Model.addeddate" disabled>
+                                </div>
+                                <!-- /.input group -->
+                            </div>
+                            <div class="form-group">
+                                <label> Listing ID</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="listid" value="@Model.listingid" placeholder="Listing ID">
+                            </div>
+                            <div class="form-group">
+                                <label> Price</label>
+                                <input type="text" class="form-control" style="width: 100%;" id="price" value="@Model.price">
+                            </div>
+
+                            <div class="form-group hidden">
+                                <label>Listed As</label>
+                                <select class="form-control" style="width: 100%;" id="list"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label> Make</label>
+                                <select class="form-control" style="width: 100%;" id="make" onchange="loadModel(); loadBadge(); loadSeries();"></select>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Model</label>
+                                <select class="form-control" style="width: 100%;" id="model" onchange="loadBadge(); loadSeries();"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Series</label>
+                                <select class="form-control" style="width: 100%;" id="badge" onchange="loadSeries();"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Badgetype</label>
+                                <select class="form-control " style="width: 100%;" id="series"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Year</label>
+                                <select class="form-control " style="width: 100%;" id="year">
+                                    <option value="@Model.year" selected>@Model.year</option>
+                                    <option>Year</option>
+                                    @for (int i = 1950; i <= DateTime.Now.Year; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Condition</label>
+                                <select class="form-control " style="width: 100%;" id="condition"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Body Type</label>
+                                <select class="form-control " id="body_type"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Engine Size</label>
+                                <select class="form-control" id="engine" style="width: 100%;"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Car Description</label>
+                                <textarea placeholder="Car Description" class="form-control" id="descr" rows="5">@Model.descr</textarea>
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label> Body Color</label>
+                                <select class="form-control " style="width: 100%;" id="bcolor"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Interior Color</label>
+                                <select class="form-control " style="width: 100%;" id="icolor"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Interior Material</label>
+                                <select class="form-control " style="width: 100%;" id="material"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Transmission</label>
+                                <select class="form-control " style="width: 100%;" id="trans"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Speed Type</label>
+                                <select class="form-control " style="width: 100%;" id="speedtype"></select>
+
+                            </div>
+                            <div class="form-group">
+                                <label>DriveTrain </label>
+                                <select class="form-control " style="width: 100%;" id="drive"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cylinders</label>
+                                <select class="form-control" style="width: 100%;" id="cylinder"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>OdoMeter</label>
+                                <input type="text" id="meter" class="form-control" placeholder="OdoMeter" value="@Model.meter" />
+                            </div>
+                            <div class="form-group">
+                                <label>Select Metric</label>
+                                <select class="form-control " style="width: 100%;" id="matrics"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Fuel</label>
+                                <select class="form-control " style="width: 100%;" id="fuel"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Approve</label>
+                                <select class="form-control " style="width: 100%;" id="apprstatus">
+                                    <option value="">Select Status</option>
+                                    @if (Model.status == 0)
+                                    {
+                                        <option value="1">Approve</option>
+                                        <option value="2">Not Approve</option>
+                                        <option value="0" selected>Awaiting Approval</option>
+                                    }
+                                    else if (Model.status == 1)
+                                    {
+                                        <option value="1" selected>Approve</option>
+                                        <option value="2">Not Approve</option>
+                                        <option value="0">Awaiting Approval</option>
+                                    }
+                                    else
+                                    {
+
+                                        <option value="1">Approve</option>
+                                        <option value="2" selected>Not Approve</option>
+                                        <option value="0">Awaiting Approval</option>
+                                    }
+
+
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Listed As</label>
+                                <select class="form-control" style="width: 100%;" id="gstatus">
+                                    <option value="">Listed As</option>
+                                    @if (Model.gstatus == "0")
+                                    {
+                                        <option value="1">Garaged</option>
+                                        <option value="0" selected>For Sale</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="1" selected>Garaged</option>
+                                        <option value="0">For Sale</option>
+                                    }
+
+
+                                </select>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <form action="EditCarPicForAdmin" method="post" enctype="multipart/form-data" id="uploadcarpic" name="frm1">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <input type="hidden" name="addcarid" id="addcarid" value="@Model.cid" />
+                                    <input type="hidden" name="cid" value="@Model.uid" />
+                                    <input type="hidden" name="type" value="@Model.listype" />
+                                    <div class="col-md-2">
+                                        <div class="detail_img">
+                                            <img src="~/images/cars/@Model.img" class="img-responsive" id="blah" />
+                                            <br />
+                                            <input type="file" id="img" name="img" />
+                                        </div>
+                                    </div>
+                                    <script>
+
+                                        function readURL(input) {
+                                            if (input.files && input.files[0]) {
+                                                var reader = new FileReader();
+
+                                                reader.onload = function (e) {
+                                                    $('#blah').attr('src', e.target.result);
+                                                }
+
+                                                reader.readAsDataURL(input.files[0]);
+                                            }
+                                        }
+
+                                        $("#img").change(function () {
+                                            readURL(this);
+                                        });
+                                    </script>
+                                    <div class="col-md-2">
+                                        <div class="detail_img">
+                                            <img src="~/images/cars/@Model.img1" class="img-responsive" id="blah1" />
+                                            <br />
+                                            <input type="file" id="img1" name="img1" />
+                                        </div>
+                                    </div>
+                                    <script>
+
+                                        function readURL1(input) {
+                                            if (input.files && input.files[0]) {
+                                                var reader = new FileReader();
+
+                                                reader.onload = function (e) {
+                                                    $('#blah1').attr('src', e.target.result);
+                                                }
+
+                                                reader.readAsDataURL(input.files[0]);
+                                            }
+                                        }
+
+                                        $("#img1").change(function () {
+                                            readURL1(this);
+                                        });
+                                    </script>
+                                    <div class="col-md-2">
+                                        <div class="detail_img">
+                                            <img src="~/images/cars/@Model.img2" class="img-responsive" id="blah2" />
+                                            <br />
+                                            <input type="file" id="img2" name="img2" />
+                                        </div>
+                                    </div>
+
+                                    <script>
+
+                                        function readURL2(input) {
+                                            if (input.files && input.files[0]) {
+                                                var reader = new FileReader();
+
+                                                reader.onload = function (e) {
+                                                    $('#blah2').attr('src', e.target.result);
+                                                }
+
+                                                reader.readAsDataURL(input.files[0]);
+                                            }
+                                        }
+
+                                        $("#img2").change(function () {
+                                            readURL2(this);
+                                        });
+                                    </script>
+                                    <div class="col-md-2">
+                                        <div class="detail_img">
+                                            <img src="~/images/cars/@Model.img3" class="img-responsive" id="blah3" />
+                                            <br />
+                                            <input type="file" id="img3" name="img3" />
+                                        </div>
+                                    </div>
+                                    <script>
+
+                                        function readURL3(input) {
+                                            if (input.files && input.files[0]) {
+                                                var reader = new FileReader();
+
+                                                reader.onload = function (e) {
+                                                    $('#blah3').attr('src', e.target.result);
+                                                }
+
+                                                reader.readAsDataURL(input.files[0]);
+                                            }
+                                        }
+
+                                        $("#img3").change(function () {
+                                            readURL3(this);
+                                        });
+                                    </script>
+                                    <div class="col-md-2">
+                                        <div class="detail_img">
+                                            <img src="~/images/cars/@Model.img4" class="img-responsive" id="blah4" />
+                                            <br />
+                                            <input type="file" id="img4" name="img4" />
+                                        </div>
+                                    </div>
+                                    <script>
+
+                                        function readURL4(input) {
+                                            if (input.files && input.files[0]) {
+                                                var reader = new FileReader();
+
+                                                reader.onload = function (e) {
+                                                    $('#blah4').attr('src', e.target.result);
+                                                }
+
+                                                reader.readAsDataURL(input.files[0]);
+                                            }
+                                        }
+
+                                        $("#img4").change(function () {
+                                            readURL4(this);
+                                        });
+                                    </script>
+                                    <div class="col-md-2">
+                                        <div class="detail_img">
+                                            <img src="~/images/cars/@Model.img5" class="img-responsive" id="blah5" />
+                                            <br />
+                                            <input type="file" id="img5" name="img5" />
+                                        </div>
+                                    </div>
+                                    <script>
+
+                                        function readURL5(input) {
+                                            if (input.files && input.files[0]) {
+                                                var reader = new FileReader();
+
+                                                reader.onload = function (e) {
+                                                    $('#blah5').attr('src', e.target.result);
+                                                }
+
+                                                reader.readAsDataURL(input.files[0]);
+                                            }
+                                        }
+
+                                        $("#img5").change(function () {
+                                            readURL5(this);
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+                <!-- /.row -->
+
+            </div>
+
+
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary" onclick="EditCar();" id="btnsubmit">Edit Car Detail</button>
+            </div>
+
+
+            <!-- /.box -->
+            <!-- /.row -->
+        </section>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+
+    function viewDetail() {
+
+        $('#cartitle').html($('#year').val() + " " + $("#make option:selected").text() + " " + $("#model option:selected").text() + " " + $("#badge option:selected").text());
+        $('#titlespeedtype').html($("#speedtype option:selected").text() + " " + $("#trans option:selected").text());
+        $('#titleodometer').html($('#meter').val() + " " + $("#matrics option:selected").text());
+        $('#titleengine').html($("#cylinder option:selected").text() + " " + $("#engine option:selected").text());
+        $('#titlebodytype').html($("#body_type option:selected").text());
+        // $('#titleaddress').html($("#body_type option:selected").text());
+    }
+    function EditCar() {
+
+        try {
+            var isvalid = true;
+            var carid = '@Model.cid';
+            //alert("Carid" + carid);
+            var addeddate = $('#datepicker1').val();
+            if (addeddate == "") {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Date',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#datepicker1').focus();
+                    }
+                })*/
+                $('#datepicker1').css('border-color', 'red');
+
+                isvalid = false;
+                return;
+            } else {
+                $('#datepicker1').css('border-color', '');
+
+                isvalid = true;
+            }
+            //alert("Addeddate" + addeddate);
+            var apprstatus = $('#apprstatus').val();
+            if (apprstatus == "" || apprstatus == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#apprstatus').focus();
+                    }
+                })*/
+                $('#apprstatus').css('border-color', 'red');
+
+                isvalid = false;
+                return;
+            } else {
+                $('#apprstatus').css('border-color', '');
+
+                isvalid = true;
+            }
+            //alert("apprstatus" + apprstatus);
+
+            var make = $('#make').val();
+            if (make == "" || make == "0" || make == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#apprstatus').focus();
+                    }
+                })*/
+                $('#make').css('border-color', 'red');
+
+                isvalid = false;
+                return;
+            } else {
+                $('#make').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("make" + make);
+            var model = $('#model').val();
+
+            if (model == "" || model == "0" || model == undefined) {
+
+                /*  lnv.alert({
+                      title: ' ',
+                      content: 'Please Select Model',
+                      alertBtnText: 'Okay',
+                      alertHandler: function () {
+                          $('#model').focus();
+                      }
+                  })*/
+                $('#model').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#model').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("model " + model);
+            var badge = $('#badge').val();
+            if (badge == "" || badge == "0" || badge == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Series',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#badge').focus();
+                    }
+                })*/
+                $('#badge').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#badge').css('border-color', '');
+                isFinite = true;
+            }
+            //alert("badge" + badge);
+            var series = $('#series').val();
+            if (series == "" || series == "0" || series == undefined) {
+
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Badge',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#series').focus();
+                    }
+                })*/
+                $('#series').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#series').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("series" + series);
+            var price = $('#price').val();
+            if (price == "" || price == undefined) {
+
+                $('#price').css('border-color', 'red');
+                /*lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Price',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#price').focus();
+                    }
+                })*/
+                isvalid = false;
+                return;
+            } else {
+                $('#price').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("price" + price);
+            //alert("Currency" + $('#currency').val());
+            /* var listedas = $('#list').val();
+             if (listedas == "" || listedas == "0" || listedas == undefined) {
+
+                 lnv.alert({
+                     title: ' ',
+                     content: 'Please Select Listed AS',
+                     alertBtnText: 'Okay',
+                     alertHandler: function () {
+                         $('#list').focus();
+                     }
+                 })
+                 return false;
+             }*/
+
+            // alert("currency" + )
+
+            var condition = $('#condition').val();
+            if (condition == "" || condition == "0" || condition == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Condition',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#condition').focus();
+                    }
+                })*/
+                $('#condition').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#condition').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("condition" + condition);
+            var descr = $('#descr').val();
+            if (descr == "" || descr == "0" || descr == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Enter Description',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#descr').focus();
+                    }
+                })*/
+                $('#descr').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#descr').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("descr" + descr);
+
+            var bodytype = $('#body_type').val();
+            if (bodytype == "" || bodytype == "0" || bodytype == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Body Type',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#descr').focus();
+                    }
+                })
+                */
+                $('#body_type').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#body_type').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("bodytype" + bodytype);
+            var bcolor = $('#bcolor').val();
+            if (bcolor == "" || bcolor == "0" || bcolor == undefined) {
+                /*
+                                lnv.alert({
+                                    title: ' ',
+                                    content: 'Please Select Body Color',
+                                    alertBtnText: 'Okay',
+                                    alertHandler: function () {
+                                        $('#bcolor').focus();
+                                    }
+                                })*/
+                $('#bcolor').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#bcolor').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("bcolor" + bcolor);
+            var icolor = $('#icolor').val();
+            if (icolor == "" || icolor == "0" || icolor == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Interior Color',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#icolor').focus();
+                    }
+                })*/
+                $('#icolor').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#icolor').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("icolor" + icolor);
+            var year = $('#year').val();
+            if (year == "" || year == "0" || year == undefined) {
+
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Year',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#year').focus();
+                    }
+                })*/
+                $('#year').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+
+                $('#year').css('border-color', '');
+                isvalid = true;
+            }
+            //alert('year' + year);
+            var material = $('#material').val();
+            if (material == "" || material == "0" || material == undefined) {
+                $('#material').css('border-color', 'red');
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Interior Material',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#material').focus();
+                    }
+                })*/
+
+                isvalid = false;
+                return;
+            } else {
+
+                $('#material').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("material" + material);
+            var trans = $('#trans').val();
+            if (trans == "" || trans == "0" || trans == undefined) {
+
+                /* lnv.alert({
+                     title: ' ',
+                     content: 'Please Select Transmission',
+                     alertBtnText: 'Okay',
+                     alertHandler: function () {
+                         $('#trans').focus();
+                     }
+                 })*/
+                $('#trans').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+
+                $('#trans').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("trans" + trans);
+            var drive = $('#drive').val();
+            if (drive == "" || drive == "0" || drive == undefined) {
+
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Drive Train',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#drive').focus();
+                    }
+                })*/
+                $('#drive').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#drive').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("drivetrain" + drive);
+            var cylinder = $('#cylinder').val();
+            if (cylinder == "" || cylinder == "0" || cylinder == undefined) {
+                /*
+                                lnv.alert({
+                                    title: ' ',
+                                    content: 'Please Select Cylinder',
+                                    alertBtnText: 'Okay',
+                                    alertHandler: function () {
+                                        $('#cylinder').focus();
+                                    }
+                                })*/
+                $('#cylinder').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#cylinder').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("cylinder" + cylinder);
+            var meter = $('#meter').val();
+            if (meter == "" || meter == undefined || meter == "0") {
+
+                /* lnv.alert({
+                     title: ' ',
+                     content: 'Please Select OdoMeter',
+                     alertBtnText: 'Okay',
+                     alertHandler: function () {
+                         $('#meter').focus();
+                     }
+                 })*/
+                $('#meter').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#meter').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("meter" + meter);
+            var engine = $('#engine').val();
+            if (engine == "" || engine == "" || engine == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Engine Size',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#engine').focus();
+                    }
+                })
+                */
+                $('#engine').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#engine').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("engine" + engine);
+            var matrics = $('#matrics').val();
+            if (matrics == "" || matrics == "0" || matrics == undefined) {
+
+                /*lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Matrics',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#matrics').focus();
+                    }
+                })*/
+                $('#matrics').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#matrics').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("matrics" + matrics);
+            var fuel = $('#fuel').val();
+            if (fuel == "" || fuel == "0" || fuel == undefined) {
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Fuel',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#fuel').focus();
+                    }
+                })*/
+                $('#fuel').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#fuel').css('border-color', '');
+                isvalid = true;
+            }
+            //alert("fuel" + fuel);
+            var gstatus = $('#gstatus').val();
+            if (gstatus == "" || gstatus == "" || gstatus == undefined) {
+
+                /*
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Select Status',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        $('#gstatus').focus();
+                    }
+                })
+                */
+                $('#gstatus').css('border-color', 'red');
+                isvalid = false;
+                return;
+            } else {
+                $('#gstatus').css('border-color', '');
+
+                isvalid = true;
+            }
+            if (isvalid == true) {
+                //alert("gstatus" + gstatus);
+                var obj = { "cid": carid, "make": $("#make").val(), "model": $("#model").val(), "badge": $("#badge").val(), "series": $("#series").val(), "price": $("#price").val(), "currency": $("#currency").val(), "condition": $("#condition").val(), "descr": $("#descr").val(), "body_type": $("#body_type").val(), "bcolor": $("#bcolor").val(), "icolor": $("#icolor").val(), "year": $("#year").val(), "material": $("#material").val(), "transmition": $("#trans").val(), "drive": $("#drive").val(), "cylinder": $("#cylinder").val(), "meter": $("#meter").val(), "engine": $("#engine").val(), "metrics": $("#matrics").val(), "speedtype": $('#speedtype').val(), "fuel": $('#fuel').val(), "addeddate": $('#datepicker1').val(), "status": $('#apprstatus').val(), "gstatus": $('#gstatus').val(), "listid": $('#listid').val() };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/EditCar',
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+
+
+                            lnv.alert({
+                                title: ' ',
+                                content: 'Car Detail Updated Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+
+                                    $('#uploadcarpic').submit();
+
+                                    //var url = '@Url.Action("ApproveUserListing", "Home")?cid=' + '@Model.uid' + '&type='+'@Model.listype' ;
+                                    //window.location = url;
+                                }
+                            });
+                            $('.alert-btn').focus();
+
+                        } else {
+
+                            // alert("Success" + response.error);
+
+                        }
+                    },
+                    error: function (response) {
+                        lnv.alert({
+                            title: ' ',
+                            content: 'User Profile is not updated, please update user profile first and then try to approve car details.',
+                            alertBtnText: 'Okay',
+                            alertHandler: function () {
+
+
+                            }
+                        });
+                        $('.alert-btn').focus();
+                    }
+                });
+            } else {
+
+                lnv.alert({
+                    title: ' ',
+                    content: 'Please Fill Missing Fields',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+
+
+                    }
+                });
+                $('.alert-btn').focus();
+            }
+        } catch (e) {
+
+
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadMake();
+    });
+
+    function loadMake() {
+
+        var makeid = '@Model.make';
+        // alert("hi");
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadMake',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#make').empty();
+                $("#make").append($("<option></option>").val("0").html("Select Make"));
+
+                for (var i = 0; i <= result.makelist.length - 1; i++) {
+                    if (result.makelist[i].status == 1) {
+                        if (result.makelist[i].make_id == makeid) {
+                            $("#make").append($("<option selected></option>").val(result.makelist[i].make_id).html(result.makelist[i].make));
+
+                            loadModel();
+                        } else {
+
+                            $("#make").append($("<option></option>").val(result.makelist[i].make_id).html(result.makelist[i].make));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#make').empty();
+                $("#make").append($("<option></option>").val("0").html("Select Make"));
+            }
+        });
+
+        //loadModel();
+        //loadBadge();
+        //loadSeries();
+        //loadengineSize();
+    }
+</script>
+<script type="text/javascript">
+    function loadModel() {
+        var make = $('#make option:selected').val();
+        var modelid = '@Model.model';
+        // alert(modelid);
+        //  alert(count_id);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ make: '" + $("#make").val() + "' }",
+            url: '/Admin/LoadModel',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                $('#model').empty();
+                $("#model").append($("<option></option>").val("0").html("Select Model"));
+                for (var i = 0; i <= result.modellist.length - 1 ; i++) {
+                    if (result.modellist[i].status == 1) {
+                        if (result.modellist[i].model_id == modelid) {
+
+                            //alert(result.modellist[i].model_id);
+                            $("#model").append($("<option selected></option>").val(result.modellist[i].model_id).html(result.modellist[i].modeltype));
+
+                            loadBadge();
+                        } else {
+
+                            $("#model").append($("<option></option>").val(result.modellist[i].model_id).html(result.modellist[i].modeltype));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#model').empty();
+                $("#model").append($("<option></option>").val("0").html("Select Model"));
+            }
+        });
+
+        // loadBadge();
+        //loadSeries();
+        //loadengineSize();
+    }
+</script>
+<script type="text/javascript">
+    function loadBadge() {
+        var make = $('#make option:selected').val();
+        var badgeid = '@Model.badge';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ make: '" + $("#make").val() + "',model:'" + $("#model").val() + "' }",
+            url: '/Admin/LoadBadge',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#badge').empty();
+                $("#badge").append($("<option></option>").val("0").html("Select Series"));
+                for (var i = 0; i <= result.badgelist.length - 1 ; i++) {
+                    if (result.badgelist[i].status == 1) {
+                        if (result.badgelist[i].bad_id == badgeid) {
+
+                            $("#badge").append($("<option selected></option>").val(result.badgelist[i].bad_id).html(result.badgelist[i].badge));
+
+                            loadSeries();
+                        } else {
+                            $("#badge").append($("<option></option>").val(result.badgelist[i].bad_id).html(result.badgelist[i].badge));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#badge').empty();
+                $("#badge").append($("<option></option>").val("0").html("Select Series"));
+            }
+        });
+        //loadSeries();
+        //loadengineSize();
+    }
+</script>
+
+<script type="text/javascript">
+    function loadSeries() {
+        var make = $('#make option:selected').val();
+        var seriesid = '@Model.series';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ make: '" + $("#make").val() + "',model:'" + $("#model").val() + "' ,badge:'" + $("#badge").val() + "' }",
+            url: '/Admin/LoadSeries',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#series').empty();
+                $("#series").append($("<option></option>").val("0").html("Select Badge"));
+
+                for (var i = 0; i <= result.serieslist.length - 1 ; i++) {
+                    if (result.serieslist[i].status == 1) {
+                        if (result.serieslist[i].ser_id == seriesid) {
+
+                            $("#series").append($("<option selected></option>").val(result.serieslist[i].ser_id).html(result.serieslist[i].series));
+                            loadengineSize();
+                        } else {
+                            $("#series").append($("<option></option>").val(result.serieslist[i].ser_id).html(result.serieslist[i].series));
+                        }
+                    }
+                }
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#series').empty();
+                $("#series").append($("<option></option>").val("0").html("Select Badge"));
+
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadCondition();
+    });
+
+    function loadCondition() {
+        var conditionid = '@Model.condition';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadCondition',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+
+                $('#condition').empty();
+                $('#condition').append($("<option></option>")).val("0").html("Select Condition");
+
+                for (var i = 0; i <= result.conditionlist.length - 1; i++) {
+                    if (result.conditionlist[i].status == 1) {
+                        if (result.conditionlist[i].cond_id == conditionid) {
+
+                            $("#condition").append($("<option selected></option>").val(result.conditionlist[i].cond_id).html(result.conditionlist[i].condition));
+
+                        } else {
+                            $("#condition").append($("<option></option>").val(result.conditionlist[i].cond_id).html(result.conditionlist[i].condition));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#condition').empty();
+                $('#condition').append($("<option></option>")).val("0").html("Select Condition");
+
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadCurrency();
+        loadlistedAs();
+    });
+
+    function loadCurrency() {
+        var curid = '@Model.currency';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadCurrency',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                //$('#currency').empty();
+                //$("#currency").append($("<option></option>").val("0").html("Select Currency"));
+
+                for (var i = 0; i <= result.currencylist.length - 1 ; i++) {
+                    //alert("Hello" + result.currencylist[i].cur_id);
+                    if (result.currencylist[i].cur_id == curid) {
+
+                        $("#currency").val(result.currencylist[i].cur_id);
+
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#currency').empty();
+                $("#currency").append($("<option></option>").val("0").html("Select Currency"));
+
+            }
+        });
+    }
+
+    function loadlistedAs() {
+        var listedas = '@Model.list';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/loadListedAs',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#list').empty();
+                $("#list").append($("<option></option>").val("0").html("Select Listed AS"));
+
+                for (var i = 0; i <= result.listedas.length - 1 ; i++) {
+                    if (result.listedas[i].status == 1) {
+                        if (result.listedas[i].listedas_id == listedas) {
+
+                            $("#list").append($("<option></option>").val(result.listedas[i].listedas_id).html(result.listedas[i].listed_name));
+
+                        } else {
+
+                            $("#list").append($("<option></option>").val(result.listedas[i].listedas_id).html(result.listedas[i].listed_name));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#list').empty();
+                $("#list").append($("<option></option>").val("0").html("Select Listed AS"));
+
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadDrive();
+    });
+
+    function loadDrive() {
+        var driveid = '@Model.drive';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadDriveTrain',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#drive').empty();
+                $("#drive").append($("<option></option>").val("0").html("Select Drive"));
+
+                for (var i = 0; i <= result.drivelist.length - 1; i++) {
+                    if (result.drivelist[i].status == 1) {
+                        if (result.drivelist[i].drive_id == driveid) {
+
+                            $("#drive").append($("<option selected></option>").val(result.drivelist[i].drive_id).html(result.drivelist[i].drive));
+
+                        } else {
+
+                            $("#drive").append($("<option></option>").val(result.drivelist[i].drive_id).html(result.drivelist[i].drive));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#drive').empty();
+                $("#drive").append($("<option></option>").val("0").html("Select Drive"));
+
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadTrans();
+        loadSpeedtype();
+    });
+
+    function loadTrans() {
+        var transid = '@Model.tranmition';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadTransmission',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#trans').empty();
+                $("#trans").append($("<option></option>").val("0").html("Select Transmission"));
+
+                for (var i = 0; i <= result.translist.length - 1; i++) {
+                    if (result.translist[i].status == 1) {
+                        if (result.translist[i].trans_id == transid) {
+
+                            $("#trans").append($("<option selected></option>").val(result.translist[i].trans_id).html(result.translist[i].transmision));
+
+                            //GetTranmissionDetail(transid);
+                        } else {
+                            $("#trans").append($("<option></option>").val(result.translist[i].trans_id).html(result.translist[i].transmision));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#trans').empty();
+                $("#trans").append($("<option></option>").val("0").html("Select Transmission"));
+            }
+        });
+    }
+
+    function loadSpeedtype() {
+        var transid = '@Model.speedtype';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadSpeedType',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#speedtype').empty();
+                $("#speedtype").append($("<option selected></option>").val("0").html("Select Speedtype"));
+
+                for (var i = 0; i <= result.speedtypelist.length - 1; i++) {
+                    if (result.speedtypelist[i].status == 1) {
+                        if (result.speedtypelist[i].speedtypeid == transid) {
+
+                            $("#speedtype").append($("<option selected></option>").val(result.speedtypelist[i].speedtypeid).html(result.speedtypelist[i].speedtypename));
+
+                            //GetTranmissionDetail(transid);
+                        } else {
+                            $("#speedtype").append($("<option></option>").val(result.speedtypelist[i].speedtypeid).html(result.speedtypelist[i].speedtypename));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#speedtype').empty();
+                $("#speedtype").append($("<option selected></option>").val("0").html("Select Speedtype"));
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        loadMeter();
+        loadbodytype();
+        loadbodycolor();
+        loadinteriorcolor();
+        loadinteriormaterial();
+        loadCylinder();
+        loadFuel();
+    });
+
+    function loadMeter() {
+        var matricsid = '@Model.matrics';
+        return $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/LoadMeter',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#matrics').empty();
+                $("#matrics").append($("<option ></option>").val("0").html("Select Matrics"));
+                for (var i = 0; i <= result.meterlist.length - 1 ; i++) {
+                    if (result.meterlist[i].status == 1) {
+                        if (result.meterlist[i].odo_id == matricsid) {
+
+                            $("#matrics").append($("<option selected></option>").val(result.meterlist[i].odo_id).html(result.meterlist[i].meter));
+
+                        } else {
+                            $("#matrics").append($("<option></option>").val(result.meterlist[i].odo_id).html(result.meterlist[i].meter));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#matrics').empty();
+                $("#matrics").append($("<option ></option>").val("0").html("Select Matrics"));
+            }
+        });
+    }
+
+    function loadbodytype() {
+        var bodytypeid = '@Model.body_type';
+        return $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/loadbodytype',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#body_type').empty();
+                $("#body_type").append($("<option></option>").val("0").html("Select Body Type"));
+                for (var i = 0; i <= result.bodytypelist.length - 1; i++) {
+
+                    if (result.bodytypelist[i].status == 1) {
+                        if (result.bodytypelist[i].bodytype_id == bodytypeid) {
+                            //  alert("bodytype" + bodytypeid);
+                            $("#body_type").append($("<option selected></option>").val(result.bodytypelist[i].bodytype_id).html(result.bodytypelist[i].bodytype_name));
+
+                        } else {
+
+                            $("#body_type").append($("<option></option>").val(result.bodytypelist[i].bodytype_id).html(result.bodytypelist[i].bodytype_name));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#body_type').empty();
+                $("#body_type").append($("<option></option>").val("0").html("Select Body Type"));
+            }
+        });
+    }
+
+    function loadbodycolor() {
+        var bodycolorid = '@Model.bcolor';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/loadbodycolor',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#bcolor').empty();
+                $("#bcolor").append($("<option></option>").val("0").html("Select Body Color"));
+                for (var i = 0; i <= result.bodycolorlist.length - 1; i++) {
+                    if (result.bodycolorlist[i].status == 1) {
+                        if (result.bodycolorlist[i].body_color_id == bodycolorid) {
+
+                            $("#bcolor").append($("<option selected></option>").val(result.bodycolorlist[i].body_color_id).html(result.bodycolorlist[i].body_color_name));
+
+                        } else {
+                            $("#bcolor").append($("<option></option>").val(result.bodycolorlist[i].body_color_id).html(result.bodycolorlist[i].body_color_name));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#bcolor').empty();
+                $("#bcolor").append($("<option></option>").val("0").html("Select Body Color"));
+            }
+        });
+    }
+
+    function loadinteriorcolor() {
+        var interiorcolorid = '@Model.icolor';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/loadinteriorcolor',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#icolor').empty();
+                $("#icolor").append($("<option></option>").val("0").html("Select Interior Color"));
+                for (var i = 0; i <= result.interiorcolorlist.length - 1; i++) {
+                    if (result.interiorcolorlist[i].status == 1) {
+                        if (result.interiorcolorlist[i].Inte_color_id == interiorcolorid) {
+
+                            $("#icolor").append($("<option selected></option>").val(result.interiorcolorlist[i].Inte_color_id).html(result.interiorcolorlist[i].Inte_color_name));
+
+
+                        } else {
+                            $("#icolor").append($("<option></option>").val(result.interiorcolorlist[i].Inte_color_id).html(result.interiorcolorlist[i].Inte_color_name));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#icolor').empty();
+                $("#icolor").append($("<option></option>").val("0").html("Select Interior Color"));
+            }
+        });
+    }
+
+    function loadinteriormaterial() {
+        var intematid = '@Model.material';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/loadinteriormaterial',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#material').empty();
+                $("#material").append($("<option></option>").val("0").html("Select Interior Material"));
+                for (var i = 0; i <= result.materiallist.length - 1; i++) {
+                    if (result.materiallist[i].status == 1) {
+                        if (result.materiallist[i].Inte_Mat_id == intematid) {
+
+                            $("#material").append($("<option selected></option>").val(result.materiallist[i].Inte_Mat_id).html(result.materiallist[i].Inte_Mat_name));
+
+                        } else {
+                            $("#material").append($("<option></option>").val(result.materiallist[i].Inte_Mat_id).html(result.materiallist[i].Inte_Mat_name));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#material').empty();
+                $("#material").append($("<option></option>").val("0").html("Select Interior Material"));
+            }
+        });
+    }
+
+    function GetTranmissionDetail(id) {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ transid: '" + id + "'}",
+            url: '/Admin/GetTranmissionDetail',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                for (var i = 0; i <= result.transdetaillist.length - 1; i++) {
+
+                    $('#speedtype').val(result.transdetaillist[i].speedtype);
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                //alert("Data Not Found");
+            }
+        });
+    }
+
+    function loadCylinder() {
+        var cylinderid = '@Model.cylinder';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/GetAllCylinders',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#cylinder').empty();
+                $("#cylinder").append($("<option></option>").val("0").html("Select Cylinder"));
+                for (var i = 0; i <= result.cylinderlist.length - 1; i++) {
+                    if (result.cylinderlist[i].status == 1) {
+                        if (result.cylinderlist[i].cylinder_id == cylinderid) {
+
+                            $("#cylinder").append($("<option selected></option>").val(result.cylinderlist[i].cylinder_id).html(result.cylinderlist[i].cylinder_name));
+
+                        } else {
+
+                            $("#cylinder").append($("<option></option>").val(result.cylinderlist[i].cylinder_id).html(result.cylinderlist[i].cylinder_name));
+                        }
+                    }
+
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#cylinder').empty();
+                $("#cylinder").append($("<option></option>").val("0").html("Select Cylinder"));
+            }
+        });
+    }
+
+    function loadFuel() {
+        var fuelid = '@Model.fuel';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            url: '/Admin/GetAllFuel',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#fuel').empty();
+                $("#fuel").append($("<option></option>").val("0").html("Select Fuel"));
+                for (var i = 0; i <= result.fuellist.length - 1; i++) {
+                    if (result.fuellist[i].status == 1) {
+                        if (result.fuellist[i].fuel_id == fuelid) {
+
+                            $("#fuel").append($("<option selected></option>").val(result.fuellist[i].fuel_id).html(result.fuellist[i].fuel_name));
+
+                        } else {
+                            $("#fuel").append($("<option></option>").val(result.fuellist[i].fuel_id).html(result.fuellist[i].fuel_name));
+                        }
+                    }
+                }
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#fuel').empty();
+                $("#fuel").append($("<option></option>").val("0").html("Select Fuel"));
+            }
+        });
+    }
+
+    function loadengineSize() {
+        var enginesize = '@Model.engine';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            //url is the path of our web method (Page name/function name)
+            dataType: "json",
+            data: "{ make: '" + $('#make').val() + "',model: '" + $('#model').val() + "',badge: '" + $('#badge').val() + "',series: '" + $('#series').val() + "'}",
+            url: '/Admin/LoadEngineSize',
+            asyn: false,
+            cache: false,
+            //called on jquery ajax call success
+            success: function (result) {
+                $('#engine').empty();
+                $("#engine").append($("<option></option>").val("").html("Select Engine Size"));
+
+                for (var i = 0; i <= result.enginesizelist.length - 1; i++) {
+                    //  alert(result.enginesizelis[i].status);
+                    //if (result.enginesizelis[i].status == 1) {
+                    //  alert("Hi");
+                    if (result.enginesizelist[i].ensize_id == enginesize) {
+                        $("#engine").append($("<option selected></option>").val(result.enginesizelist[i].ensize_id).html(result.enginesizelist[i].ensizename));
+                    } else {
+                        $("#engine").append($("<option></option>").val(result.enginesizelist[i].ensize_id).html(result.enginesizelist[i].ensizename));
+                        //}
+                    }
+
+                }
+
+            },
+            //called on jquery ajax call failure
+            error: function ajaxError(result) {
+                $('#engine').empty();
+                $("#engine").append($("<option></option>").val("").html("Select Engine Size"));
+
+            }
+        });
+    }
+
+</script>
+<script>
+    jQuery(window).load(function () {
+        setTimeout(function () {
+            $('.loading').hide();
+        }, 15000);
+
+    });
+
+</script>
+<div class="loading">Loading&#8230;</div>
+<style>
+    .loading {
+        position: fixed;
+        z-index: 999;
+        height: 2em;
+        width: 2em;
+        overflow: show;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+        /* Transparent Overlay */
+        .loading:before {
+            content: '';
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.3);
+        }
+
+        /* :not(:required) hides these rules from IE9 and below */
+        .loading:not(:required) {
+            /* hide "loading..." text */
+            font: 0/0 a;
+            color: transparent;
+            text-shadow: none;
+            background-color: transparent;
+            border: 0;
+        }
+
+            .loading:not(:required):after {
+                content: '';
+                display: block;
+                font-size: 10px;
+                width: 1em;
+                height: 1em;
+                margin-top: -0.5em;
+                -webkit-animation: spinner 1500ms infinite linear;
+                -moz-animation: spinner 1500ms infinite linear;
+                -ms-animation: spinner 1500ms infinite linear;
+                -o-animation: spinner 1500ms infinite linear;
+                animation: spinner 1500ms infinite linear;
+                border-radius: 0.5em;
+                -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+                box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+            }
+
+    /* Animation */
+
+    @@-webkit-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @@-moz-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @@-o-keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spinner {
+        0% {
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+</style>

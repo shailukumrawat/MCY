@@ -1,0 +1,82 @@
+﻿@model MyCarYard.Models.NotificationModel
+@{
+    ViewBag.Title = "Notification";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+
+<div class="col-sm-7">
+    <div class="map_contain">
+        <div class="mngevnt_contain ">
+            <div class="detail_head event_head">
+                <h4 class="detail_heading">Notifications </h4>
+
+                @*<div class="new_message dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">New Message <i class="fa fa-ellipsis-v"></i> </button>
+                        <ul class="dropdown-menu msg_select">
+                            <li><a href="#"><i class="fa fa-check"></i>  Check All</a></li>
+                            <li><a href="#"><i class="fa fa-trash-o"></i> Delete All</a></li>
+                        </ul>
+                    </div>*@
+            </div>
+
+            <div class="describe_contain notification_page">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        @for (int i = 0; i <= Model.notificationlist.Count - 1; i++)
+                        {
+                            <div class="message_bar">
+                                <div class="message_chat">
+                                    <div class="profile_img">
+                                        @if (Model.notificationlist[i].logo != "")
+                                        {
+                                        <img src="~/images/logos/@Model.notificationlist[i].logo" class="img-responsive">
+                                        }
+                                        else
+                                        {
+                                        <img src="~/Content/images/avtar.png" class="img-responsive">
+
+                                        }
+                                    </div>
+                                    <span class="messeg_des">
+                                        <strong>@Model.notificationlist[i].fromusername</strong>
+                                        @Model.notificationlist[i].msg
+                                    </span>
+                                </div>
+                                <div class="msg_reply dropdown">
+                                    @Convert.ToDateTime(Model.notificationlist[i].edate).ToString("MM/dd/yyyy")
+                                    @*<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i> </button>
+                                                            <ul class="dropdown-menu msg_select">
+                                            <li><a href="#"><i class="fa fa-reply"></i>  Reply</a></li>
+                                            <li><a href="#"><i class="fa fa-trash-o"></i> Delete</a></li>
+                                        </ul>*@
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div id="loading" >
+                        <img src='~/Content/spin.gif' /><p><b>Loading the next &hellip;</b></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $('#notificationtab').attr('class', 'active');
+    });
+
+</script>
+@section scripts{
+    <script src="~/Scripts/infiniteScroll.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("div#loading").hide();
+        });
+        var moreRowsUrl = '@Url.RouteUrl("CustomerList")';
+        $(window).scroll(scrollHandler);
+    </script>
+}

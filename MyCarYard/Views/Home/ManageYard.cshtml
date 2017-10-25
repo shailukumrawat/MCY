@@ -1,0 +1,266 @@
+﻿@model MyCarYard.Models.RegisterViewModel
+@{
+    ViewBag.Title = "ManageYard";
+    Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
+}
+
+<div class="col-sm-7">
+    <div class="map_contain myyrd">
+        <div class="mngevnt_contain ">
+            <div class="detail_head event_head prfl">
+                <h4 class="detail_heading">Manage Your Cars </h4>
+            </div>
+
+            @if (Model.carlist.Any())
+            {
+                for (int i = 0; i <= Model.carlist.Count - 1; i++)
+                {
+
+
+                    <div class="describe_contain">
+                        <div class="listing_slider">
+                            <div id="@i" class="carousel slide" data-ride="carousel">
+                                <!-- Indicators -->
+                                <ol class="carousel-indicators">
+                                    <li data-target="#@i" data-slide-to="0" class="active"></li>
+                                    <li data-target="#@i" data-slide-to="1"></li>
+                                    <li data-target="#@i" data-slide-to="2"></li>
+                                    <li data-target="#@i" data-slide-to="3"></li>
+                                    <li data-target="#@i" data-slide-to="4"></li>
+                                    <li data-target="#@i" data-slide-to="5"></li>
+                                </ol>
+
+                                <!-- Wrapper for slides -->
+                                <div class="carousel-inner" role="listbox">
+                                    <div class="item active"><a href="@Url.Action("UserCarDetails", "Home")?cid=@Model.carlist[i].cid"><img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img)"></a></div>
+                                    <div class="item"><a href="@Url.Action("UserCarDetails", "Home")?cid=@Model.carlist[i].cid"><img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img1)"></a></div>
+                                    <div class="item"><a href="@Url.Action("UserCarDetails", "Home")?cid=@Model.carlist[i].cid"><img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img2)"></a></div>
+                                    <div class="item"><a href="@Url.Action("UserCarDetails", "Home")?cid=@Model.carlist[i].cid"><img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img3)"></a></div>
+                                    <div class="item"><a href="@Url.Action("UserCarDetails", "Home")?cid=@Model.carlist[i].cid"><img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img4)"></a></div>
+                                    <div class="item"><a href="@Url.Action("UserCarDetails", "Home")?cid=@Model.carlist[i].cid"><img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img5)"></a></div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="listing_detail">
+                            <div class="item_detail manage_dt">
+                                <h5 class="manageev_head">@Model.carlist[i].year @Model.carlist[i].make @Model.carlist[i].model  @Model.carlist[i].badge @Model.carlist[i].series</h5>
+                                <ul>
+                                    <li>Price : <span>  @(Convert.ToDouble(Model.carlist[i].price).ToString("#,##0"))  @Model.carlist[i].currency </span></li>
+                                    <li>Transmission : <span>  @Model.carlist[i].speedtype  @Model.carlist[i].tranmition</span></li>
+                                    <li>Engine : <span> @Model.carlist[i].cylinder_name  @Model.carlist[i].engine </span></li>
+
+                                    <li>Odometer : <span> @(Convert.ToDouble(Model.carlist[i].meter).ToString("#,##0")) @Model.carlist[i].matrics</span></li>
+
+                                    <li>Body Type : <span> @Model.carlist[i].body_type </span></li>
+
+                                    <li>
+                                        Listed As :
+                                        <select id="statuscar" onchange="return setStatus('@Model.carlist[i].cid',this.value);">
+                                            @if (Model.carlist[i].gstatus == "0")
+                                            {
+
+                                            <option value="0" selected>For Sale</option>
+                                            <option value="1">Garaged</option>
+                                            }
+                                            else
+                                            {
+                                            <option value="0">For Sale</option>
+                                            <option value="1" selected>Garaged</option>
+
+                                            }
+                                        </select>
+                                    </li>
+
+                                    <li>
+                                        Status : @if (Model.carlist[i].status == 0)
+                                        {
+
+                                        <font color="red">Awaiting Approval</font>
+
+                                        }
+                                        else if (Model.carlist[i].status == 1)
+                                        {
+                                        <font color="green">Approved</font>
+
+                                        }
+                                        else
+                                        {
+
+                                        <font color="red">Not Approved</font>
+
+                                        }
+                                    </li>
+
+                                    @{
+
+                                        TimeSpan diff = DateTime.Now.Date - Convert.ToDateTime(Model.carlist[i].created_date);
+                                        var totatdays = Math.Abs(diff.TotalDays);
+                                    }
+
+                                    @*  <li><span>Time Left: </span> @((28 - Convert.ToInt32(totatdays)))  Days Left <i class="fa fa-info-circle" aria-hidden="true"></i></li>*@
+
+                                </ul>
+                            </div>
+                            <div class="query_box">
+                                <ul>
+
+                                    <li><a href="@Url.Action("EditUserCar", "Home")?cid=@Model.carlist[i].cid" title="edit"><i class="flaticon-pencil-striped-symbol-for-interface-edit-buttons"></i></a></li>
+                                    <li><a href="#" title="delete" onclick="return deletecar('@Model.carlist[i].cid')"><i class="flaticon-delete"></i></a></li>
+                                    <li>
+                                        <a href="" id="star_rat" title="watch" onclick="return setWatchlist('@Model.carlist[i].cid');" class='@(Model.carlist[i].star.Equals(1) ? @Html.Raw("star_gold") : null)'>
+                                            <i class="fa fa-star"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="listing_btm">
+                                <ul>
+                                    <li><a href="#"><i class="fa fa-clock-o"></i> @(Convert.ToInt32(totatdays)) Day Ago</a></li>
+                                    <li><a href="#"><i class="fa fa-map-marker"></i>@Model.carlist[i].suburb, @Model.carlist[i].city , @Model.carlist[i].state, @Model.carlist[i].zipcode </a></li>
+                                </ul>
+                            </div>
+                            <div class="map_btn" style="float: right;">
+                                <ul>
+                                    <li>
+                                        <div class="fb-share-button" data-href="http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.carlist[i].cid&title=@Model.carlist[i].year@Model.carlist[i].make@Model.carlist[i].model@Model.carlist[i].badge@Model.carlist[i].series&image=http://mycaryard.mobi96.org/images/cars/@Model.carlist[i].img" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="http://www.facebook.com/sharer.php?s=100&p[url]=http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.carlist[i].cid&p[images][0]=http://mycaryard.mobi96.org/images/cars/@Model.carlist[i].img&p[title]=@Model.carlist[i].year@Model.carlist[i].make@Model.carlist[i].model@Model.carlist[i].badge@Model.carlist[i].series">Share</a></div>                                                 <a href="#"><i title="twitter" class="fa fa-twitter"></i></a>
+                                        <a href="#"><i title="google" class="fa fa-google-plus"></i></a>
+                                    </li>
+                                    <li><a href="@Url.Action("UserCarDetails", "Home")?cid=@Model.carlist[i].cid" class="cmn_btn second_btn">Full Details</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                                        }
+                                        <div class="map_btn">
+                                            <a class="cmn_btn" href="@Url.Action("UserIndex","Home")">Maps</a>
+                                            <a class="cmn_btn second_btn" href="@Url.Action("UserCarMaster","Home")">Listing</a>
+                                        </div>
+
+                                        }
+
+
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+    function setWatchlist(cid) {
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Home/UpdateWatchlistStatus',
+            data: "{cid: '" + cid + "'}",
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                if (response.status == "Success") {
+                }
+            },
+            error: function (response) {
+
+                alert(response.status);
+            }
+        });
+
+
+        return false;
+    }
+
+
+</script>
+
+
+<script>
+
+    function deletecar(id) {
+        lnv.confirm({
+            title: 'Confirm',
+            content: 'Are You sure you want to delete car ?',
+            confirmHandler: function () {
+                // confirm callback
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '/Home/DeleteCar',
+                    data: "{cid: '" + id + "'}",
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        if (response.status == "Success") {
+
+                            lnv.alert({
+                                title: ' ',
+                                content: 'Car Deleted Successfully',
+                                alertBtnText: 'Okay',
+                                alertHandler: function () {
+
+                                    var url = '@Url.Action("ManageYard","Home")';
+                                    window.location = url;
+
+                                }
+                            });
+                            $('.alert-btn').focus();
+                        }
+                    },
+                    error: function (response) {
+
+                        alert(response.status);
+                    }
+                });
+            },
+            cancelHandler: function () {
+                // cancel callback
+            }
+        })
+
+
+        return false;
+    }
+</script>
+
+<script>
+
+    function setStatus(cid, cars) {
+
+        //var carstatus = $('#statuscar').val();
+        //alert(cars);
+        var carid = cid;
+        //alert(cid);
+
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '/Home/ChangeCarGStatus',
+            data: "{cid: '" + carid + "',status: '" + cars + "'}",
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                if (response.status == "Success") {
+
+                }
+            },
+            error: function (response) {
+
+                alert(response.status);
+            }
+        });
+
+
+        return false;
+    }
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#yardtab').attr('class', 'active');
+    });
+</script>
