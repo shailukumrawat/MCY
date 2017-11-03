@@ -43,7 +43,10 @@
                 position: location,
                 map: map
             });
-        } else { marker.setPosition(location); }
+        }
+        else {
+            marker.setPosition(location);
+        }
     }
     function codeAddress() {
         var address = $("#country1 option:selected").text();
@@ -136,7 +139,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group my_fmg">
+                        <div class="form-group">
                             <label><input type="checkbox" id="ispaid1" checked> Entry Fee</label>
                         </div>
                     </div>
@@ -203,7 +206,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group my_fmg">
-                            <label><input type="checkbox" id="showphone" checked> Show Contact Number on Website?</label>
+                            <label><input type="checkbox" id="showphone" checked> Tick to show contact number?</label>
                         </div>
                     </div>
                     <div class="col-sm-12">
@@ -1054,7 +1057,6 @@
                     async: false,
                     success: function (response) {
                         if (response.status == "Success") {
-                            // console.log("CommingSuccess");
                             var eventid = response.eid;
                             $('#eventid').val(eventid);
                             if (eventid == -1) {
@@ -1065,16 +1067,7 @@
                                 });
                             }
                             else {
-                                lnv.alert({
-                                    title: ' ',
-                                    content: 'Your listing has been submitted to the MYCARYARD team and you will be notified as soon your listing has been reviewed. Please Wait For a moment while pictures are uploading.',
-                                    alertBtnText: 'Okay',
-                                    alertHandler: function () {
-                                        $body = $("body");
-                                        $body.addClass("loading");
-                                        $('#uploadeventpic').submit();
-                                    }
-                                });
+                                $('#uploadeventpic').submit();
                             }
                             $('.alert-btn').focus();
 

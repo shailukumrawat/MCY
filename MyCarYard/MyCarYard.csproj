@@ -1432,7 +1432,7 @@
     <Content Include="Views\Shared\_LayoutError.cshtml" />
     <Content Include="Views\Home\Index__.cshtml" />
     <Content Include="Views\Partials\BlankMap2092017.cshtml" />
-    <Content Include="Views\Home\AddEvent.cshtml" />
+    <None Include="Views\Home\AddEvent.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\NewPasswordSetting.cshtml" />
     <Content Include="Views\Home\AddStore.cshtml" />
@@ -1442,6 +1442,7 @@
     <Content Include="Views\Home\EventListing.cshtml" />
     <Content Include="Views\Home\EventListinglog.cshtml" />
     <Content Include="Views\Partials\BlankMap.cshtml" />
+    <Content Include="Views\Home\UploadEventPic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\admin\plugins\iCheck\flat\" />

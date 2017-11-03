@@ -1,0 +1,17 @@
+﻿<script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+<link href="@Url.Content("~/dialog/dialog.css")" rel="stylesheet">
+<script src="@Url.Content("~/dialog/dialog.js")"></script>
+<script>
+    $(document).ready(function () {
+        lnv.alert({
+            title: ' ',
+            content: 'Your listing has been submitted to the MYCARYARD team and you will be notified as soon your listing has been reviewed. Please Wait For a moment while pictures are uploading.',
+            alertBtnText: 'Okay',
+            alertHandler: function () {
+                $body = $("body");
+                $body.addClass("loading");
+                window.location.href = "@Url.Action("ManageEvent", "Home")"
+            }
+        });
+    });
+</script>
