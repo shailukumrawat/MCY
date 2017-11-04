@@ -123,31 +123,38 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label><input type="checkbox" id="issponsorship" checked>Is the event Sponsored?</label>
-                            @*<select class="form-control slt_cstm" id="sponsorship" required style="display:none;">
-                                    <option value="0">Yes</option>
-                                    <option value="1">No</option>
-                                </select>*@
+                    <div class="col-sm-12">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>@*<input type="checkbox" id="issponsorship" checked>*@Is the event Sponsored?</label>
+                                <select class="form-control slt_cstm" id="sponsorship" required>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" id="sponsorshipbox">
+                            <div class="form-group">
+                                <label>Sponsorship Name</label>
+                                <input type="text" class="form-control" placeholder="Sponsorship Name" id="sponsorshipname" required>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-6" id="sponsorshipbox">
-                        <div class="form-group">
-                            <label>Sponsorship Name</label>
-                            <input type="text" class="form-control" placeholder="Sponsorship Name" id="sponsorshipname" required>
+                    <div class="col-sm-12">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>@*<input type="checkbox" id="ispaid1" checked>*@ Entry Fee</label>
+                                <select class="form-control slt_cstm" id="ispaid1" required>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label><input type="checkbox" id="ispaid1" checked> Entry Fee</label>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6" id="pricebox">
-                        <div class="form-group">
-                            <label>Price</label>
-                            <input type="number" placeholder="Price " class="form-control" id="price1">
+                        <div class="col-sm-6" id="pricebox">
+                            <div class="form-group">
+                                <label>Price</label>
+                                <input type="number" placeholder="Price " class="form-control" id="price1">
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-6" id="currencybox" style="display:none;">
@@ -561,8 +568,8 @@
         }
     });
     var sponsorship = 0;
-    $("#issponsorship").change(function () {
-        if (this.checked) {
+    $("#sponsorship").change(function () {
+        if ($(this).val() == "1") {
 
             sponsorship = 1;
             $('#sponsorshipbox').show();
@@ -973,14 +980,21 @@
                 showphone = "0";
             }
             var sponsorshipname = null;
-            var sponsorship = $('#issponsorship:checked').val();
-            if (sponsorship == "on") {
+            var sponsorship = $('#sponsorship').val();
+            if (sponsorship == "1") {
                 sponsorship = "1";
                 sponsorshipname = $('#sponsorshipname').val();
+                if (sponsorshipname.trim() == "") {
+                    $('#sponsorshipname').css('border-color', 'red');
+                    isvalid = false;
+                } else {
+                    $('#sponsorshipname').css('border-color', '');
+                    isvalid = true;
+                }
             }
             else {
-
                 sponsorship = "0";
+                $('#sponsorshipname').css('border-color', '');
             }
             var streetpostcode = $('#streetpostcode').val();
             if (streetpostcode.trim() == "") {

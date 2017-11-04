@@ -720,7 +720,7 @@
                                                 _html += "<div class='item_detail'>";
                                                 _html += "<h5>Place:" + result.eventlist[i].state + "," + result.eventlist[i].country + "," + result.eventlist[i].date + "</h5>";
                                                 _html += "<p>" + result.eventlist[i].subject.substring(0, 200) + "</p><ul></ul></div><div class='listing_btm'>";
-                                                _html += "<ul><li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount'>" + parseInt(result.eventlist[i].going) + "</span></a></li>";
+                                                _html += "<ul id='ul" + result.eventlist[i].eid + "'><li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount" + result.eventlist[i].eid + "'>" + parseInt(result.eventlist[i].going) + "</span></a></li>";
                                                 if (result.eventlist[i].goORgoing == "0") {
                                                     _html += '<li><a href="#" class="fuel_btn"  onclick="return EventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + result.eventlist[i].eid + '\',\'' + '@Session["email"].ToString()' + '\');">Go!</a></li>';
                                                 }
@@ -998,15 +998,27 @@
                                             success: function (response) {
                                                 if (response.status == "Success") {
 
-                                                    lnv.alert({
-                                                        title: ' ',
-                                                        content: 'Your Entry feed Successfully',
-                                                        alertBtnText: 'Okey',
-                                                        alertHandler: function () {
-                                                            alert($('#gocount').text());
+                                                    //lnv.alert({
+                                                    //    title: ' ',
+                                                    //    content: 'Your Entry feed Successfully',
+                                                    //    alertBtnText: 'Okey',
+                                                    //    alertHandler: function () {
+                                                            var cnt = parseInt($('#gocount' + eid).text()) + 1;
+                                                            var _htmlul = "";
+                                                            _htmlul += "<li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount" + eid + "'>" + cnt + "</span></a></li>";
+
+                                                            _htmlul += '<li><a href="#" class="fuel_btn" style="background-color: #5cb85c;"  onclick="return RemoveEventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + eid + '\',\'' + '@Session["email"].ToString()' + '\');">Going!</a></li>';
+
+                                                            _htmlul += "<li><a class='fuel_btn' href='@Url.Action("UserEventDetails", "Home")?eid=" + eid + "'> Full Detail</a></li>";
+
+
+
+                                                            $('#ul' + eid).html(_htmlul);
+
+
                                                             //$('#gocount').html($(content).closest('.target-class'));
-                                                        }
-                                                    });
+                                                    //    }
+                                                    //});
                                                     $('.alert-btn').focus();
                                                 } else {
 
@@ -1036,59 +1048,69 @@
                         </script>
                         <script>
 
-    function RemoveEventGoing(uid, eid, email) {
+                            function RemoveEventGoing(uid, eid, email) {
 
-        lnv.confirm({
-            title: 'Confirm',
-            content: 'Are You sure!!! Not going ?',
-            confirmHandler: function () {
+                                lnv.confirm({
+                                    title: 'Confirm',
+                                    content: 'Are You sure!!! Not going ?',
+                                    confirmHandler: function () {
 
-                $.ajax({
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    url: '/Home/DeleteGoindToEvent',
-                    data: "{uid: '" + uid + "',eid: '" + eid + "',email: '" + email + "'}",
-                    dataType: "json",
-                    async: false,
-                    success: function (response) {
-                        if (response.status == "Success") {
+                                        $.ajax({
+                                            type: "POST",
+                                            contentType: "application/json; charset=utf-8",
+                                            url: '/Home/DeleteGoindToEvent',
+                                            data: "{uid: '" + uid + "',eid: '" + eid + "',email: '" + email + "'}",
+                                            dataType: "json",
+                                            async: false,
+                                            success: function (response) {
+                                                if (response.status == "Success") {
 
-                            lnv.alert({
-                                title: ' ',
-                                content: 'Your Entry feed Successfully',
-                                alertBtnText: 'Okay',
-                                alertHandler: function () {
+                                                    //lnv.alert({
+                                                    //    title: ' ',
+                                                    //    content: 'Your Entry feed Successfully',
+                                                    //    alertBtnText: 'Okay',
+                                                    //    alertHandler: function () {
+                                                            @*var url = '@Url.Action("ManageEvent","Home")';
+                                                            window.location = url;*@
 
-                                    var url = '@Url.Action("ManageEvent","Home")';
-                                    window.location = url;
-                                }
-                            });
-                            $('.alert-btn').focus();
-                        } else {
+                                                            var cnt = parseInt($('#gocount' + eid).text()) - 1;
+                                                            var _htmlul = "";
+                                                            _htmlul += "<li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount" + eid + "'>" + cnt + "</span></a></li>";
 
-                            lnv.alert({
-                                title: ' ',
-                                content: response.status,
-                                alertBtnText: 'Okay',
-                                alertHandler: function () {
+                                                            _htmlul += '<li><a href="#" class="fuel_btn"  onclick="return EventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + eid + '\',\'' + '@Session["email"].ToString()' + '\');">Go!</a></li>';
 
-                                }
-                            });
-                            $('.alert-btn').focus();
-                        }
+                                                            _htmlul += "<li><a class='fuel_btn' href='@Url.Action("UserEventDetails", "Home")?eid=" + eid + "'> Full Detail</a></li>";
 
-                    },
-                    error: function () {
-                        //alert("Error");
-                    }
-                });
-            },
-            cancelHandler: function () {
-                // cancel callback
-            }
-        })
+                                                            $('#ul' + eid).html(_htmlul);
 
-    }
+                                                    //    }
+                                                    //});
+                                                    $('.alert-btn').focus();
+                                                } else {
+
+                                                    lnv.alert({
+                                                        title: ' ',
+                                                        content: response.status,
+                                                        alertBtnText: 'Okay',
+                                                        alertHandler: function () {
+
+                                                        }
+                                                    });
+                                                    $('.alert-btn').focus();
+                                                }
+
+                                            },
+                                            error: function () {
+                                                //alert("Error");
+                                            }
+                                        });
+                                    },
+                                    cancelHandler: function () {
+                                        // cancel callback
+                                    }
+                                })
+
+                            }
 
 
                         </script>
@@ -2179,5 +2201,5 @@
 </body>
 </html>
 @*<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI&callback=initMap">
-</script>*@
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI&callback=initMap">
+    </script>*@
