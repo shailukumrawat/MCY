@@ -339,6 +339,18 @@
 
     $(document).ready(function () {
 
+        $('.glyphicon-calendar,#date1').on('click', function () {
+            if (this.value != "0" || this.value != "")
+                $('#date1').css('border-color', '');
+            else
+                $(this).css('border-color', 'red');
+        });
+        $('.glyphicon-time,#time1').on('click', function () {
+            if (this.value != "0" || this.value != "")
+                $('#time1').css('border-color', '');
+            else
+                $(this).css('border-color', 'red');
+        });
 
         $('select').on('change', function () {
             if (this.value != "0" || this.value != "")
@@ -555,7 +567,7 @@
 
     var ispaid = 0;
     $("#ispaid1").change(function () {
-        if (this.checked) {
+        if ($(this).val() == "1") {
 
             ispaid = 1;
             $('#pricebox').show();
@@ -947,21 +959,11 @@
             var price = 0;
 
 
-            var isprice = $('#ispaid1:checked').val();
+            var isprice = $('#ispaid1').val();
 
-            if (isprice == "on") {
+            if (isprice == "1") {
                 ispaid = 1;
-
                 if ($('#price1').val() == "" || $('#price1').val() == "0") {
-                    /*  lnv.alert({
-                          title: ' ',
-                          content: 'Please Enter Price',
-                          alertBtnText: 'Okay',
-                          alertHandler: function () {
-                              $('#price1').focus();
-                          }
-                      })
-                      */
                     $('#price1').css('border-color', 'red');
                     isvalid = false;
                 } else {
@@ -969,6 +971,10 @@
                     isvalid = true;
                     price = $('#price1').val();
                 }
+            }
+            else {
+                ispaid = 0;
+                $('#price1').css('border-color', '');
             }
             var showphone = $('#showphone:checked').val();
             if (showphone == "on") {

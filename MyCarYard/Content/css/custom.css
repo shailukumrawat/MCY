@@ -2137,4 +2137,17 @@ table.table_view td {
     color: #3c763d !important;
 }
 
+.eventeditdelete .listing_detail {
+    width: 100%;
+}
 
+.manageev_head span {
+    font-size: 12px;
+    font-weight: normal;
+    padding-left: 5px;
+    float: right;
+}
+.toptenmargin {
+    margin-top:10px;
+    margin-bottom:5px;
+}

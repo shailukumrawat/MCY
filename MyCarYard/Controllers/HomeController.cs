@@ -1303,9 +1303,10 @@ namespace MyCarYard.Controllers
             {
                 com = new SqlCommand("select a.*,(select count(*) from tbl_carmaster b where b.status = '2' and b.uid=a.id) as 'pendingcount',(select count(*) from tbl_eventmaster b where b.status = '2' and b.uid=a.id) as 'eventpendingcount' from tbl_login a where a.id IN (select uid from tbl_carmaster where status=2) or a.id IN (select uid from tbl_eventmaster where status=2)  and a.type != 'Super' order by a.id desc", con);//select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount' from tbl_login a where a.type != 'Super' order by a.id desc
             }
-            else
+            else 
             {
-                com = new SqlCommand("select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount',(select count(*) from tbl_eventmaster b where b.status = '0' and b.uid=a.id) as 'eventpendingcount' from tbl_login a where a.status= 0 AND (a.id IN (select uid from tbl_carmaster where status=0) or a.id IN (select uid from tbl_eventmaster where status=0) ) and a.type != 'Super' order by a.id desc", con);//select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount' from tbl_login a where a.type != 'Super' order by a.id desc
+                // com = new SqlCommand("select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount',(select count(*) from tbl_eventmaster b where b.status = '0' and b.uid=a.id) as 'eventpendingcount' from tbl_login a where a.status= 0 AND (a.id IN (select uid from tbl_carmaster where status=0) or a.id IN (select uid from tbl_eventmaster where status=0) ) and a.type != 'Super' order by a.id desc", con);//select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount' from tbl_login a where a.type != 'Super' order by a.id desc
+                com = new SqlCommand("select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount',(select count(*) from tbl_eventmaster b where b.status = '0' and b.uid=a.id) as 'eventpendingcount' from tbl_login a where a.id IN (select uid from tbl_carmaster where status=0) or a.id IN (select uid from tbl_eventmaster where status=0)  and a.type != 'Super' order by a.id desc", con);//select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount' from tbl_login a where a.type != 'Super' order by a.id desc
 
                 ///Change Query in 26/4/2017 
                 ///select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount',(select count(*) from tbl_eventmaster b where b.status = '0' and b.uid=a.id) as 'eventpendingcount' from tbl_login a where a.id IN (select uid from tbl_carmaster where status=0) or a.id IN (select uid from tbl_eventmaster where status=0)  and a.type != 'Super' order by a.id desc
@@ -4549,8 +4550,10 @@ namespace MyCarYard.Controllers
                         street = dt.Rows[i]["street"].ToString(),
                         sname = dt.Rows[i]["sname"].ToString(),
                         cat = Convert.ToInt32(dt.Rows[i]["cat"].ToString()),
-                        create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString())
-
+                        create_date = Convert.ToDateTime(dt.Rows[i]["created_date"].ToString()),
+                        uname = dt.Rows[i]["name"].ToString(),
+                        sponsorname = dt.Rows[i]["sponsorname"].ToString(),
+                        going = dt.Rows[i]["going"].ToString(),
                     });
                 }
             }
@@ -4607,7 +4610,9 @@ namespace MyCarYard.Controllers
                                 ispaid = Convert.ToInt32(dt.Rows[i]["ispaid"].ToString()),
                                 price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
                                 showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
-                                going = dt.Rows[i]["going"].ToString()
+                                going = dt.Rows[i]["going"].ToString(),
+                                uname = dt.Rows[i]["name"].ToString(),
+                                sponsorname = dt.Rows[i]["sponsorname"].ToString(),
 
                             });
                         }

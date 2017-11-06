@@ -27,7 +27,7 @@ jQuery(document).ready(function ($) {
         margin: 0,
         nav: false,
         pagination: true,
-        autoplay: true,
+        //autoplay: true,
         items: 1,
         autoHeight: true,
     });
@@ -35,7 +35,7 @@ jQuery(document).ready(function ($) {
     $('.car_detail').owlCarousel({
         loop: true,
         margin: 0,
-        autoplay: true,
+        //autoplay: true,
         nav: false,
         pagination: true,
         autoHeight: true,
