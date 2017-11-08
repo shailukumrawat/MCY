@@ -1442,7 +1442,6 @@
     <Content Include="Views\Home\EventListing.cshtml" />
     <Content Include="Views\Home\EventListinglog.cshtml" />
     <Content Include="Views\Partials\BlankMap.cshtml" />
-    <Content Include="Views\Home\UploadEventPic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\admin\plugins\iCheck\flat\" />

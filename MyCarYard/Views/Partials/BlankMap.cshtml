@@ -55,7 +55,7 @@
 
             };
             var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
-
+            map.setOptions({ minZoom: 1.9, maxZoom: 15 });
 
             if (userlistLocal.length === 0) {
                 var marker = new google.maps.Marker({

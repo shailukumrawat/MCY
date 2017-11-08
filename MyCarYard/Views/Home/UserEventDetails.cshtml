@@ -32,7 +32,7 @@
         <div class="newdetailbox">
             <div class="newdetail_left">
                 <h4 class="manageev_head">@Model.eventdetailslist[i].title</h4>
-                <h5 style="color:#89CFF0;">Place: @Model.eventdetailslist[i].street, @Model.eventdetailslist[i].sname, @Model.eventdetailslist[i].code @Model.eventdetailslist[i].country , @(Convert.ToDateTime(Model.eventdetailslist[i].date).ToString("MM/dd/yyyy"))</h5>
+                <h5 style="color:#89CFF0;">Place: @Model.eventdetailslist[i].state, @Model.eventdetailslist[i].country, @(Convert.ToDateTime(Model.eventdetailslist[i].date).ToString("MM/dd/yyyy"))</h5>
             </div>
             <div class="newdetail_bar">
                 <ul>
@@ -62,7 +62,7 @@
                 <ul>
                     <li><i class="fa fa-calendar"></i> <span>Event Detail</span></li>
                     <li><i class="flaticon-calendar-page-empty"></i> <span>@(Convert.ToDateTime(Model.eventdetailslist[i].date).ToString("MM/dd/yyyy"))</span></li>
-                    <li><i class="flaticon-agenda"></i> <span>@Model.eventdetailslist[i].street, @Model.eventdetailslist[i].sname, @Model.eventdetailslist[i].code @Model.eventdetailslist[i].country</span></li>
+                    <li><i class="flaticon-agenda"></i> <span>@Model.eventdetailslist[i].address, @Model.eventdetailslist[i].state, @Model.eventdetailslist[i].country</span></li>
                     <li><i class="flaticon-clock-circular-outline"></i> <span>@Model.eventdetailslist[i].time</span></li>
                     <li><i class="flaticon-multiple-users-silhouette"></i> <span>@(Convert.ToInt32(Model.eventdetailslist[i].going))  People Going</span></li>
                 </ul>

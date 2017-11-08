@@ -13,7 +13,7 @@
         geocoder1 = new google.maps.Geocoder();
         var mapOptions1 = {
             center: new google.maps.LatLng('@Model.approveeventlist[0].late', '@Model.approveeventlist[0].lonz'),
-            zoom: 2,
+            zoom: 8,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var infoWindow1 = new google.maps.InfoWindow();
@@ -25,7 +25,7 @@
             var ip = data.ip;
             geocoder1.geocode({ 'address': country1 }, function (results, status) {
                 if (status == 'OK') {
-                    map1.setZoom(5);
+                    map1.setZoom(8);
                     map1.setCenter(results[0].geometry.location);
 
                 } else {

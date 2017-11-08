@@ -876,8 +876,8 @@ namespace MyCarYard.Controllers
         //}
 
         //// Change on 3/5/2017
-
-        public ActionResult UploadEventPic(FormCollection frm1)
+        [WebMethod]
+        public JObject UploadEventPic(FormCollection frm1)
         {
             string filePath = string.Empty;
             var dataStr = String.Format("{0:d/M/yyyy HH:mm:ss}", DateTime.Now);
@@ -910,7 +910,11 @@ namespace MyCarYard.Controllers
             cmd = new SqlCommand("update tbl_eventmaster SET img='" + ht[0] + "',img1='" + ht[1] + "',img2='" + ht[2] + "' where eid= '" + frm1["eventid"] + "'", con);
             cmd.ExecuteNonQuery();
             con.Close();
-            return PartialView("");
+            JObject json = new JObject();
+            json["status"] = "Success";
+            json["eid"] = 1;// Convert.ToInt32(sqlparam[20].Value.ToString());
+            return json;
+            // return Json(new { isok = true, message = "Your Message" });
             //return RedirectToAction("ManageEvent", "Home");
         }
 
@@ -1303,7 +1307,7 @@ namespace MyCarYard.Controllers
             {
                 com = new SqlCommand("select a.*,(select count(*) from tbl_carmaster b where b.status = '2' and b.uid=a.id) as 'pendingcount',(select count(*) from tbl_eventmaster b where b.status = '2' and b.uid=a.id) as 'eventpendingcount' from tbl_login a where a.id IN (select uid from tbl_carmaster where status=2) or a.id IN (select uid from tbl_eventmaster where status=2)  and a.type != 'Super' order by a.id desc", con);//select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount' from tbl_login a where a.type != 'Super' order by a.id desc
             }
-            else 
+            else
             {
                 // com = new SqlCommand("select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount',(select count(*) from tbl_eventmaster b where b.status = '0' and b.uid=a.id) as 'eventpendingcount' from tbl_login a where a.status= 0 AND (a.id IN (select uid from tbl_carmaster where status=0) or a.id IN (select uid from tbl_eventmaster where status=0) ) and a.type != 'Super' order by a.id desc", con);//select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount' from tbl_login a where a.type != 'Super' order by a.id desc
                 com = new SqlCommand("select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount',(select count(*) from tbl_eventmaster b where b.status = '0' and b.uid=a.id) as 'eventpendingcount' from tbl_login a where a.id IN (select uid from tbl_carmaster where status=0) or a.id IN (select uid from tbl_eventmaster where status=0)  and a.type != 'Super' order by a.id desc", con);//select a.*,(select count(*) from tbl_carmaster b where b.status = '0' and b.uid=a.id) as 'pendingcount' from tbl_login a where a.type != 'Super' order by a.id desc
@@ -2255,7 +2259,7 @@ namespace MyCarYard.Controllers
             sqlparam[13] = new SqlParameter("@sname", SqlDbType.NVarChar, 200);
             sqlparam[13].Value = sname;
             sqlparam[14] = new SqlParameter("@descr", SqlDbType.NVarChar, -1);
-            sqlparam[14].Value = descr.Replace("&clubs;", "'"); ;
+            sqlparam[14].Value = descr.Replace("&clubs;", "'");
 
 
             sqlparam[15] = new SqlParameter("@late", SqlDbType.NVarChar, 200);

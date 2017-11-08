@@ -2,9 +2,16 @@
     ViewBag.Title = "AddEvent";
     Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
 }
-
 <link href="@Url.Content("~/Css/bootstrap-datetimepicker.min.css")" rel="stylesheet">
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.6/jquery.validate.unobtrusive.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.4/jquery.unobtrusive-ajax.min.js"></script>
+<script>
+    function Showmessage(data) {
+        alert('Successfully Submitted');
+    }
+</script>
 <script>
 
     var geocoder;
@@ -54,7 +61,7 @@
         //alert(address);
         geocoder.geocode({ 'address': address }, function (results, status) {
             if (status == 'OK') {
-                map.setZoom(5);
+                map.setZoom(8);
                 map.setCenter(results[0].geometry.location);
 
             } else {
@@ -76,11 +83,11 @@
                 <h4 class="seller_head">Event Images</h4>
                 <div class="row">
                     <div class="col-sm-12">
-                        <form action="UploadEventPic" method="post" enctype="multipart/form-data" id="uploadeventpic" name="frm1">
+                        <form action="UploadEventPic" enctype="multipart/form-data" id="uploadeventpic" name="frm1">
 
                             <div class="event_upload">
                                 <ul>
-                                    <li>
+                                    <li id="uploadeventpic">
                                         <i class="flaticon1-arrows"> </i>
                                         <a href="#" data-toggle="modal" class="event_upldnew" id="img" data-id="0" data-target="#imgcrop_modal"></a>
                                         Upload Event Image Here
@@ -1087,7 +1094,10 @@
                                 });
                             }
                             else {
-                                $('#uploadeventpic').submit();
+                                $body = $("body");
+                                $body.addClass("loading");
+                                //$('#uploadeventpic').submit();
+                                SendImage();
                             }
                             $('.alert-btn').focus();
 
@@ -1115,6 +1125,29 @@
 
         }
 
+    }
+
+    var SendImage = function () {
+        var DataChk = $('#uploadeventpic').serialize();
+        $.ajax({
+            type: "POST",
+            url: "UploadEventPic",
+            data: DataChk,
+            success: function () {
+                $body.removeClass("loading");
+                lnv.alert({
+                    title: ' ',
+                    content: 'Your listing has been submitted to the MYCARYARD team and you will be notified as soon your listing has been reviewed. Please Wait For a moment while pictures are uploading.',
+                    alertBtnText: 'Okay',
+                    alertHandler: function () {
+                        window.location.href = "@Url.Action("ManageEvent", "Home")"
+                    }
+                });
+            },
+            failure: function () {
+                alert("E");
+            }
+        });
     }
 </script>
 
