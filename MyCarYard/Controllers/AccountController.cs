@@ -133,11 +133,10 @@ namespace MyCarYard.Controllers
                                 HttpCookie cookie = new HttpCookie("Login");
                                 cookie.Values.Add("EmailID", Model.Email);
                                 cookie.Values.Add("Password", Model.Password);
-                                cookie.Expires = DateTime.Now.AddMinutes(5);
+                                cookie.Expires = DateTime.Now.AddDays(30);
                                 Response.Cookies.Add(cookie);
-
-                            }
-
+                             }
+                           
                             string coval = dr[8].ToString();
                             Session["id"] = dr[0].ToString();
                             Session["name"] = dr[1].ToString();
@@ -253,7 +252,7 @@ namespace MyCarYard.Controllers
             {
                 conn.Open();
 
-                SqlParameter[] sqlparam = new SqlParameter[15];
+                SqlParameter[] sqlparam = new SqlParameter[16];
                 SqlCommand cmd = new SqlCommand("InsertCustomer", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
                 sqlparam[0] = new SqlParameter("@name", SqlDbType.NVarChar, 200);
@@ -284,6 +283,8 @@ namespace MyCarYard.Controllers
                 sqlparam[12].Value = model.regcity;
                 sqlparam[13] = new SqlParameter("@region", SqlDbType.NVarChar, 200);
                 sqlparam[13].Value = model.regregion;
+
+              
                 if (model.Type == "Paid")
                 {
                     sqlparam[14] = new SqlParameter("@parentstore", SqlDbType.NVarChar, 200);
@@ -295,7 +296,11 @@ namespace MyCarYard.Controllers
                     sqlparam[14].Value = "";
                 }
                 //sqlparam[14] = new SqlParameter("@suburb", SqlDbType.NVarChar, 200);
-                //sqlparam[14].Value = model.regsuburb;               
+                //sqlparam[14].Value = model.regsuburb;  
+
+                sqlparam[15] = new SqlParameter("@facebookId", SqlDbType.NVarChar, 200);
+                sqlparam[15].Value = model.HDfacebookId;
+
                 cmd.Parameters.AddRange(sqlparam);
                 cmd.ExecuteNonQuery();
                 errorcode = sqlparam[5].Value.ToString();

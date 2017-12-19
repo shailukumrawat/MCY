@@ -53,22 +53,258 @@
         }
     </script>
     @*<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI"></script>*@
-   
+
 </head>
-
-
 
 <body>
 
-    <div id="fb-root"></div>
     <script>
+  // This is called with the results from from FB.getLoginStatus().
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+        // Logged into your app and Facebook.
+        debugger;
+        ResponseOfFacebookAPI();
+    } else {
+      // The person is not logged into your app or we are unable to tell.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
+    }
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+  FB.init({
+      appId: '834884540027854',
+    cookie     : true,  // enable cookies to allow the server to access
+                        // the session
+    xfbml      : true,  // parse social plugins on this page
+    version    : 'v2.8' // use graph api version 2.8
+  });
+
+  // Now that we've initialized the JavaScript SDK, we call
+  // FB.getLoginStatus().  This function gets the state of the
+  // person visiting this page and can return one of three states to
+  // the callback you provide.  They can be:
+  //
+  // 1. Logged into your app ('connected')
+  // 2. Logged into Facebook, but not your app ('not_authorized')
+  // 3. Not logged into Facebook and can't tell if they are logged into
+  //    your app or not.
+  //
+  // These three cases are handled in the callback function.
+
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  // Here we run a very simple test of the Graph API after login is
+  // successful.  See statusChangeCallback() for when this call is made.
+  function ResponseOfFacebookAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me?fields=id,name,email', function (response) {
+      console.log('Successful login for: ' + response);
+     
+      $.post("/Admin/checkloginFb", { facebookId: response.id }, function (result) {
+         // $("span").html(result);
+          debugger;
+          var Response = JSON.parse(result);
+          if (Response.status == "Success") {
+              RememberMeCheck(1, Response.email, Response.password);
+              RememberMeCheck(0, Response.email, Response.password);
+              //if ($('#Email').val() != "" && $('#Password').val() != "") {
+              //    setTimeout(function () { $("#formLogin").submit(); }, 3000);
+              //}
+            //  $("#formLogin").submit();
+          } else {
+              $('#login_modal').modal('hide');
+              $('#registration_modal').modal('show');
+              $('#HDfacebookId').val(response.id);
+              $('#Name').val(response.name);
+              $('#RegEmail').val(response.email);
+          }
+      });
+
+     
+     
+
+    });
+  }
+    </script>
+    
+    @*<script>
+        // fbAsyncInit
+    
+        window.fbAsyncInit = function () {
+            // init the FB JS SDK
+            FB.init({
+                appId: '834884540027854',
+                status: true,
+                cookie: true,
+                xfbml: true,
+                oauth: true
+            });
+            // Additional initialization code such as adding Event Listeners goes here
+
+            // declare objects
+            var $start_button = $('#start_button > a');
+
+            //var login = function (success, cancel) {
+            //    FB.login(function (response) {
+            //        Console("Hello" + response);
+            //        if (response.authResponse) {
+            //            Console("Hello" + response);
+            //            if (success) Console(success);
+            //        } else {
+            //            if (cancel) cancel();
+            //        }
+            //    }, { scope: '<?php echo FB_APP_SCOPE; ?>' });
+            //};
+            //var login = function (success, cancel) {
+            FB.login(function (response) {
+                if (response.authResponse) {
+                    console.log('Welcome!  Fetching your information.... ');
+                    FB.api('/me', function (response) {
+                        console.log('Good to see you, ' + response + '.');
+                        alert('hello');
+                    });
+                } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                }
+            });
+            //};
+
+
+
+
+            var check_page_like = function (success, failure) {
+                FB.api('/me/likes/<?php echo FB_PAGE_ID?>', function (response) {
+                    if (response.data.length) {
+                        if (success) success();
+                    } else {
+                        if (failure) failure();
+                    }
+                });
+            };
+            // To determine if a user has authenticated your app:
+            FB.getLoginStatus(function (response) {
+            });
+            FB.Event.subscribe('auth.statusChange', function (response) {
+                console.log('auth.statusChange: ', response.status);
+                if (response.status === 'connected') {
+                    $start_button.on('click', function () {
+                        check_page_like(function () {
+                            location.href = '../../diagnosis/info';
+                        }, function () {
+                            // TODO: DEPRECATED display:none
+                            $('#like_box').css('display', 'block');
+                        });
+                    });
+                } else if (response.status === 'not_authorized') {
+                    $start_button.on('click', function () {
+                        login(function () {
+                            $start_button.off('click');
+                        }, function () {
+                        });
+                    });
+                } else {
+                    $start_button.on('click', function () {
+                        login(function () {
+                            $start_button.off('click');
+                        }, function () {
+                        });
+                    });
+                }
+            });
+            FB.Event.subscribe('edge.create', function (response) {
+                location.href = '../../diagnosis/info';
+            });
+        };
+        // Load the SDK asynchronously
         (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>*@
+    @*<script>
+        (function (d, s, id) {
+            alert();
             var js, fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) return;
             js = d.createElement(s); js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=134703570323238";
+            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=865103020330676";
             fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
+        }(document, 'script', 'facebook-jssdk'));</script>*@
+    @*<script>
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '834884540027854',
+                    xfbml: true,
+                    cookie: true,
+                    version: 'v2.11'
+                });
+
+                FB.AppEvents.logPageView();
+
+            };
+
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) { return; }
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+
+            function login() {
+                FB.login(function (response) {
+                    debugger;
+                    // handle the response
+                    console.log("Response goes here!");
+                    console.log(response);
+
+                }, { scope: 'read_stream,publish_stream,publish_actions,read_friendlists' });
+            }
+
+            function logout() {
+                FB.logout(function (response) {
+                    // user is now logged out
+                    console.log(response);
+                });
+            }
+
+            var status = FB.getLoginStatus();
+
+            console.log(status);
+        </script>*@
 
     <main class="animsition">
         <!--Header sec start-->
@@ -143,7 +379,7 @@
                                     @if (Session["id"] == null)
                                     {
                                         <li><a href="#" data-toggle="modal" data-target="#registration_modal">Sign up</a></li>
-                                        <li><a href="#" data-toggle="modal" data-target="#login_modal">Log In</a></li>
+                                        <li><a href="#" data-toggle="modal" data-target="#login_modal" onclick="RememberMeCheck(0, '', '')">Log In</a></li>
 
                                     }
                                     else
@@ -710,7 +946,6 @@
                                         }
                                     });
                                 } catch (e) {
-
                                     console.log(e);
                                 }
                             }
@@ -721,7 +956,7 @@
 
                             function geoData() {
                                 return $.getJSON("http://freegeoip.net/json/", function (data) {
-                                    countryip=data.country_name;
+                                    countryip = data.country_name;
                                 });
                             };
 
@@ -731,11 +966,11 @@
                             //});
 
                             deferred
-                            .done(function(data) {
+                            .done(function (data) {
                                 loadCount(countryip);
                                 loadCountry1(countryip);
                             })
-                            .fail(function(xhr) {
+                            .fail(function (xhr) {
                                 loadCount();
                                 loadCountry1();
                             });
@@ -780,7 +1015,7 @@
                         </script>
                         <script type="text/javascript">
                             //$(document).ready(function () {
-                                
+
                             //});
 
                             function loadCountry1() {
@@ -1193,7 +1428,7 @@
 
                                             _html += "<div class='newlis_contain'><div class='listing_tab'>";
 
-                                           // _html += "<ul class='nav nav-tabs'><li><a data-toggle='tab' href='#upcoming_events'>EVENTS</a></li></ul>";
+                                            // _html += "<ul class='nav nav-tabs'><li><a data-toggle='tab' href='#upcoming_events'>EVENTS</a></li></ul>";
 
                                             _html += "</div><div class='event_topbar'><div class='tab-content'><div id='upcoming_events' class='tab-pane fade in active'>";
 
@@ -1531,7 +1766,7 @@
                                             var _html = "";
                                             // _html += "<ul class='nav nav-tabs'><div class='top_select'><ul><li><select class='top_selecefld'><option>Sort by</option><option>Recent Ads (Default)</option>";
                                             // _html += "<option>Price (High to Low)</option><option>Price (Low to High)</option><option>Last update</option><option>Distance</option></select></li></ul></div></ul>";
-                                           // _html += "<div class='tab-content'><div id='dealers' class='tab-pane fade in active'>";
+                                            // _html += "<div class='tab-content'><div id='dealers' class='tab-pane fade in active'>";
 
                                             _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Car List </h4></div>";
 
@@ -1696,7 +1931,7 @@
                                             // _html += "<ul class='nav nav-tabs'><div class='top_select'><ul><li><select class='top_selecefld'><option>Sort by</option><option>Recent Ads (Default)</option>";
                                             // _html += "<option>Price (High to Low)</option><option>Price (Low to High)</option><option>Last update</option><option>Distance</option></select></li></ul></div></ul>";
 
-                                          
+
                                             _html += "<div class='tab-content'><div id='dealers' class='tab-pane fade in active'>";
                                             _html += "<div class='map_img' id='map' style='width: 848px; height: 500px'></div>";
 
@@ -1839,7 +2074,7 @@
                     jQuery('#homebadge').multiselect({
                         nonSelectedText: 'Select Badge',
                         includeSelectAllOption: true,
-                        
+
                     });
                 });</script>
         </div>
@@ -1937,65 +2172,60 @@
                         @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "formLogin", role = "form" }))
                         {
 
-                        @Html.AntiForgeryToken()
+                            @Html.AntiForgeryToken()
 
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        <div class="form-group">
-                            <!--
-                               <input type="email" class="form-control" placeholder="Email" id="email">
-                            -->
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", Placeholder = "Email", id = "Email", Required = "Required" })
-                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                            <label class="text-danger" id="emailvalid" style="color:brown"></label>
-                        </div>
-                        <div class="form-group">
-
-                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", Placeholder = "Password", Required = "Required", id = "Password" })
-                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                            <label class="text-danger" id="passvalid" style="color:brown"></label>
-                        </div>
-                        <div class="checkbox">
-                            <!--
-                            <label><input type="checkbox"> Remember me <a href="#">Forgot Password</a></label>-->
-                            <label>
-                                @Html.CheckBoxFor(m => m.RememberMe)
-
-                                Remember me
-                                <a aria-label="Close" data-dismiss="modal" class="frgt_pass" href="#" data-toggle="modal" data-target="#frtp_modal">Forgot Password</a>
-
-                            </label>
-
-
-                        </div>
-                        <div class="submit_login">
-                            <!--
-                            <input type="submit" value="Login" class="btn btn-default" />
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                <!--
+                                   <input type="email" class="form-control" placeholder="Email" id="email">
                                 -->
-                            <label class="text-danger" id="invalidunm" style="color:brown"></label>
-                            <button type="button" id="btnlogin" class="btn btn-default" onclick="return validate()">Login</button>
-
-                        </div>
-                        <div class="dnt_acnt">Don’t Have Account, <a href="#" data-dismiss="modal" data-toggle="modal" id="clk_reg" data-target="#registration_modal">Sign Up Here</a></div>
-                        <div class="or_login">OR</div>
-                        <div class="lofin_facebook">
-                            <h5>Login With Social Media</h5>
-
-
-
-                            <div class="fb-login-button" autologoutlink="true" scope="user_birthday,email" onlogin="OnLogin();">
-                                Login with Facebook
-                            </div> <!-- FB Login Button -->
-                            <!--<div id="auth-status">
-                                <div id="auth-loggedin" style="display: none">
-                                    Hi, <span id="displayname"></span><br />
-                                    Your Facebook ID : <span id="FBId"></span><br />
-                                    Your Email : <span id="DisplayEmail"></span><br />
-                                    Your Sex:, <span id="Gender"></span><br />
-                                    Your Date of Birth :, <span id="DOB"></span><br />
-                                </div>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", Placeholder = "Email", id = "Email", Required = "Required" })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                <label class="text-danger" id="emailvalid" style="color:brown"></label>
                             </div>
-                            <a href="#" class="facebook_btn"><i class="fa fa-facebook"></i> log in with facebook </a>-->
-                        </div>
+                            <div class="form-group">
+
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", Placeholder = "Password", Required = "Required", id = "Password" })
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                <label class="text-danger" id="passvalid" style="color:brown"></label>
+                            </div>
+                            <div class="checkbox">
+                                <!--
+                                <label><input type="checkbox"> Remember me <a href="#">Forgot Password</a></label>-->
+                                <label>
+                                    @Html.CheckBoxFor(m => m.RememberMe)
+
+                                    Remember me
+                                    <a aria-label="Close" data-dismiss="modal" class="frgt_pass" href="#" data-toggle="modal" data-target="#frtp_modal">Forgot Password</a>
+
+                                </label>
+
+
+                            </div>
+                            <div class="submit_login">
+                                <!--
+                                <input type="submit" value="Login" class="btn btn-default" />
+                                    -->
+                                <label class="text-danger" id="invalidunm" style="color:brown"></label>
+                                <button type="button" id="btnlogin" class="btn btn-default" onclick="return validate()">Login</button>
+
+                            </div>
+                            <div class="dnt_acnt">Don’t Have Account, <a href="#" data-dismiss="modal" data-toggle="modal" id="clk_reg" data-target="#registration_modal">Sign Up Here</a></div>
+                            <div class="or_login">OR</div>
+                            <div class="lofin_facebook">
+                                <h5>Login With Social Media</h5>
+
+
+                                @*<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                                </fb:login-button>*@
+                             
+                               
+                                <div class="fb-login-button" autologoutlink="true" scope="user_birthday,email" onlogin="checkLoginState();">
+                                    Login with Facebook
+                                </div> 
+                                @*@*<div id="status">
+                                </div>*@
+                                                           </div>
                         }
 
                     </div>
@@ -2005,6 +2235,7 @@
         </div>
 
         <script>
+            function test() { alert(); }
             $("#Email").keyup(function (event) {
                 if (event.keyCode == 13) {
                     $("#Password").focus();
@@ -2149,7 +2380,6 @@
                         $('#emailvalid').html("");
                         isvalid = true;
 
-
                     }
 
                     if (password == undefined || password == null || password == "") {
@@ -2172,6 +2402,11 @@
                             //called on jquery ajax call success
                             success: function (result) {
                                 if (result.status == "Success") {
+                                    var Check = $("input[name='RememberMe']").is(":checked");
+                                  
+                                    if ($("input[name='RememberMe']").prop("checked")) {
+                                        RememberMeCheck(1, email, password);
+                                    } else { RememberMeCheck(1, "", ""); }
                                     $('#invalidunm').html("");
                                     $("#formLogin").submit();
                                 } else {
@@ -2200,6 +2435,23 @@
                 return isvalid;
             }
 
+            var RememberMeCheck = function (getStatus, userIdentity, userPassword) {
+                debugger;
+                if (getStatus == 1) {
+                    localStorage.setItem("u_Id", userIdentity);
+                    localStorage.setItem("u_Ps", userPassword);
+                } else {
+                    $('#Email').val(localStorage.getItem("u_Id"));
+                    $('#Password').val(localStorage.getItem("u_Ps"));
+                    if (localStorage.getItem("u_Id") != "") {
+                        jQuery("input[name='RememberMe']").prop('checked', true);
+                    }
+                }
+
+            };
+            $(Document).ready(function () {
+                RememberMeCheck(0, "", "");
+            })
         </script>
 
         <!-- registration Modal -->
@@ -2214,109 +2466,104 @@
                     <div class="modal-body">
                         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "regform", role = "form" }))
                         {
-                        @Html.AntiForgeryToken()
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.HDfacebookId);
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
 
-                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", Placeholder = "Name", Required = "Required", id = "Name" })
+                                <label class="text-danger" id="regnamevalid" style="color:brown"></label>
+                                <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(m => m.RegEmail, new { @class = "form-control", Placeholder = "Email", Required = "Required", id = "RegEmail" })
+                                <!--  <input type="email" class="form-control" placeholder="Email" id="email">-->
+                                <label class="text-danger" id="regemailvalid" style="color:brown"></label>
+                            </div>
+                            <div class="form-group hidden" id="businessname">
+                                @Html.TextBoxFor(m => m.BusinessName, new { @class = "form-control", Placeholder = "Business Name" })
+                                <!--  <input type="email" class="form-control" placeholder="Email" id="email">-->
 
+                            </div>
+                            <div class="form-group hidden" id="contactnumber">
+                                @Html.TextBoxFor(m => m.ContactNumber, new { @class = "form-control", Placeholder = "Contact Number" })
+                                <!--  <input type="email" class="form-control" placeholder="Email" id="email">-->
 
+                            </div>
+                            <div class="form-group">
+                                <select id="regcountry" class="form-control" name="regcountry" onchange="return loadRegState();">
+                                    <option value="0">Select Country</option>
+                                </select>
+                                <label class="text-danger" id="reglabelcountry" style="color:brown"></label>
+                                <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
+                            </div>
 
+                            <div class="form-group">
+                                <select id="regstate" class="form-control" name="regstate" onchange="return loadRegCity();">
+                                    <option value="0">Select State</option>
+                                </select>
+                                <label class="text-danger" id="reglabelstate" style="color:brown"></label>
+                                <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
+                            </div>
 
+                            <div class="form-group">
+                                <select id="regcity" class="form-control" name="regcity" onchange="loadReasonnew();">
+                                    <option value="0">Select City</option>
+                                </select>
+                                <label class="text-danger" id="reglabelcity" style="color:brown"></label>
+                                <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
+                            </div>
 
-                        <div class="form-group">
-                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", Placeholder = "Name", Required = "Required", id = "Name" })
-                            <label class="text-danger" id="regnamevalid" style="color:brown"></label>
-                            <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
-                        </div>
-                        <div class="form-group">
-                            @Html.TextBoxFor(m => m.RegEmail, new { @class = "form-control", Placeholder = "Email", Required = "Required", id = "RegEmail" })
-                            <!--  <input type="email" class="form-control" placeholder="Email" id="email">-->
-                            <label class="text-danger" id="regemailvalid" style="color:brown"></label>
-                        </div>
-                        <div class="form-group hidden" id="businessname">
-                            @Html.TextBoxFor(m => m.BusinessName, new { @class = "form-control", Placeholder = "Business Name" })
-                            <!--  <input type="email" class="form-control" placeholder="Email" id="email">-->
+                            <div class="form-group">
+                                <select id="regregion" class="form-control" name="regregion" onchange="loadNewRegionnew()">
+                                    <option value="0">Select Suburb</option>
+                                </select>
+                                <label class="text-danger" id="reglabelregion" style="color:brown"></label>
+                                <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
+                            </div>
+                            <!--
+                            <div class="form-group">
+                                <select id="regsuburb" class="form-control" name="regsuburb">
+                                    <option value="0">Select Suburb</option>
+                                </select>
+                                <label class="text-danger" id="reglabelsuburb" style="color:brown"></label>
 
-                        </div>
-                        <div class="form-group hidden" id="contactnumber">
-                            @Html.TextBoxFor(m => m.ContactNumber, new { @class = "form-control", Placeholder = "Contact Number" })
-                            <!--  <input type="email" class="form-control" placeholder="Email" id="email">-->
+                            </div>
+                                -->
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="regzipcode" id="regzipcode" placeholder="ZIP CODE" />
+                                <label class="text-danger" id="reglabelzipcode" style="color:brown"></label>
+                                <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
+                            </div>
+                            <div class="form-group">
+                                @Html.PasswordFor(m => m.RegPassword, new { @class = "form-control", Placeholder = "Password", Required = "Required", @maxlength = "12" })
+                                <label class="text-danger" id="regpassvalid" style="color:brown"></label>
+                            </div>
+                            <div class="form-group">
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", Placeholder = "Confirm Password", Required = "Required", @maxlength = "12" })
+                                <!--<input type="password" class="form-control" placeholder="Confirm Password" id="pwd">-->
+                                <label class="text-danger" id="regconfirmpass" style="color:brown"></label>
+                            </div>
+                            <div class="checkbox signup_last">
+                                <label>
+                                    @Html.RadioButtonFor(m => m.Type, "Free")    Normal Membership
+                                </label>
+                                <label>
+                                    @Html.RadioButtonFor(m => m.Type, "Paid") Premium Membership
+                                </label>
 
-                        </div>
-                        <div class="form-group">
-                            <select id="regcountry" class="form-control" name="regcountry" onchange="return loadRegState();">
-                                <option value="0">Select Country</option>
-                            </select>
-                            <label class="text-danger" id="reglabelcountry" style="color:brown"></label>
-                            <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
-                        </div>
+                            </div>
+                            <div class="submit_login">
+                                <label class="text-danger" id="usertyperadio" style="color:brown"></label>
+                            </div>
+                            <div class="submit_login">
+                                <!--   <input type="submit" class="btn btn-default" value="Creat Account" />
 
-                        <div class="form-group">
-                            <select id="regstate" class="form-control" name="regstate" onchange="return loadRegCity();">
-                                <option value="0">Select State</option>
-                            </select>
-                            <label class="text-danger" id="reglabelstate" style="color:brown"></label>
-                            <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
-                        </div>
+                                <input type="submit" class="btn btn-default" value="Register" />-->
 
-                        <div class="form-group">
-                            <select id="regcity" class="form-control" name="regcity" onchange="loadReasonnew();">
-                                <option value="0">Select City</option>
-                            </select>
-                            <label class="text-danger" id="reglabelcity" style="color:brown"></label>
-                            <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
-                        </div>
-
-                        <div class="form-group">
-                            <select id="regregion" class="form-control" name="regregion" onchange="loadNewRegionnew()">
-                                <option value="0">Select Suburb</option>
-                            </select>
-                            <label class="text-danger" id="reglabelregion" style="color:brown"></label>
-                            <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
-                        </div>
-                        <!--
-                        <div class="form-group">
-                            <select id="regsuburb" class="form-control" name="regsuburb">
-                                <option value="0">Select Suburb</option>
-                            </select>
-                            <label class="text-danger" id="reglabelsuburb" style="color:brown"></label>
-
-                        </div>
-                            -->
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="regzipcode" id="regzipcode" placeholder="ZIP CODE" />
-                            <label class="text-danger" id="reglabelzipcode" style="color:brown"></label>
-                            <!--  <input type="text" class="form-control" placeholder="Name" id="name">-->
-                        </div>
-                        <div class="form-group">
-                            @Html.PasswordFor(m => m.RegPassword, new { @class = "form-control", Placeholder = "Password", Required = "Required", @maxlength = "12" })
-                            <label class="text-danger" id="regpassvalid" style="color:brown"></label>
-                        </div>
-                        <div class="form-group">
-                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", Placeholder = "Confirm Password", Required = "Required", @maxlength = "12" })
-                            <!--<input type="password" class="form-control" placeholder="Confirm Password" id="pwd">-->
-                            <label class="text-danger" id="regconfirmpass" style="color:brown"></label>
-                        </div>
-                        <div class="checkbox signup_last">
-                            <label>
-                                @Html.RadioButtonFor(m => m.Type, "Free")    Normal Membership
-                            </label>
-                            <label>
-                                @Html.RadioButtonFor(m => m.Type, "Paid") Premium Membership
-                            </label>
-
-
-                        </div>
-                        <div class="submit_login">
-                            <label class="text-danger" id="usertyperadio" style="color:brown"></label>
-                        </div>
-                        <div class="submit_login">
-                            <!--   <input type="submit" class="btn btn-default" value="Creat Account" />
-
-                            <input type="submit" class="btn btn-default" value="Register" />-->
-
-                            <button type="button" id="nt_xz" class="btn btn-default" onclick="return valid()">Register</button>
-                        </div>
-                        <div class="dnt_acnt"> Already a Member?, <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#login_modal">Log In Here</a></div>
+                                <button type="button" id="nt_xz" class="btn btn-default" onclick="return valid()">Register</button>
+                            </div>
+                            <div class="dnt_acnt"> Already a Member?, <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#login_modal">Log In Here</a></div>
 
                         }
                     </div>

@@ -1430,7 +1430,6 @@
     <Content Include="Views\Home\Notification.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
     <Content Include="Views\Shared\_LayoutError.cshtml" />
-    <Content Include="Views\Home\Index__.cshtml" />
     <Content Include="Views\Partials\BlankMap2092017.cshtml" />
     <None Include="Views\Home\AddEvent.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />

@@ -919,6 +919,37 @@ namespace MyCarYard.Controllers
             return json;
         }
 
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JObject checkloginFb(string facebookId)
+        {
+
+            con = new SqlConnection(constr);
+            JObject json = new JObject();
+            con.Open();
+            cmd = new SqlCommand("Select email,pass from tbl_login where facebookId='" + facebookId + "'", con);
+            dr = cmd.ExecuteReader();
+            DataTable dt = new DataTable();
+            dt.Load(dr);
+
+            if (dt.Rows.Count > 0)
+            {
+                AccountController _objAC = new AccountController();
+                LoginViewModel _objVM = new LoginViewModel();
+                json["status"] = "Success";
+                json["email"] = dt.Rows[0]["email"].ToString(); _objVM.Email= dt.Rows[0]["email"].ToString();
+                json["password"] = dt.Rows[0]["pass"].ToString(); _objVM.Password = dt.Rows[0]["pass"].ToString();
+                _objVM.RememberMe = true;
+                _objAC.Login(_objVM,"");
+            }
+            else
+            {
+                json["status"] = "Invalid";
+            }
+
+            return json;
+        }
         [HttpPost]
         [AllowAnonymous]
         [WebMethod]
@@ -2515,7 +2546,7 @@ namespace MyCarYard.Controllers
                         cond_id = Convert.ToInt32(dr["cond_id"].ToString()),
                         condition = dr["condition"].ToString(),
                         status = Convert.ToInt32(dr["status"].ToString()),
-                        count= dr["CarCount"].ToString(),
+                        count = dr["CarCount"].ToString(),
                     });
             }
             json["conditionlist"] = JToken.FromObject(conditionlist);
@@ -2546,7 +2577,7 @@ namespace MyCarYard.Controllers
                         trans_id = Convert.ToInt32(dr["trans_id"].ToString()),
                         transmision = dr["transmision"].ToString(),
                         status = Convert.ToInt32(dr["status"].ToString()),
-                        count= dr["CarCount"].ToString(),
+                        count = dr["CarCount"].ToString(),
                     });
             }
             json["translist"] = JToken.FromObject(translist);

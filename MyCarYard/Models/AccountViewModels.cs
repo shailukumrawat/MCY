@@ -146,6 +146,8 @@ namespace MyCarYard.Models
         public bool RememberMe { get; set; }
 
         public bool flag { get; set; }
+        public string HDfacebookId { get; set; }
+        
 
         [Required]
         public string Type { get; set; }
