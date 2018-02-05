@@ -42,7 +42,13 @@
             js = d.createElement(s); js.id = id;
             js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=134703570323238";
             fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
+        }(document, 'script', 'facebook-jssdk'));
+
+        function Callback() {
+           // alert('success');
+        }
+
+    </script>
     <main class="animsition">
         <!--Header sec start-->
         <header class="header_sec" id="header">
@@ -124,7 +130,11 @@
                                     }
                                     else
                                     {
-                                        <li><a href="@Url.Action("Logout", "Account")">LogOut</a></li>
+                                        <li>
+                                            @*<a href="@Url.Action("Logout", "Account",new { onclick = "Callback();"})">LogOut</a>*@
+                                            @Html.ActionLink("Logout", "Logout",
+                                            "Account", new { id = 1 }, new { onclick = "Callback();" })
+                                        </li>
                                     }
                                     <li><a href="#"><span id="totalcars"></span> Cars For Sale</a></li>
                                 </ul>
@@ -162,7 +172,7 @@
                                     }
                                     <li id="notificationtab"><a href="@Url.Action("Notification", "Home")"><i class="flaticon-bell-musical-tool"></i> Notifications </a></li>
 
-                                    <li id="settingtab"><a href="@Url.Action("Setting","Home")"><i class="flaticon-settings-work-tool"></i> Setting</a></li>
+                                    <li id="settingtab"><a href="@Url.Action("Setting","Home")"><i class="flaticon-settings-work-tool"></i> Change Password</a></li>
 
                                     <li><a href="@Url.Action("Logout", "Account")"><i class="flaticon-logout"></i> Log Out</a></li>
                                 </ul>
@@ -718,7 +728,8 @@
                                                 _html += "</div></div></div>";
                                                 _html += "<div class='listing_detail'><h5 class='manageev_head'>" + result.eventlist[i].title + "</h5>";
                                                 _html += "<div class='item_detail'>";
-                                                _html += "<h5>Place:" + result.eventlist[i].state + "," + result.eventlist[i].country + "," + result.eventlist[i].date + "</h5>";
+                                                _html += "<h5>Place:" + result.eventlist[i].state + "," + result.eventlist[i].country + "</h5>";
+                                                _html += " <h5>" + result.eventlist[i].date + "</h5>";
                                                 _html += "<p>" + result.eventlist[i].subject.substring(0, 200) + "</p><ul></ul></div><div class='listing_btm'>";
                                                 _html += "<ul id='ul" + result.eventlist[i].eid + "'><li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount" + result.eventlist[i].eid + "'>" + parseInt(result.eventlist[i].going) + "</span></a></li>";
                                                 if (result.eventlist[i].goORgoing == "0") {
@@ -844,7 +855,7 @@
                                                                 map1.setZoom(8);
                                                                 map1.setCenter(marker1.getPosition());
                                                                 //infoWindow1.setContent("<table celpading='2' celspacing='2'><tbody><tr><td rowspan='5'><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + data1.img + "' style='width:100px;height:100px;margin:5px'></a></td><td style='padding-left: 8px;'><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td style='padding-left: 8px;'>" + data1.city_name + "</td></tr><tr><td style='padding-left: 8px;'>" + data1.state_name + " " + data1.country_name + "</td></tr><tr><td style='padding-left: 8px;'>" + data1.going + " - People Going</td></tr><tr><td style='padding-left: 8px;'><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
-                                                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td>" + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
+                                                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td><i class='fa fa-map-marker' aria-hidden='true'></i> " + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.postcode + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
                                                                 infoWindow1.open(map1, marker1);
                                                                 if (marker1.getAnimation() !== null) {
                                                                     marker1.setAnimation(null);
@@ -935,7 +946,7 @@
                                                                 // map1.setZoom(8);
                                                                 //
                                                                 //infoWindow1.setContent("<table celpading='2' celspacing='2' ><tr><td rowspan='4'><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + data1.img + "' style='width:100px;height:100px;margin:5px' ></a></td><td><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td >" + data1.subject.substring(0, 40) + "</td></tr><tr><td >" + data1.going + " - People Going</td></tr><tr><td ><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></table>");
-                                                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data1.category + " - " + data1.title + "-" + data1.subject.substring(0, 40) + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td>" + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
+                                                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data1.category + " - " + data1.title + "-" + data1.subject.substring(0, 40) + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td> <i class='fa fa-map-marker' aria-hidden='true'></i> " + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.postcode + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
                                                                 map1.setCenter(marker1.getPosition());
                                                                 infoWindow1.open(map1, marker1);
                                                                 if (marker1.getAnimation() !== null) {
@@ -1003,20 +1014,20 @@
                                                     //    content: 'Your Entry feed Successfully',
                                                     //    alertBtnText: 'Okey',
                                                     //    alertHandler: function () {
-                                                            var cnt = parseInt($('#gocount' + eid).text()) + 1;
-                                                            var _htmlul = "";
-                                                            _htmlul += "<li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount" + eid + "'>" + cnt + "</span></a></li>";
+                                                    var cnt = parseInt($('#gocount' + eid).text()) + 1;
+                                                    var _htmlul = "";
+                                                    _htmlul += "<li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount" + eid + "'>" + cnt + "</span></a></li>";
 
-                                                            _htmlul += '<li><a href="#" class="fuel_btn" style="background-color: #5cb85c;"  onclick="return RemoveEventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + eid + '\',\'' + '@Session["email"].ToString()' + '\');">Going!</a></li>';
+                                                    _htmlul += '<li><a href="#" class="fuel_btn" style="background-color: #5cb85c;"  onclick="return RemoveEventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + eid + '\',\'' + '@Session["email"].ToString()' + '\');">Going!</a></li>';
 
-                                                            _htmlul += "<li><a class='fuel_btn' href='@Url.Action("UserEventDetails", "Home")?eid=" + eid + "'> Full Detail</a></li>";
-
-
-
-                                                            $('#ul' + eid).html(_htmlul);
+                                                    _htmlul += "<li><a class='fuel_btn' href='@Url.Action("UserEventDetails", "Home")?eid=" + eid + "'> Full Detail</a></li>";
 
 
-                                                            //$('#gocount').html($(content).closest('.target-class'));
+
+                                                    $('#ul' + eid).html(_htmlul);
+
+
+                                                    //$('#gocount').html($(content).closest('.target-class'));
                                                     //    }
                                                     //});
                                                     $('.alert-btn').focus();
@@ -1070,18 +1081,18 @@
                                                     //    content: 'Your Entry feed Successfully',
                                                     //    alertBtnText: 'Okay',
                                                     //    alertHandler: function () {
-                                                            @*var url = '@Url.Action("ManageEvent","Home")';
+                                                    @*var url = '@Url.Action("ManageEvent","Home")';
                                                             window.location = url;*@
 
-                                                            var cnt = parseInt($('#gocount' + eid).text()) - 1;
-                                                            var _htmlul = "";
-                                                            _htmlul += "<li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount" + eid + "'>" + cnt + "</span></a></li>";
+                                                    var cnt = parseInt($('#gocount' + eid).text()) - 1;
+                                                    var _htmlul = "";
+                                                    _htmlul += "<li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i><span id='gocount" + eid + "'>" + cnt + "</span></a></li>";
 
-                                                            _htmlul += '<li><a href="#" class="fuel_btn"  onclick="return EventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + eid + '\',\'' + '@Session["email"].ToString()' + '\');">Go!</a></li>';
+                                                    _htmlul += '<li><a href="#" class="fuel_btn"  onclick="return EventGoing(\'' + '@Session["id"].ToString()' + '\',\'' + eid + '\',\'' + '@Session["email"].ToString()' + '\');">Go!</a></li>';
 
-                                                            _htmlul += "<li><a class='fuel_btn' href='@Url.Action("UserEventDetails", "Home")?eid=" + eid + "'> Full Detail</a></li>";
+                                                    _htmlul += "<li><a class='fuel_btn' href='@Url.Action("UserEventDetails", "Home")?eid=" + eid + "'> Full Detail</a></li>";
 
-                                                            $('#ul' + eid).html(_htmlul);
+                                                    $('#ul' + eid).html(_htmlul);
 
                                                     //    }
                                                     //});
@@ -1174,7 +1185,7 @@
 
                                                 //alert(result.carlist[i].make);
 
-                                                _html += "<div class='detail_head'><h4 class='detail_heading'>" + result.carlist[i].year + " " + result.carlist[i].make + " " + result.carlist[i].model + " " + result.carlist[i].badge + "</h4>";
+                                                _html += "<div class='detail_head'><h4 class='detail_heading'>" + result.carlist[i].year + " " + result.carlist[i].make + " " + result.carlist[i].model + " " + result.carlist[i].badge + " " + result.carlist[i].series + "</h4>";
                                                 _html += "<div class='detail_bar'><ul><li><a href='#'>" + result.carlist[i].currency + " " + result.carlist[i].price + "</a></li>";
                                                 _html += "<li><a href='#' data-toggle='modal' data-target='#msg_modal'><i class='fa fa-envelope-o'></i></a></li>";
                                                 if (result.carlist[i].showphone == 1) {
@@ -2193,7 +2204,7 @@
     </script>
     <div class="loadingmodal"><!-- Place at bottom of page --></div>
 </body>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI">
+</script>
 </html>
-@*<script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx0DvT12bYe8a4xIw_SivGa2gIoqSYacI&callback=initMap">
-    </script>*@

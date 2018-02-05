@@ -59,201 +59,213 @@
 <body>
 
     <script>
-  // This is called with the results from from FB.getLoginStatus().
-  function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
-    // The response object is returned with a status field that lets the
-    // app know the current login status of the person.
-    // Full docs on the response object can be found in the documentation
-    // for FB.getLoginStatus().
-    if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-        debugger;
-        ResponseOfFacebookAPI();
-    } else {
-      // The person is not logged into your app or we are unable to tell.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
-    }
-  }
+        // This is called with the results from from FB.getLoginStatus().
+        function statusChangeCallback(response) {
+            console.log('statusChangeCallback');
+            console.log(response);
+            // The response object is returned with a status field that lets the
+            // app know the current login status of the person.
+            // Full docs on the response object can be found in the documentation
+            // for FB.getLoginStatus().
+            if (response.status === 'connected') {
+                // Logged into your app and Facebook.
+                debugger;
+                ResponseOfFacebookAPI();
+            } else {
+                // The person is not logged into your app or we are unable to tell.
+                document.getElementById('status').innerHTML = 'Please log ' +
+                  'into this app.';
+            }
+        }
 
-  // This function is called when someone finishes with the Login
-  // Button.  See the onlogin handler attached to it in the sample
-  // code below.
-  function checkLoginState() {
-    FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
-    });
-  }
+        // This function is called when someone finishes with the Login
+        // Button.  See the onlogin handler attached to it in the sample
+        // code below.
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        }
 
-  window.fbAsyncInit = function() {
-  FB.init({
-      appId: '834884540027854',
-    cookie     : true,  // enable cookies to allow the server to access
-                        // the session
-    xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.8' // use graph api version 2.8
-  });
-
-  // Now that we've initialized the JavaScript SDK, we call
-  // FB.getLoginStatus().  This function gets the state of the
-  // person visiting this page and can return one of three states to
-  // the callback you provide.  They can be:
-  //
-  // 1. Logged into your app ('connected')
-  // 2. Logged into Facebook, but not your app ('not_authorized')
-  // 3. Not logged into Facebook and can't tell if they are logged into
-  //    your app or not.
-  //
-  // These three cases are handled in the callback function.
-
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-
-  };
-
-  // Load the SDK asynchronously
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "https://connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-
-  // Here we run a very simple test of the Graph API after login is
-  // successful.  See statusChangeCallback() for when this call is made.
-  function ResponseOfFacebookAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me?fields=id,name,email', function (response) {
-      console.log('Successful login for: ' + response);
-     
-      $.post("/Admin/checkloginFb", { facebookId: response.id }, function (result) {
-         // $("span").html(result);
-          debugger;
-          var Response = JSON.parse(result);
-          if (Response.status == "Success") {
-              RememberMeCheck(1, Response.email, Response.password);
-              RememberMeCheck(0, Response.email, Response.password);
-              //if ($('#Email').val() != "" && $('#Password').val() != "") {
-              //    setTimeout(function () { $("#formLogin").submit(); }, 3000);
-              //}
-            //  $("#formLogin").submit();
-          } else {
-              $('#login_modal').modal('hide');
-              $('#registration_modal').modal('show');
-              $('#HDfacebookId').val(response.id);
-              $('#Name').val(response.name);
-              $('#RegEmail').val(response.email);
-          }
-      });
-
-     
-     
-
-    });
-  }
-    </script>
-    
-    @*<script>
-        // fbAsyncInit
-    
         window.fbAsyncInit = function () {
-            // init the FB JS SDK
             FB.init({
                 appId: '834884540027854',
-                status: true,
-                cookie: true,
-                xfbml: true,
-                oauth: true
+                cookie: true,  // enable cookies to allow the server to access
+                // the session
+                xfbml: true,  // parse social plugins on this page
+                version: 'v2.8' // use graph api version 2.8
             });
-            // Additional initialization code such as adding Event Listeners goes here
 
-            // declare objects
-            var $start_button = $('#start_button > a');
+            // Now that we've initialized the JavaScript SDK, we call
+            // FB.getLoginStatus().  This function gets the state of the
+            // person visiting this page and can return one of three states to
+            // the callback you provide.  They can be:
+            //
+            // 1. Logged into your app ('connected')
+            // 2. Logged into Facebook, but not your app ('not_authorized')
+            // 3. Not logged into Facebook and can't tell if they are logged into
+            //    your app or not.
+            //
+            // These three cases are handled in the callback function.
 
-            //var login = function (success, cancel) {
-            //    FB.login(function (response) {
-            //        Console("Hello" + response);
-            //        if (response.authResponse) {
-            //            Console("Hello" + response);
-            //            if (success) Console(success);
-            //        } else {
-            //            if (cancel) cancel();
-            //        }
-            //    }, { scope: '<?php echo FB_APP_SCOPE; ?>' });
-            //};
-            //var login = function (success, cancel) {
-            FB.login(function (response) {
-                if (response.authResponse) {
-                    console.log('Welcome!  Fetching your information.... ');
-                    FB.api('/me', function (response) {
-                        console.log('Good to see you, ' + response + '.');
-                        alert('hello');
-                    });
-                } else {
-                    console.log('User cancelled login or did not fully authorize.');
-                }
-            });
-            //};
-
-
-
-
-            var check_page_like = function (success, failure) {
-                FB.api('/me/likes/<?php echo FB_PAGE_ID?>', function (response) {
-                    if (response.data.length) {
-                        if (success) success();
-                    } else {
-                        if (failure) failure();
-                    }
-                });
-            };
-            // To determine if a user has authenticated your app:
             FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
             });
-            FB.Event.subscribe('auth.statusChange', function (response) {
-                console.log('auth.statusChange: ', response.status);
-                if (response.status === 'connected') {
-                    $start_button.on('click', function () {
-                        check_page_like(function () {
-                            location.href = '../../diagnosis/info';
-                        }, function () {
-                            // TODO: DEPRECATED display:none
-                            $('#like_box').css('display', 'block');
-                        });
-                    });
-                } else if (response.status === 'not_authorized') {
-                    $start_button.on('click', function () {
-                        login(function () {
-                            $start_button.off('click');
-                        }, function () {
-                        });
-                    });
-                } else {
-                    $start_button.on('click', function () {
-                        login(function () {
-                            $start_button.off('click');
-                        }, function () {
-                        });
-                    });
-                }
-            });
-            FB.Event.subscribe('edge.create', function (response) {
-                location.href = '../../diagnosis/info';
-            });
+
+            function Callback() {
+               
+            }
+
         };
+
         // Load the SDK asynchronously
         (function (d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) { return; }
+            if (d.getElementById(id)) return;
             js = d.createElement(s); js.id = id;
-            js.src = "//connect.facebook.net/en_US/all.js";
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
-    </script>*@
+
+        // Here we run a very simple test of the Graph API after login is
+        // successful.  See statusChangeCallback() for when this call is made.
+        function ResponseOfFacebookAPI() {
+            console.log('Welcome!  Fetching your information.... ');
+            FB.api('/me?fields=id,name,email', function (response) {
+                console.log('Successful login for: ' + response);
+                debugger;
+                FB.logout();
+
+
+                $.post("/Admin/checkloginFb", { facebookId: response.id }, function (result) {
+                    // $("span").html(result);
+                   // alert("Pagle Alert");
+                    debugger;
+                    var Response = JSON.parse(result);
+                    if (Response.status == "Success") {
+                        RememberMeCheck(1, Response.email, Response.password);
+                        RememberMeCheck(0, Response.email, Response.password);
+                       
+                        window.location.href = '/Home/UserIndex/';
+                        //if ($('#Email').val() != "" && $('#Password').val() != "") {
+                        //    setTimeout(function () { $("#formLogin").submit(); }, 3000);
+                        //}
+                        //  $("#formLogin").submit();
+                    } else {
+                        $('#login_modal').modal('hide');
+                        $('#registration_modal').modal('show');
+                        $('#HDfacebookId').val(response.id);
+                        $('#Name').val(response.name);
+                        $('#RegEmail').val(response.email);
+                    }
+                });
+
+
+               
+
+            });
+            
+        }
+       
+    </script>
+
+    @*<script>
+            // fbAsyncInit
+
+            window.fbAsyncInit = function () {
+                // init the FB JS SDK
+                FB.init({
+                    appId: '834884540027854',
+                    status: true,
+                    cookie: true,
+                    xfbml: true,
+                    oauth: true
+                });
+                // Additional initialization code such as adding Event Listeners goes here
+
+                // declare objects
+                var $start_button = $('#start_button > a');
+
+                //var login = function (success, cancel) {
+                //    FB.login(function (response) {
+                //        Console("Hello" + response);
+                //        if (response.authResponse) {
+                //            Console("Hello" + response);
+                //            if (success) Console(success);
+                //        } else {
+                //            if (cancel) cancel();
+                //        }
+                //    }, { scope: '<?php echo FB_APP_SCOPE; ?>' });
+                //};
+                //var login = function (success, cancel) {
+                FB.login(function (response) {
+                    if (response.authResponse) {
+                        console.log('Welcome!  Fetching your information.... ');
+                        FB.api('/me', function (response) {
+                            console.log('Good to see you, ' + response + '.');
+                            alert('hello');
+                        });
+                    } else {
+                        console.log('User cancelled login or did not fully authorize.');
+                    }
+                });
+                //};
+
+
+
+
+                var check_page_like = function (success, failure) {
+                    FB.api('/me/likes/<?php echo FB_PAGE_ID?>', function (response) {
+                        if (response.data.length) {
+                            if (success) success();
+                        } else {
+                            if (failure) failure();
+                        }
+                    });
+                };
+                // To determine if a user has authenticated your app:
+                FB.getLoginStatus(function (response) {
+                });
+                FB.Event.subscribe('auth.statusChange', function (response) {
+                    console.log('auth.statusChange: ', response.status);
+                    if (response.status === 'connected') {
+                        $start_button.on('click', function () {
+                            check_page_like(function () {
+                                location.href = '../../diagnosis/info';
+                            }, function () {
+                                // TODO: DEPRECATED display:none
+                                $('#like_box').css('display', 'block');
+                            });
+                        });
+                    } else if (response.status === 'not_authorized') {
+                        $start_button.on('click', function () {
+                            login(function () {
+                                $start_button.off('click');
+                            }, function () {
+                            });
+                        });
+                    } else {
+                        $start_button.on('click', function () {
+                            login(function () {
+                                $start_button.off('click');
+                            }, function () {
+                            });
+                        });
+                    }
+                });
+                FB.Event.subscribe('edge.create', function (response) {
+                    location.href = '../../diagnosis/info';
+                });
+            };
+            // Load the SDK asynchronously
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) { return; }
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>*@
     @*<script>
         (function (d, s, id) {
             alert();
@@ -384,7 +396,11 @@
                                     }
                                     else
                                     {
-                                        <li><a href="@Url.Action("Logout", "Account")">LogOut</a></li>
+                                        <li>
+                                            @*<a href="@Url.Action("Logout", "Account",new { onclick = "Callback();"})">LogOut</a>*@
+                                            @Html.ActionLink("Logout", "Logout",
+                                            "Account", new { id = 1 }, new { onclick = "Callback();" })
+                                        </li>
                                     }
                                     <li><a href="#"><span id="totalcars"></span> Cars For Sale</a></li>
                                 </ul>
@@ -1449,6 +1465,7 @@
                                                 _html += "<div class='listing_detail'><h5 class='manageev_head'>" + result.eventlist[i].title + "</h5>";
                                                 _html += "<div class='item_detail'>";
                                                 _html += "<h5>Place: " + result.eventlist[i].suburb + ", " + result.eventlist[i].city + ", " + result.eventlist[i].state + ", " + result.eventlist[i].code + "</h5>";
+                                                _html += " <h5>" + result.eventlist[i].date + "</h5>";
                                                 _html += "<p>" + result.eventlist[i].subject.substring(0, 200) + "</p><ul></ul></div><div class='listing_btm'>";
                                                 _html += "<ul><li><a href='#' class='cmn_btn'><i class='flaticon-multiple-users-silhouette'></i>" + parseInt(result.eventlist[i].going) + "</a></li>";
                                                 _html += "<li><a href='#' class='fuel_btn'  data-toggle='modal' data-target='#login_modal'>Go!</a></li>";
@@ -1571,7 +1588,7 @@
                                                                 map1.setZoom(5);
                                                                 map1.setCenter(marker1.getPosition());
                                                                 // infoWindow1.setContent("<table celpading='2' celspacing='2'><tbody><tr><td rowspan='5'><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + data1.img + "' style='width:100px;height:100px;margin:5px'></a></td><td style='padding-left: 8px;'><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td style='padding-left: 8px;'>" + data1.city_name + "</td></tr><tr><td style='padding-left: 8px;'>" + data1.state_name + " " + data1.country_name + "</td></tr><tr><td style='padding-left: 8px;'>" + data1.going + " - People Going</td></tr><tr><td style='padding-left: 8px;'><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
-                                                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td>" + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
+                                                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td><i class='fa fa-map-marker' aria-hidden='true'></i> " + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.postcode + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
                                                                 infoWindow1.open(map1, marker1);
                                                                 if (marker1.getAnimation() !== null) {
                                                                     marker1.setAnimation(null);
@@ -1668,7 +1685,7 @@
                                                                 // map1.setZoom(8);
                                                                 //
                                                                 //infoWindow1.setContent("<table celpading='2' celspacing='2' ><tr><td rowspan='4'><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + data1.img + "' style='width:100px;height:100px;margin:5px' ></a></td><td><b>" + data1.category + " - " + data1.title + "</b></td></tr><tr><td >" + data1.subject.substring(0, 40) + "</td></tr><tr><td >" + data1.going + " - People Going</td></tr><tr><td ><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></table>");
-                                                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><b>" + data1.category + " - " + data1.title + "-" + data1.subject.substring(0, 40) + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td>" + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
+                                                                infoWindow1.setContent("<table class='table_view' celpading='2' celspacing='2'><tbody><tr><td><i class='fa fa-map-marker' aria-hidden='true'></i> <b>" + data1.category + " - " + data1.title + "-" + data1.subject.substring(0, 40) + "</b></td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'><img src='" + path + "' style='width:100px;height:100px;margin:5px'></a></td></tr><tr><td>" + data1.city_name + ", " + data1.state_name + ", " + data1.country_name + ", " + data1.postcode + ", " + data1.going + " - People Going</td></tr><tr><td><a href='@Url.Action("EventDetails","Home")?eid=" + data1.eid + "'>View Detail</a></td></tr></tbody></table>");
                                                                 map1.setCenter(marker1.getPosition());
                                                                 infoWindow1.open(map1, marker1);
                                                                 if (marker1.getAnimation() !== null) {
@@ -1775,7 +1792,7 @@
 
                                             for (var i = 0; i <= result.carlist.length - 1 ; i++) {
 
-                                                _html += "<div class='detail_head'><h4 class='detail_heading'>" + result.carlist[i].year + " " + result.carlist[i].make + " " + result.carlist[i].model + " " + result.carlist[i].badge + "</h4>" +
+                                                _html += "<div class='detail_head'><h4 class='detail_heading'>" + result.carlist[i].year + " " + result.carlist[i].make + " " + result.carlist[i].model + " " + result.carlist[i].badge + " " + result.carlist[i].series + "</h4>" +
                                                         " <div class='detail_bar'>" +
                                                         "<ul>" +
                                                         "<li><a href='#'>" + result.carlist[i].currency + " " + result.carlist[i].price + "</a></li>" +
@@ -2217,15 +2234,15 @@
 
 
                                 @*<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-                                </fb:login-button>*@
-                             
-                               
-                                <div class="fb-login-button" autologoutlink="true" scope="user_birthday,email" onlogin="checkLoginState();">
+                                    </fb:login-button>*@
+
+
+                                <div class="fb-login-button" autologoutlink="false" scope="user_birthday,email" onlogin="checkLoginState();">
                                     Login with Facebook
-                                </div> 
+                                </div>
                                 @*@*<div id="status">
-                                </div>*@
-                                                           </div>
+                                    </div>*@
+                            </div>
                         }
 
                     </div>
@@ -2403,7 +2420,7 @@
                             success: function (result) {
                                 if (result.status == "Success") {
                                     var Check = $("input[name='RememberMe']").is(":checked");
-                                  
+
                                     if ($("input[name='RememberMe']").prop("checked")) {
                                         RememberMeCheck(1, email, password);
                                     } else { RememberMeCheck(1, "", ""); }

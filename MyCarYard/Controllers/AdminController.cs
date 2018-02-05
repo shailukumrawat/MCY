@@ -938,10 +938,11 @@ namespace MyCarYard.Controllers
                 AccountController _objAC = new AccountController();
                 LoginViewModel _objVM = new LoginViewModel();
                 json["status"] = "Success";
-                json["email"] = dt.Rows[0]["email"].ToString(); _objVM.Email= dt.Rows[0]["email"].ToString();
+                json["email"] = dt.Rows[0]["email"].ToString(); _objVM.Email = dt.Rows[0]["email"].ToString();
                 json["password"] = dt.Rows[0]["pass"].ToString(); _objVM.Password = dt.Rows[0]["pass"].ToString();
-                _objVM.RememberMe = true;
-                _objAC.Login(_objVM,"");
+                _objVM.RememberMe = false;
+                _objAC.Login(_objVM, "");
+                json["status"] = "Success";
             }
             else
             {
@@ -3574,7 +3575,8 @@ namespace MyCarYard.Controllers
 
             var msg1 = new MailMessage();
             var htmlBody = AlternateView.CreateAlternateViewFromString(htmlmessage, Encoding.UTF8, "text/html");
-            MailAddress sender = new MailAddress("info@mobi96.org", "MYCARYARD");
+            // MailAddress sender = new MailAddress("info@mycaryard.net", "info@admin2018");
+            MailAddress sender = new MailAddress("info@mycaryard.net");
             msg1.AlternateViews.Add(htmlBody);
             msg1.From = sender;
             msg1.Subject = "MYCARYARD New Enquiry";

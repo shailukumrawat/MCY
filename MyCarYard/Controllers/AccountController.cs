@@ -113,9 +113,11 @@ namespace MyCarYard.Controllers
                     if (Model.flag == true)
                     {
                         dr = cmd.ExecuteReader();
-                        if (dr.Read())
+                        DataTable dt = new DataTable();
+                        dt.Load(dr);
+                        if (dt.Rows.Count > 0)
                         {
-                            //                      var authTicket = new FormsAuthenticationTicket(
+                            //  var authTicket = new FormsAuthenticationTicket(
                             //  1,
                             //  dr[0].ToString(),  //user id
                             //  DateTime.Now,
@@ -124,8 +126,8 @@ namespace MyCarYard.Controllers
                             //  "", //roles 
                             //  "/"
                             //);
-                            //                      HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket));
-                            //                      Response.Cookies.Add(cookie);
+                            //  HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket));
+                            //  Response.Cookies.Add(cookie);
 
                             FormsAuthentication.SetAuthCookie(Model.Email, Model.RememberMe);
                             if (Model.RememberMe)
@@ -135,20 +137,22 @@ namespace MyCarYard.Controllers
                                 cookie.Values.Add("Password", Model.Password);
                                 cookie.Expires = DateTime.Now.AddDays(30);
                                 Response.Cookies.Add(cookie);
-                             }
-                           
-                            string coval = dr[8].ToString();
-                            Session["id"] = dr[0].ToString();
-                            Session["name"] = dr[1].ToString();
-                            Session["email"] = dr[2].ToString();
-                            Session["pass"] = dr[3].ToString();
-                            Session["type"] = dr[4].ToString();
-                            Session["country"] = coval;
-                            Session["status"] = dr["status"].ToString();
-                            Session["parentstore"] = dr["parentstore"].ToString();
-                            if (Session["type"].ToString() != "Super")
+                            }
+                            ViewData["temp"] = "";
+                            System.Web.HttpContext.Current.Session["fakrid"] = "";
+                            string coval = dt.Rows[0][8].ToString();
+                            System.Web.HttpContext.Current.Session["country"] = coval;
+                            System.Web.HttpContext.Current.Session["id"] = dt.Rows[0]["id"].ToString();
+                            System.Web.HttpContext.Current.Session["name"] = dt.Rows[0]["name"].ToString();
+                            System.Web.HttpContext.Current.Session["email"] = dt.Rows[0]["email"].ToString();
+                            System.Web.HttpContext.Current.Session["pass"] = dt.Rows[0]["pass"].ToString();
+                            System.Web.HttpContext.Current.Session["type"] = dt.Rows[0]["type"].ToString();
+
+                            System.Web.HttpContext.Current.Session["status"] = dt.Rows[0]["status"].ToString();
+                            System.Web.HttpContext.Current.Session["parentstore"] = dt.Rows[0]["parentstore"].ToString();
+                            if (System.Web.HttpContext.Current.Session["type"].ToString() != "Super")
                             {
-                                return RedirectToAction("UserIndex", "Home");
+                               // return RedirectToAction("UserIndex", "Home");
 
                             }
                             else
@@ -284,7 +288,7 @@ namespace MyCarYard.Controllers
                 sqlparam[13] = new SqlParameter("@region", SqlDbType.NVarChar, 200);
                 sqlparam[13].Value = model.regregion;
 
-              
+
                 if (model.Type == "Paid")
                 {
                     sqlparam[14] = new SqlParameter("@parentstore", SqlDbType.NVarChar, 200);

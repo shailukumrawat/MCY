@@ -46,7 +46,7 @@
                                     <li>
                                         <i class="flaticon1-arrows"></i>
                                         <a href="#" data-toggle="modal" class="event_upldnew" id="img" data-id="0" data-target="#imgcrop_modal"></a>
-                                        Upload Car Image Here 1
+                                        Upload Main Car Image Here
                                         <img id="output0" class="upload_img" />
                                         <input type="hidden" id="hdoutput0" name="hdoutput0" />
                                     </li>
@@ -165,7 +165,7 @@
                                 <option value="0">Year</option>
                                 @for (int i = 1950; i <= DateTime.Now.Year; i++)
                                 {
-                                <option value="@i">@i</option>
+                                    <option value="@i">@i</option>
                                 }
 
                             </select>
@@ -774,7 +774,7 @@
 
                 lnv.alert({
                     title: '',
-                    content: 'Please select Image 1',
+                    content: 'Please select main Image ',
                     alertBtnText: 'Okay',
                     alertHandler: function () {
                         $("#img").focus();
@@ -975,7 +975,7 @@
             // alert("Please select a valid Image file.");
             lnv.alert({
                 title: '',
-                content: 'Please select a valid Image 1',
+                content: 'Please select a valid Image ',
                 alertBtnText: 'Okay',
                 alertHandler: function () {
 
@@ -2118,7 +2118,7 @@
                     <input type="range" id="croprange" class="cropit-image-zoom-input">
                     <button class="rotate-ccw">Rotate counterclockwise</button>
                     <button class="rotate-cw">Rotate clockwise</button>
-                    <button class="export">Export</button>
+                    <button class="export">Submit</button>
                 </div>
             </div>
         </div>

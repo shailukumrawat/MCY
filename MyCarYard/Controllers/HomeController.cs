@@ -1905,7 +1905,8 @@ namespace MyCarYard.Controllers
                         going = dr["going"].ToString(),
                         country_name = dr["country_name"].ToString(),
                         state_name = dr["state_name"].ToString(),
-                        city_name = dr["city_name"].ToString()
+                        city_name = dr["city_name"].ToString(),
+                        postcode = dr["code"].ToString(),
                     }
                     );
             }
@@ -3022,7 +3023,8 @@ namespace MyCarYard.Controllers
                                 status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
                                 make = dt.Rows[i]["make_type"].ToString(),
                                 badge = dt.Rows[i]["badge_type"].ToString(),
-                                series = dt.Rows[i]["series"].ToString(),
+                                //series = dt.Rows[i]["series"].ToString(),
+                                series = dt.Rows[i]["series_type"].ToString(),
                                 currency = dt.Rows[i]["currencyname"].ToString(),
                                 model = dt.Rows[i]["model"].ToString(),
                                 tranmition = dt.Rows[i]["transmision"].ToString(),
@@ -3213,7 +3215,8 @@ namespace MyCarYard.Controllers
                         status = Convert.ToInt32(dt.Rows[i]["status"].ToString()),
                         make = dt.Rows[i]["make_type"].ToString(),
                         badge = dt.Rows[i]["badge_type"].ToString(),
-                        series = dt.Rows[i]["series"].ToString(),
+                        //series = dt.Rows[i]["series"].ToString(),
+                        series = dt.Rows[i]["series_type"].ToString(),
                         currency = dt.Rows[i]["currencyname"].ToString(),
                         model = dt.Rows[i]["model"].ToString(),
                         tranmition = dt.Rows[i]["transmision"].ToString(),
@@ -3661,7 +3664,8 @@ namespace MyCarYard.Controllers
                         city_name = dr["cityname"].ToString(),
                         country_name = dr["country_name"].ToString(),
                         state_name = dr["state_name"].ToString(),
-                        going = dr["going"].ToString()
+                        going = dr["going"].ToString(),
+                        postcode= dr["code"].ToString(),
                     }
                     );
             }
