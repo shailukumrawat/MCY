@@ -161,7 +161,13 @@
 
                                                     </div>
                                                     <div class="listing_detail">
-                                                        <h5 class="manageev_head">@Model.eventlist[i].title </h5>
+                                                        <h5 class="manageev_head">
+                                                            @Model.eventlist[i].title
+                                                            @if (!String.IsNullOrEmpty(Model.eventlist[i].sponsorname))
+                                                            {
+                                                                <strong style="font-size:13px;margin-left:10px"> Sponsored By: ( @Model.eventlist[i].sponsorname ) </strong>
+                                                            }
+                                                        </h5>
                                                         <div class="item_detail">
                                                             <h5>Place: @Model.eventlist[i].suburb, @Model.eventlist[i].city, @Model.eventlist[i].state, @Model.eventlist[i].code</h5>
                                                             <h5>@(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</h5>
@@ -231,7 +237,13 @@
 
                                                     </div>
                                                     <div class="listing_detail">
-                                                        <h5 class="manageev_head">@Model.eventlist[i].title </h5>
+                                                        <h5 class="manageev_head">
+                                                            @Model.eventlist[i].title
+                                                            @if (!String.IsNullOrEmpty(Model.eventlist[i].sponsorname))
+                                                            {
+                                                                <strong style="font-size:13px;margin-left:10px"> Sponsored By: ( @Model.eventlist[i].sponsorname ) </strong>
+                                                            }
+                                                        </h5>
                                                         <div class="item_detail">
                                                             <h5>Place: @Model.eventlist[i].suburb, @Model.eventlist[i].city, @Model.eventlist[i].state, @Model.eventlist[i].code</h5>
                                                             <h5>@(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</h5>
@@ -306,7 +318,13 @@
 
                                                     </div>
                                                     <div class="listing_detail">
-                                                        <h5 class="manageev_head">@Model.eventlist[i].title </h5>
+                                                        <h5 class="manageev_head">
+                                                            @Model.eventlist[i].title
+                                                            @if (!String.IsNullOrEmpty(Model.eventlist[i].sponsorname))
+                                                            {
+                                                                <strong style="font-size:13px;margin-left:10px"> Sponsored By: ( @Model.eventlist[i].sponsorname ) </strong>
+                                                            }
+                                                        </h5>
                                                         <div class="item_detail">
                                                             <h5>Place: @Model.eventlist[i].suburb, @Model.eventlist[i].city, @Model.eventlist[i].state, @Model.eventlist[i].code</h5>
                                                             <h5>@(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</h5>

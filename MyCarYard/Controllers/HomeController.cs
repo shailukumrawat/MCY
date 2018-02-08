@@ -3665,7 +3665,7 @@ namespace MyCarYard.Controllers
                         country_name = dr["country_name"].ToString(),
                         state_name = dr["state_name"].ToString(),
                         going = dr["going"].ToString(),
-                        postcode= dr["code"].ToString(),
+                        postcode = dr["code"].ToString(),
                     }
                     );
             }
@@ -4396,14 +4396,11 @@ namespace MyCarYard.Controllers
                     price = Convert.ToInt32(dt.Rows[0]["price"].ToString()),
                     showphone = Convert.ToInt32(dt.Rows[0]["shownumber"].ToString()),
                     going = dt.Rows[0]["going"].ToString(),
-                    email = dt.Rows[0]["email"].ToString()
-
+                    email = dt.Rows[0]["email"].ToString(),
+                    sponsorship = dt.Rows[0]["sponsorship"].ToString(),
+                    sponsorname = dt.Rows[0]["sponsorname"].ToString()
 
                 });
-
-
-
-
             }
 
 
@@ -4498,9 +4495,9 @@ namespace MyCarYard.Controllers
                     ispaid = Convert.ToInt32(dt.Rows[0]["ispaid"].ToString()),
                     price = Convert.ToInt32(dt.Rows[0]["price"].ToString()),
                     showphone = Convert.ToInt32(dt.Rows[0]["shownumber"].ToString()),
-                    email = dt.Rows[0]["email"].ToString()
-
-
+                    email = dt.Rows[0]["email"].ToString(),
+                    sponsorship = dt.Rows[0]["sponsorship"].ToString(),
+                    sponsorname = dt.Rows[0]["sponsorname"].ToString()
                 });
 
             }

@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_LayoutOuterUser.cshtml";
 }
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>*@
 
 <script>
 
@@ -40,7 +40,7 @@
                         };
                         //var infoWindow = new google.maps.InfoWindow();
                         map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
+                        map.setOptions({ minZoom: 1.9, maxZoom: 0 });
                         var infoWindow = new google.maps.InfoWindow({ maxWidth: 150, maxHeight: 250, });
 
 
@@ -85,6 +85,8 @@
                                     map.setCenter(marker.getPosition());
                                     // infowindow.position = marker.getPosition();
                                     infoWindow.open(map, marker);
+
+                                    google.maps.event.trigger(map, 'resize');
                                     //map.setZoom(8);
                                     //map.setCenter(marker.getPosition());
                                     if (marker.getAnimation() !== null) {
@@ -114,7 +116,7 @@
                     };
                     //var infoWindow = new google.maps.InfoWindow();
                     map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
+                    map.setOptions({ minZoom: 2, maxZoom: 0 });
                     var infoWindow = new google.maps.InfoWindow({ map: map });
 
                     $.getJSON("http://freegeoip.net/json/", function (data) {
@@ -164,10 +166,6 @@
         initMap1();
     }
 </script>
-
-
-
-
 <script>
 
 
@@ -196,7 +194,7 @@
 
                     };
                     var map1 = new google.maps.Map(document.getElementById("map1"), mapOptions1);
-
+                    map1.setOptions({ minZoom: 2, maxZoom: 0 });
 
                     $.getJSON("http://freegeoip.net/json/", function (data) {
                         country1 = data.country_name;
@@ -228,7 +226,7 @@
                     };
                     var infoWindow1 = new google.maps.InfoWindow({ maxWidth: 150, maxHeight: 250, });
                     var map1 = new google.maps.Map(document.getElementById("map1"), mapOptions1);
-
+                    map1.setOptions({ minZoom: 1.9, maxZoom: 0 });
                     $.getJSON("http://freegeoip.net/json/", function (data) {
                         country1 = data.country_name;
                         var ip = data.ip;

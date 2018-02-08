@@ -152,8 +152,7 @@ namespace MyCarYard.Controllers
                             System.Web.HttpContext.Current.Session["parentstore"] = dt.Rows[0]["parentstore"].ToString();
                             if (System.Web.HttpContext.Current.Session["type"].ToString() != "Super")
                             {
-                               // return RedirectToAction("UserIndex", "Home");
-
+                                return RedirectToAction("UserIndex", "Home");
                             }
                             else
                             {

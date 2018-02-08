@@ -14,7 +14,15 @@
                 for (int i = 0; i <= Model.eventdetailslist.Count - 1; i++)
                 {
                     <div class="detail_head event_head">
-                        <h4 class="detail_heading">Sponsored By: @Model.eventdetailslist[i].uname</h4>
+                        <h4 class="detail_heading">
+                            @*Sponsored By: @Model.eventdetailslist[i].uname*@
+                            @if(!String.IsNullOrEmpty(Model.eventdetailslist[i].sponsorname))
+                            {
+                                <span> Sponsored By:</span> @Model.eventdetailslist[i].sponsorname
+                            }
+                            else
+                            {<span>      </span>}
+                        </h4>
                         <div class="top_select">
                             <h4 class="detail_heading">
                                 Entry Fee: @if (Model.eventdetailslist[i].ispaid == 1)
@@ -40,7 +48,7 @@
                             <ul>
                                 @if (@Model.eventdetailslist[i].showphone == 1)
                                 {
-                                <li><a href="#" onclick="ShowContact('@Model.eventdetailslist[i].cno','@Model.eventdetailslist[i].title')" data-toggle="modal" data-target="#mobile_modal"><i class="fa fa-phone"></i></a></li>
+                                    <li><a href="#" onclick="ShowContact('@Model.eventdetailslist[i].cno','@Model.eventdetailslist[i].title')" data-toggle="modal" data-target="#mobile_modal"><i class="fa fa-phone"></i></a></li>
                                 }
                                 <li><div class="fb-share-button" data-href="http://mycaryard.mobi96.org/Home/EventDetails?eid=@Model.eventdetailslist[i].eid" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="http://www.facebook.com/sharer.php?s=100&p[title]='@Model.eventdetailslist[i].title'&p[url]=http://mycaryard.mobi96.org/Home/EventDetails?eid=@Model.eventdetailslist[i].eid&p[summary]=@Model.eventdetailslist[i].title&p[images][0]=http://mycaryard.mobi96.org/images/events/@Model.eventdetailslist[i].img">Share</a></div></li>
                                 <li><a href="#" data-toggle="modal" data-target="#msg_modal" onclick="return SetCustomerEmail('@Model.eventdetailslist[i].email')"><i class="fa fa-envelope-o"></i></a></li>
@@ -69,7 +77,7 @@
                                 <li><i class="flaticon-multiple-users-silhouette"></i> <span>@(Convert.ToInt32(Model.eventdetailslist[i].going))  People Going</span></li>
                             </ul>
                         </div>
-                      
+
                         <div class="seller_decribtion">
                             <h3 style="color:rgb(53, 153, 230);margin-bottom:2%;">Event Overview</h3>
                             <p>
@@ -85,7 +93,7 @@
 
     </div>
 </div>
-                    
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
 

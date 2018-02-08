@@ -8,89 +8,97 @@
     <div class="map_contain">
         <div class="newlis_contain new_detail">
             @if (Model.eventdetailslist.Any())
-        {
-            for (int i = 0; i <= Model.eventdetailslist.Count - 1; i++)
             {
-        <div class="detail_head event_head">
-            <h4 class="detail_heading">Sponsored By: @Model.eventdetailslist[i].uname</h4>
-            <div class="top_select">
-                <h4 class="detail_heading">
-                    Entry Fee: @if (Model.eventdetailslist[i].ispaid == 1)
-                    {
-                            <font>Paid</font>
+                for (int i = 0; i <= Model.eventdetailslist.Count - 1; i++)
+                {
+                    <div class="detail_head event_head">
+                        <h4 class="detail_heading">
+                            @*Sponsored By: @Model.eventdetailslist[i].uname*@
+                            @if (!String.IsNullOrEmpty(Model.eventdetailslist[i].sponsorname))
+                            {
+                                <span> Sponsored By:</span> @Model.eventdetailslist[i].sponsorname
                             }
                             else
-                            {
-                            <font>Free</font>
+                            {<span>      </span>}
+                        </h4>
+                        <div class="top_select">
+                            <h4 class="detail_heading">
+                                Entry Fee: @if (Model.eventdetailslist[i].ispaid == 1)
+                    {
+                                    <font>Paid</font>
+                                }
+                                else
+                                {
+                                    <font>Free</font>
 
-                            }
-                </h4>
+                                }
+                            </h4>
 
-            </div>
-        </div>
+                        </div>
+                    </div>
 
-        <div class="newdetailbox">
-            <div class="newdetail_left">
-                <h4 class="manageev_head">@Model.eventdetailslist[i].title</h4>
-                <h5 style="color:#89CFF0;">Place: @Model.eventdetailslist[i].state, @Model.eventdetailslist[i].country, @(Convert.ToDateTime(Model.eventdetailslist[i].date).ToString("MM/dd/yyyy"))</h5>
-            </div>
-            <div class="newdetail_bar">
-                <ul>
-                    @if (Model.eventdetailslist[i].showphone == 1)
-                            {
-                            <li><a href="#" onclick="ShowContact('@Model.eventdetailslist[i].cno','@Model.eventdetailslist[i].title')" data-toggle="modal" data-target="#mobile_modal"><i class="fa fa-phone"></i></a></li>
-                            }
-                    <li><div class="fb-share-button" data-href="http://mycaryard.mobi96.org/Home/EventDetails?eid=@Model.eventdetailslist[i].eid" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="http://www.facebook.com/sharer.php?s=100&p[title]='@Model.eventdetailslist[i].title'&p[url]=http://mycaryard.mobi96.org/Home/EventDetails?eid=@Model.eventdetailslist[i].eid&p[summary]=@Model.eventdetailslist[i].title&p[images][0]=http://mycaryard.mobi96.org/images/events/@Model.eventdetailslist[i].img">Share</a></div></li>
-                    <li><a href="#" data-toggle="modal" data-target="#msg_modal" onclick="return SetCustomerEmail('@Model.eventdetailslist[i].email')"><i class="fa fa-envelope-o"></i></a></li>
-                    <li><a href="javascript:void()" onclick="return setEventWatchlist('@Model.eventdetailslist[i].eid');" class="star_button" title="Watch"><i class="fa fa-star"></i></a></li>
+                    <div class="newdetailbox">
+                        <div class="newdetail_left">
+                            <h4 class="manageev_head">@Model.eventdetailslist[i].title</h4>
+                            <h5 style="color:#89CFF0;">Place: @Model.eventdetailslist[i].state, @Model.eventdetailslist[i].country, @(Convert.ToDateTime(Model.eventdetailslist[i].date).ToString("MM/dd/yyyy"))</h5>
+                        </div>
+                        <div class="newdetail_bar">
+                            <ul>
+                                @if (Model.eventdetailslist[i].showphone == 1)
+                                {
+                                    <li><a href="#" onclick="ShowContact('@Model.eventdetailslist[i].cno','@Model.eventdetailslist[i].title')" data-toggle="modal" data-target="#mobile_modal"><i class="fa fa-phone"></i></a></li>
+                                }
+                                <li><div class="fb-share-button" data-href="http://mycaryard.mobi96.org/Home/EventDetails?eid=@Model.eventdetailslist[i].eid" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="http://www.facebook.com/sharer.php?s=100&p[title]='@Model.eventdetailslist[i].title'&p[url]=http://mycaryard.mobi96.org/Home/EventDetails?eid=@Model.eventdetailslist[i].eid&p[summary]=@Model.eventdetailslist[i].title&p[images][0]=http://mycaryard.mobi96.org/images/events/@Model.eventdetailslist[i].img">Share</a></div></li>
+                                <li><a href="#" data-toggle="modal" data-target="#msg_modal" onclick="return SetCustomerEmail('@Model.eventdetailslist[i].email')"><i class="fa fa-envelope-o"></i></a></li>
+                                <li><a href="javascript:void()" onclick="return setEventWatchlist('@Model.eventdetailslist[i].eid');" class="star_button" title="Watch"><i class="fa fa-star"></i></a></li>
 
-                </ul>
-            </div>
-        </div>
-
-
-        <div class="describe_contain">
-            <div id="car_detail">
-                <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventdetailslist[i].img)"></div>
-                <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventdetailslist[i].img1)"></div>
-                <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventdetailslist[i].img2)"></div>
+                            </ul>
+                        </div>
+                    </div>
 
 
-            </div>
+                    <div class="describe_contain">
+                        <div id="car_detail">
+                            <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventdetailslist[i].img)"></div>
+                            <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventdetailslist[i].img1)"></div>
+                            <div class="item"> <img src="@Url.Content("~/images/events/"+@Model.eventdetailslist[i].img2)"></div>
 
-            <div class="item_detail">
-                <ul>
-                    <li><i class="fa fa-calendar"></i> <span>Event Detail</span></li>
-                    <li><i class="flaticon-calendar-page-empty"></i> <span>@(Convert.ToDateTime(Model.eventdetailslist[i].date).ToString("MM/dd/yyyy"))</span></li>
-                    <li><i class="flaticon-agenda"></i> <span>@Model.eventdetailslist[i].address, @Model.eventdetailslist[i].state, @Model.eventdetailslist[i].country</span></li>
-                    <li><i class="flaticon-clock-circular-outline"></i> <span>@Model.eventdetailslist[i].time</span></li>
-                    <li><i class="flaticon-multiple-users-silhouette"></i> <span>@(Convert.ToInt32(Model.eventdetailslist[i].going))  People Going</span></li>
-                </ul>
-            </div>
-            <div class="seller_decribtion">
-                <p>
 
-                </p>
-            </div>
-            <div class="seller_decribtion">
-                <h3 style="color:rgb(53, 153, 230);margin-bottom:2%;">Event Overview</h3>
-                <p>
-                    @Html.Raw(Model.eventdetailslist[i].subject)
-                </p>
+                        </div>
 
-            </div>
-        </div>
+                        <div class="item_detail">
+                            <ul>
+                                <li><i class="fa fa-calendar"></i> <span>Event Detail</span></li>
+                                <li><i class="flaticon-calendar-page-empty"></i> <span>@(Convert.ToDateTime(Model.eventdetailslist[i].date).ToString("MM/dd/yyyy"))</span></li>
+                                <li><i class="flaticon-agenda"></i> <span>@Model.eventdetailslist[i].address, @Model.eventdetailslist[i].state, @Model.eventdetailslist[i].country</span></li>
+                                <li><i class="flaticon-clock-circular-outline"></i> <span>@Model.eventdetailslist[i].time</span></li>
+                                <li><i class="flaticon-multiple-users-silhouette"></i> <span>@(Convert.ToInt32(Model.eventdetailslist[i].going))  People Going</span></li>
+                            </ul>
+                        </div>
+                        <div class="seller_decribtion">
+                            <p>
+
+                            </p>
+                        </div>
+                        <div class="seller_decribtion">
+                            <h3 style="color:rgb(53, 153, 230);margin-bottom:2%;">Event Overview</h3>
+                            <p>
+                                @Html.Raw(Model.eventdetailslist[i].subject)
+                            </p>
+
+                        </div>
+                    </div>
+                }
             }
-        }
 
-        </div>
         </div>
     </div>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
 
-    function EventGoing(uid,eid,email) {
+    function EventGoing(uid, eid, email) {
 
         lnv.confirm({
             title: 'Confirm',
@@ -101,7 +109,7 @@
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     url: '/Home/GoindToEvent',
-                    data: "{uid: '" + uid + "',eid: '"+ eid +"',email: '"+ email +"'}",
+                    data: "{uid: '" + uid + "',eid: '" + eid + "',email: '" + email + "'}",
                     dataType: "json",
                     async: false,
                     success: function (response) {
@@ -127,7 +135,7 @@
                                 }
                             });
                             $('.alert-btn').focus();
-                            }
+                        }
 
                     },
                     error: function () {

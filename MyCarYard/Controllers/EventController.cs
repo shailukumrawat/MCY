@@ -11,7 +11,7 @@ using MyCarYard.ActionHelper;
 
 namespace MyCarYard.Controllers.EventControllers
 {
-    
+
     public class EventController : Controller
     {
         string constr = ConfigurationManager.ConnectionStrings["connection"].ConnectionString;
@@ -79,10 +79,8 @@ namespace MyCarYard.Controllers.EventControllers
                                 price = Convert.ToInt32(dt.Rows[i]["price"].ToString()),
                                 showphone = Convert.ToInt32(dt.Rows[i]["shownumber"].ToString()),
                                 going = dt.Rows[i]["going"].ToString(),
-
-
-
-
+                                sponsorship = dt.Rows[i]["sponsorship"].ToString(),
+                                sponsorname = dt.Rows[i]["sponsorname"].ToString()
                             });
                         }
                     }
@@ -92,7 +90,7 @@ namespace MyCarYard.Controllers.EventControllers
 
             dt = new DataTable();
 
-        
+
 
             using (SqlConnection con = new SqlConnection(constr))
             {
@@ -165,7 +163,7 @@ namespace MyCarYard.Controllers.EventControllers
                 }
             }
 
-           // RegisterViewModel listmodel = new RegisterViewModel();
+            // RegisterViewModel listmodel = new RegisterViewModel();
             List<MakeTypeModel> list = new List<MakeTypeModel>();
             con = new SqlConnection(constr);
             con.Open();
