@@ -23,7 +23,7 @@
                                     <input type="email" class="form-control" placeholder="Email Address" id="cemailid">
                                     <label id="cemaill" style="color:red;display:none"></label>
 
-                                                </div>
+                                </div>
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-group">
@@ -36,7 +36,7 @@
                                 <div class="form-group">
                                     <textarea placeholder="Message" class="form-control" id="cmessage"></textarea>
                                     <label id="cmessagel" style="color:red;display:none"></label>
-                                     <label id="cmessage2" style="color:green;display:none"></label>
+                                    <label id="cmessage2" style="color:green;display:none"></label>
 
                                 </div>
                             </div>
@@ -45,15 +45,15 @@
                                     <button class="cmn_btn second_btn" onclick="ContactUS();">Submit </button>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
 
                     <div class="col-sm-4">
                         <div class="contact_desc">
                             <h4 class="seller_head">Contact info</h4>
-                            <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
-                            <a href="#">info@mycaryard.com</a>
+                            <p></p>
+                            <a href="#">info@mycaryard.net</a>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-     </div>               
+</div>
 <script>
 
     function ContactUS() {
@@ -143,27 +143,29 @@
                         if (result.status == "Success") {
 
                             $('#cmessage2').html("Your Enquiry Sent Successfully.");
+                            $('#cmessage2').fadeIn('slow', function () {
+                                $('#cmessage2').delay(5000).fadeOut();
+                            });
                             $('#cname').val('');
                             $('#cemailid').val('');
                             $('#csubject').val('');
                             $('#cmessage').val('');
-                        } 
+                        }
                     },
                     //called on jquery ajax call failure
                     error: function ajaxError(result) {
-                       // alert("Invalid");
+                        // alert("Invalid");
                         isvalid = false;
                     }
                 });
 
 
-               
+
             }
 
 
             return isvalid;
-        } catch (e)
-        {
+        } catch (e) {
 
             console.log(e);
         }

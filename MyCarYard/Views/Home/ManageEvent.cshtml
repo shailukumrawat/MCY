@@ -18,7 +18,7 @@
                 <ul class="nav nav-tabs">
                     <li><a data-toggle="tab" href="#upcoming_events">UPCOMING EVENTS</a></li>
                     <li class="active"><a data-toggle="tab" href="#dealers">DUE EVENTS</a></li>
-                    <li><a data-toggle="tab" href="#events" onclick="resizemap()">GOING EVENTS</a></li>
+                    <li><a data-toggle="tab" href="#going_events" onclick="resizemap()">GOING EVENTS</a></li>
                 </ul>
                 <div class="tab-content">
 
@@ -36,130 +36,10 @@
                                             {
                                                 if (Convert.ToDateTime(Model.eventlist[i].date) < DateTime.Now && Convert.ToString(Model.eventlist[i].uid) == @Session["id"].ToString())
                                                 {
-                                                    <div class="detail_head">
-                                                        <h4 class="detail_heading">@Model.eventlist[i].title</h4>
-                                                        <div class="detail_bar">
-
-                                                        </div>
-                                                    </div>
-                                                    <div class="describe_contain eventeditdelete">
-                                                        <div id="@i" class="carousel slide" data-ride="carousel">
-                                                            <!-- Indicators -->
-                                                            <ol class="carousel-indicators">
-                                                                <li data-target="#@i" data-slide-to="0" class="active"></li>
-                                                                <li data-target="#@i" data-slide-to="1"></li>
-                                                                <li data-target="#@i" data-slide-to="2"></li>
-                                                            </ol>
-
-                                                            <!-- Wrapper for slides -->
-                                                            <div class="carousel-inner" role="listbox">
-                                                                <div class="item active"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img)"></a></div>
-                                                                <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)"></a></div>
-                                                                <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)"></a></div>
-                                                            </div>
-
-                                                        </div>
-
-                                                        @*<div class="slide_detail clearfix">
-                                                                <ul>
-                                                                    <li>Dealer Name : @Model.eventlist[i].uname</li>
-                                                                    <li><a href="#"><i class="fa fa-map-marker"></i> Place:@Model.eventlist[i].state, @Model.eventlist[i].country, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</a></li>
-                                                                </ul>
-                                                            </div>*@
-
-                                                        <div class="listing_detail">
-                                                            <h5 class="manageev_head toptenmargin">@Model.eventlist[i].title <span>Place:@Model.eventlist[i].state, @Model.eventlist[i].country, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</span></h5>
-                                                            <div class="item_detail">
-                                                                @if (!String.IsNullOrEmpty(Model.eventlist[i].sponsorname))
-                                                                {
-                                                                    <h5>Sponsored by : @Model.eventlist[i].sponsorname</h5>
-                                                                }
-                                                                <p>
-                                                                    @if (Model.eventlist[i].subject.Length < 200)
-                                                                    {
-                                                                        @Model.eventlist[i].subject
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        @Model.eventlist[i].subject.Substring(0, 200)
-                                                                    }
-                                                                </p>
-                                                                <ul>
-                                                                    <li>
-                                                                        Status : @if (Model.eventlist[i].status == 0)
-                                                                        {
-
-                                                                            <font color="red">Awaiting Approval</font>
-
-                                                                        }
-                                                                        else if (Model.eventlist[i].status == 1)
-                                                                        {
-                                                                            <font color="green">Approved</font>
-
-                                                                        }
-                                                                        else
-                                                                        {
-
-                                                                            <font color="red">Not Approved</font>
-
-                                                                        }
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="listing_btm">
-                                                                <ul>
-                                                                    <li><a href="#" class="cmn_btn"><i class="flaticon-multiple-users-silhouette"></i> @(Convert.ToInt32(Model.eventlist[i].going))</a></li>
-
-                                                                    <li><a class="fuel_btn" href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"> Full Detail</a></li>
-                                                                </ul>
-                                                                <ul class="newright">
-                                                                    <li><a href="@Url.Action("EditEvent", "Home")?eid=@Model.eventlist[i].eid" title="edit"><i class="flaticon-pencil-striped-symbol-for-interface-edit-buttons"></i></a></li>
-                                                                    <li><a href="#" title="delete" onclick="return deleteEvent('@Model.eventlist[i].eid')"><i class="flaticon-delete"></i></a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-
-
-
-                                                    </div>
-                                                }
-                                            }
-                                        }
-                                    </div>
-                                    <!--------end delears----------->
-                                    <!--------end delears----------->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="upcoming_events" class="tab-pane fade in">
-
-                        @if (Model.eventlist.Any())
-                        {
-
-                            for (int i = 0; i <= Model.eventlist.Count - 1; i++)
-                            {
-                                if (Convert.ToDateTime(Model.eventlist[i].date) >= DateTime.Now && Convert.ToString(Model.eventlist[i].uid) == @Session["id"].ToString())
-                                {
-                                    <div class="newlis_contain">
                                         <div class="detail_head">
                                             <h4 class="detail_heading">@Model.eventlist[i].title</h4>
                                             <div class="detail_bar">
-                                                @*<ul>
-                                                        <li><a href="#">@Model.cardetailslist[i].currency @(Convert.ToDouble(Model.cardetailslist[i].price).ToString("#,##0"))</a></li>
-                                                        <li><a href="#" data-toggle="modal" data-target="#msg_modal" onclick="return SetCustomerEmail('@Model.cardetailslist[i].email')"><i class="fa fa-envelope-o"></i></a></li>
-                                                        @if (Model.cardetailslist[i].showphone == 1)
-                                                        {
-                                                            <li><a href="#" data-toggle="modal" data-target="#mobile_modal" onclick="ShowContact('@Model.cardetailslist[i].cno','@Model.cardetailslist[i].orgname')"><i class="fa fa-phone"></i></a></li>
-                                                        }
-                                                        <li><div class="fb-share-button" data-href="http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.cardetailslist[i].cid&title=@Model.cardetailslist[i].year@Model.cardetailslist[i].make@Model.cardetailslist[i].model@Model.cardetailslist[i].badge@Model.cardetailslist[i].series&image=http://mycaryard.mobi96.org/images/cars/@Model.cardetailslist[i].img" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="http://www.facebook.com/sharer.php?s=100&p[url]=http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.cardetailslist[i].cid&p[images][0]=http://mycaryard.mobi96.org/images/cars/@Model.cardetailslist[i].img&p[title]=@Model.cardetailslist[i].year@Model.cardetailslist[i].make@Model.cardetailslist[i].model@Model.cardetailslist[i].badge@Model.cardetailslist[i].series">Share</a></div></li>
 
-
-
-
-                                                        <li><a href="javascript:void()" onclick="return setWatchlist('@Model.cardetailslist[i].cid');" class="star_button @(Model.cardetailslist[i].star.Equals(1) ? Html.Raw("goldn") : null)" title="watch"><i class="fa fa-star"></i></a></li>
-                                                    </ul>*@
                                             </div>
                                         </div>
                                         <div class="describe_contain eventeditdelete">
@@ -180,72 +60,49 @@
 
                                             </div>
 
-
-                                            @*<div class="item_detail">
-                                                    <h4 class="seller_head">Vehicle Details</h4>
+                                            @*<div class="slide_detail clearfix">
                                                     <ul>
-
-                                                        <li>Vehicle: <span>@Model.cardetailslist[i].year @Model.cardetailslist[i].make @Model.cardetailslist[i].model  @Model.cardetailslist[i].badge @Model.cardetailslist[i].series </span></li>
-                                                        <li>Engine: <span>@Model.cardetailslist[i].cylinder_name  @Model.cardetailslist[i].engine</span></li>
-                                                        <li>Transmission: <span>@Model.cardetailslist[i].tranmition </span></li>
-                                                        <li>Price: <span>@Model.cardetailslist[i].currency @(Convert.ToDouble(Model.cardetailslist[i].price).ToString("#,##0"))</span></li>
-                                                        <li>Condition: <span>@Model.cardetailslist[i].condition</span></li>
-                                                        <li>Drivetrain: <span>@Model.cardetailslist[i].drive</span></li>
-
-
-                                                        <li>Odometer : <span> @(Convert.ToDouble(Model.cardetailslist[i].meter).ToString("#,##0"))  @Model.cardetailslist[i].matrics</span></li>
-                                                        <li>Enterior Color: <span>  @Model.cardetailslist[i].bcolor</span></li>
-                                                        <li>Interior Material : <span>@Model.cardetailslist[i].material </span></li>
-
-
-                                                        <li>Interior Color : <span> @Model.cardetailslist[i].icolor</span></li>
+                                                        <li>Dealer Name : @Model.eventlist[i].uname</li>
+                                                        <li><a href="#"><i class="fa fa-map-marker"></i> Place:@Model.eventlist[i].state, @Model.eventlist[i].country, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</a></li>
                                                     </ul>
-                                                </div>
-                                                <div class="seller_decribtion">
-                                                    <h4 class="seller_head">Seller Comments</h4>
-                                                    <p>
-                                                        @Html.Raw(Model.cardetailslist[i].descr)
-                                                    </p>
-
                                                 </div>*@
+
                                             <div class="listing_detail">
                                                 <h5 class="manageev_head toptenmargin">@Model.eventlist[i].title <span>Place:@Model.eventlist[i].state, @Model.eventlist[i].country, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</span></h5>
                                                 <div class="item_detail">
                                                     @if (!String.IsNullOrEmpty(Model.eventlist[i].sponsorname))
-                                                    {
-                                                        <h5>Sponsored by : @Model.eventlist[i].sponsorname</h5>
-                                                    }
+                                                                {
+                                                                <h5>Sponsored by : @Model.eventlist[i].sponsorname</h5>
+                                                                }
                                                     <p>
-
-
                                                         @if (Model.eventlist[i].subject.Length < 200)
-                                                        {
-                                                            @Model.eventlist[i].subject
-                                                        }
-                                                        else
-                                                        {
-                                                            @Model.eventlist[i].subject.Substring(0, 200)
-                                                        }
+                                                                    {
+                                                                    @Model.eventlist[i].subject
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    @Model.eventlist[i].subject.Substring(0, 200)
+                                                                    }
                                                     </p>
                                                     <ul>
                                                         <li>
                                                             Status : @if (Model.eventlist[i].status == 0)
-                                                            {
+                                                                        {
 
-                                                                <font color="red">Awaiting Approval</font>
+                                                                        <font color="red">Awaiting Approval</font>
 
-                                                            }
-                                                            else if (Model.eventlist[i].status == 1)
-                                                            {
-                                                                <font color="green">Approved</font>
+                                                                        }
+                                                                        else if (Model.eventlist[i].status == 1)
+                                                                        {
+                                                                        <font color="green">Approved</font>
 
-                                                            }
-                                                            else
-                                                            {
+                                                                        }
+                                                                        else
+                                                                        {
 
-                                                                <font color="red">Not Approved</font>
+                                                                        <font color="red">Not Approved</font>
 
-                                                            }
+                                                                        }
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -265,69 +122,212 @@
 
 
                                         </div>
+                                                }
+                                            }
+                                        }
                                     </div>
-                                    @*<div class="newlis_contain">
-                                            <div class="event_topbar">
-                                                <div class="tab-content">
-                                                    <div class="describe_contain">
-                                                        <div class="listing_slider">
-                                                            <div id="@i" class="carousel slide" data-ride="carousel">
-                                                                <!-- Indicators -->
-                                                                <ol class="carousel-indicators">
-                                                                    <li data-target="#@i" data-slide-to="0" class="active"></li>
-                                                                    <li data-target="#@i" data-slide-to="1"></li>
-                                                                    <li data-target="#@i" data-slide-to="2"></li>
-                                                                </ol>
+                                    <!--------end delears----------->
+                                    <!--------end delears----------->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                                                <!-- Wrapper for slides -->
-                                                                <div class="carousel-inner" role="listbox">
-                                                                    <div class="item active"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img)"></a></div>
-                                                                    <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)"></a></div>
-                                                                    <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)"></a></div>
-                                                                </div>
+                    <div id="upcoming_events" class="tab-pane fade in">
 
-                                                            </div>
-                                                        </div>
-                                                        <div class="listing_detail">
-                                                            <h5 class="manageev_head">@Model.eventlist[i].title </h5>
-                                                            <div class="item_detail">
-                                                                <h5>Place:@Model.eventlist[i].state, @Model.eventlist[i].country, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</h5>
-                                                                <p>
+                        @if (Model.eventlist.Any())
+                        {
+
+                            for (int i = 0; i <= Model.eventlist.Count - 1; i++)
+                            {
+                                if (Convert.ToDateTime(Model.eventlist[i].date) >= DateTime.Now && Convert.ToString(Model.eventlist[i].uid) == @Session["id"].ToString())
+                                {
+                        <div class="newlis_contain">
+                            <div class="detail_head">
+                                <h4 class="detail_heading">@Model.eventlist[i].title</h4>
+                                <div class="detail_bar">
+                                    @*<ul>
+                                            <li><a href="#">@Model.cardetailslist[i].currency @(Convert.ToDouble(Model.cardetailslist[i].price).ToString("#,##0"))</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#msg_modal" onclick="return SetCustomerEmail('@Model.cardetailslist[i].email')"><i class="fa fa-envelope-o"></i></a></li>
+                                            @if (Model.cardetailslist[i].showphone == 1)
+                                            {
+                                                <li><a href="#" data-toggle="modal" data-target="#mobile_modal" onclick="ShowContact('@Model.cardetailslist[i].cno','@Model.cardetailslist[i].orgname')"><i class="fa fa-phone"></i></a></li>
+                                            }
+                                            <li><div class="fb-share-button" data-href="http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.cardetailslist[i].cid&title=@Model.cardetailslist[i].year@Model.cardetailslist[i].make@Model.cardetailslist[i].model@Model.cardetailslist[i].badge@Model.cardetailslist[i].series&image=http://mycaryard.mobi96.org/images/cars/@Model.cardetailslist[i].img" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="http://www.facebook.com/sharer.php?s=100&p[url]=http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.cardetailslist[i].cid&p[images][0]=http://mycaryard.mobi96.org/images/cars/@Model.cardetailslist[i].img&p[title]=@Model.cardetailslist[i].year@Model.cardetailslist[i].make@Model.cardetailslist[i].model@Model.cardetailslist[i].badge@Model.cardetailslist[i].series">Share</a></div></li>
 
 
-                                                                    @if (Model.eventlist[i].subject.Length < 200)
-                                                                            {
-                                                                            @Model.eventlist[i].subject
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                            @Model.eventlist[i].subject.Substring(0, 200)
-                                                                            }
-                                                                </p>
-                                                                <ul></ul>
-                                                            </div>
-                                                            <div class="listing_btm">
-                                                                <ul>
-                                                                    <li><a href="#" class="cmn_btn"><i class="flaticon-multiple-users-silhouette"></i> @(Convert.ToInt32(Model.eventlist[i].going))</a></li>
 
-                                                                    <li><a class="fuel_btn" href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"> Full Detail</a></li>
-                                                                </ul>
-                                                                <ul class="newright">
-                                                                    <li><a href="@Url.Action("EditEvent", "Home")?eid=@Model.eventlist[i].eid" title="edit"><i class="flaticon-pencil-striped-symbol-for-interface-edit-buttons"></i></a></li>
-                                                                    <li><a href="#" title="delete" onclick="return deleteEvent('@Model.eventlist[i].eid')"><i class="flaticon-delete"></i></a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
+
+                                            <li><a href="javascript:void()" onclick="return setWatchlist('@Model.cardetailslist[i].cid');" class="star_button @(Model.cardetailslist[i].star.Equals(1) ? Html.Raw("goldn") : null)" title="watch"><i class="fa fa-star"></i></a></li>
+                                        </ul>*@
+                                </div>
+                            </div>
+                            <div class="describe_contain eventeditdelete">
+                                <div id="@i" class="carousel slide" data-ride="carousel">
+                                    <!-- Indicators -->
+                                    <ol class="carousel-indicators">
+                                        <li data-target="#@i" data-slide-to="0" class="active"></li>
+                                        <li data-target="#@i" data-slide-to="1"></li>
+                                        <li data-target="#@i" data-slide-to="2"></li>
+                                    </ol>
+
+                                    <!-- Wrapper for slides -->
+                                    <div class="carousel-inner" role="listbox">
+                                        <div class="item active"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img)"></a></div>
+                                        <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)"></a></div>
+                                        <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)"></a></div>
+                                    </div>
+
+                                </div>
+
+
+                                @*<div class="item_detail">
+                                        <h4 class="seller_head">Vehicle Details</h4>
+                                        <ul>
+
+                                            <li>Vehicle: <span>@Model.cardetailslist[i].year @Model.cardetailslist[i].make @Model.cardetailslist[i].model  @Model.cardetailslist[i].badge @Model.cardetailslist[i].series </span></li>
+                                            <li>Engine: <span>@Model.cardetailslist[i].cylinder_name  @Model.cardetailslist[i].engine</span></li>
+                                            <li>Transmission: <span>@Model.cardetailslist[i].tranmition </span></li>
+                                            <li>Price: <span>@Model.cardetailslist[i].currency @(Convert.ToDouble(Model.cardetailslist[i].price).ToString("#,##0"))</span></li>
+                                            <li>Condition: <span>@Model.cardetailslist[i].condition</span></li>
+                                            <li>Drivetrain: <span>@Model.cardetailslist[i].drive</span></li>
+
+
+                                            <li>Odometer : <span> @(Convert.ToDouble(Model.cardetailslist[i].meter).ToString("#,##0"))  @Model.cardetailslist[i].matrics</span></li>
+                                            <li>Enterior Color: <span>  @Model.cardetailslist[i].bcolor</span></li>
+                                            <li>Interior Material : <span>@Model.cardetailslist[i].material </span></li>
+
+
+                                            <li>Interior Color : <span> @Model.cardetailslist[i].icolor</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="seller_decribtion">
+                                        <h4 class="seller_head">Seller Comments</h4>
+                                        <p>
+                                            @Html.Raw(Model.cardetailslist[i].descr)
+                                        </p>
+
+                                    </div>*@
+                                <div class="listing_detail">
+                                    <h5 class="manageev_head toptenmargin">@Model.eventlist[i].title <span>Place:@Model.eventlist[i].state, @Model.eventlist[i].country, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</span></h5>
+                                    <div class="item_detail">
+                                        @if (!String.IsNullOrEmpty(Model.eventlist[i].sponsorname))
+                                                    {
+                                                    <h5>Sponsored by : @Model.eventlist[i].sponsorname</h5>
+                                                    }
+                                        <p>
+
+
+                                            @if (Model.eventlist[i].subject.Length < 200)
+                                                        {
+                                                        @Model.eventlist[i].subject
+                                                        }
+                                                        else
+                                                        {
+                                                        @Model.eventlist[i].subject.Substring(0, 200)
+                                                        }
+                                        </p>
+                                        <ul>
+                                            <li>
+                                                Status : @if (Model.eventlist[i].status == 0)
+                                                            {
+
+                                                            <font color="red">Awaiting Approval</font>
+
+                                                            }
+                                                            else if (Model.eventlist[i].status == 1)
+                                                            {
+                                                            <font color="green">Approved</font>
+
+                                                            }
+                                                            else
+                                                            {
+
+                                                            <font color="red">Not Approved</font>
+
+                                                            }
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="listing_btm">
+                                        <ul>
+                                            <li><a href="#" class="cmn_btn"><i class="flaticon-multiple-users-silhouette"></i> @(Convert.ToInt32(Model.eventlist[i].going))</a></li>
+
+                                            <li><a class="fuel_btn" href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"> Full Detail</a></li>
+                                        </ul>
+                                        <ul class="newright">
+                                            <li><a href="@Url.Action("EditEvent", "Home")?eid=@Model.eventlist[i].eid" title="edit"><i class="flaticon-pencil-striped-symbol-for-interface-edit-buttons"></i></a></li>
+                                            <li><a href="#" title="delete" onclick="return deleteEvent('@Model.eventlist[i].eid')"><i class="flaticon-delete"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                        @*<div class="newlis_contain">
+                                <div class="event_topbar">
+                                    <div class="tab-content">
+                                        <div class="describe_contain">
+                                            <div class="listing_slider">
+                                                <div id="@i" class="carousel slide" data-ride="carousel">
+                                                    <!-- Indicators -->
+                                                    <ol class="carousel-indicators">
+                                                        <li data-target="#@i" data-slide-to="0" class="active"></li>
+                                                        <li data-target="#@i" data-slide-to="1"></li>
+                                                        <li data-target="#@i" data-slide-to="2"></li>
+                                                    </ol>
+
+                                                    <!-- Wrapper for slides -->
+                                                    <div class="carousel-inner" role="listbox">
+                                                        <div class="item active"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img)"></a></div>
+                                                        <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)"></a></div>
+                                                        <div class="item"><a href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)"></a></div>
                                                     </div>
+
                                                 </div>
                                             </div>
-                                        </div>*@
+                                            <div class="listing_detail">
+                                                <h5 class="manageev_head">@Model.eventlist[i].title </h5>
+                                                <div class="item_detail">
+                                                    <h5>Place:@Model.eventlist[i].state, @Model.eventlist[i].country, @(Convert.ToDateTime(Model.eventlist[i].date).ToString("MM/dd/yyyy"))</h5>
+                                                    <p>
+
+
+                                                        @if (Model.eventlist[i].subject.Length < 200)
+                                                                {
+                                                                @Model.eventlist[i].subject
+                                                                }
+                                                                else
+                                                                {
+                                                                @Model.eventlist[i].subject.Substring(0, 200)
+                                                                }
+                                                    </p>
+                                                    <ul></ul>
+                                                </div>
+                                                <div class="listing_btm">
+                                                    <ul>
+                                                        <li><a href="#" class="cmn_btn"><i class="flaticon-multiple-users-silhouette"></i> @(Convert.ToInt32(Model.eventlist[i].going))</a></li>
+
+                                                        <li><a class="fuel_btn" href="@Url.Action("UserEventDetails", "Home")?eid=@Model.eventlist[i].eid"> Full Detail</a></li>
+                                                    </ul>
+                                                    <ul class="newright">
+                                                        <li><a href="@Url.Action("EditEvent", "Home")?eid=@Model.eventlist[i].eid" title="edit"><i class="flaticon-pencil-striped-symbol-for-interface-edit-buttons"></i></a></li>
+                                                        <li><a href="#" title="delete" onclick="return deleteEvent('@Model.eventlist[i].eid')"><i class="flaticon-delete"></i></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
                                 }
                             }
                         }
                     </div>
 
-                    <div id="events" class="tab-pane fade in">
+                    <div id="going_events" class="tab-pane fade in">
 
                         @if (Model.eventdetailslist.Any())
                         {
@@ -431,7 +431,16 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
-
+    $(document).ready(function () {
+        $('.carousel').carousel({
+            interval: false,
+            pause: 'hover',
+            wrap: true,
+            keyboard: true,
+            autoplay: false
+        })
+        $('.carousel').carousel('cycle');
+    });
     function setWatchlist(cid) {
         $('#star_rat').toggleClass('star_gold');
 

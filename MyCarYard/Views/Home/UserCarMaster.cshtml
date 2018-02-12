@@ -17,8 +17,6 @@
                             <option value="edate">Recent Add(Default)</option>
                             <option value="price">Price (High to Low)</option>
                             <option value="pricel">Price (Low to High)</option>
-                            <!--    <option>Last update</option>
-                                <option>Distance</option>-->
                         </select>
                     </li>
 
@@ -53,15 +51,6 @@
                         </div>
                         <div class="describe_contain">
                             <div class="listing_slider">
-                                <!--<div class="car_detail">
-                                    <div class="item"> <img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img)" style="width:183px;"></div>
-                                    <div class="item"> <img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img1)" style="width:183px;"></div>
-                                    <div class="item"> <img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img2)" style="width:183px;"></div>
-                                    <div class="item"> <img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img3)" style="width:183px;"></div>
-                                    <div class="item"> <img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img4)" style="width:183px;"></div>
-                                    <div class="item"> <img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img5)" style="width:183px;"></div>
-                                </div>-->
-
                                 <div id="@k" class="carousel slide" data-ride="carousel">
                                     <!-- Indicators -->
                                     <ol class="carousel-indicators">
@@ -144,11 +133,6 @@
 
                                             <div class="describe_contain">
                                                 <div class="listing_slider">
-                                                    <!-- <div class="car_detail">
-                                                         <div class="item"> <img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img)" alt="car"></div>
-                                                         <div class="item"> <img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)" alt="car"></div>
-                                                         <div class="item"> <img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)" alt="car"></div>
-                                                        -->
 
                                                     <div id="@k" class="carousel slide" data-ride="carousel">
                                                         <!-- Indicators -->
@@ -355,14 +339,8 @@
                                         }
                                         k++;
                                     }
-
-
                                 }
                             </div>
-
-
-
-
                         </div>
                     </div>
                 </div>
@@ -379,7 +357,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 <script>
-
+    $(document).ready(function () {
+        $('.carousel').carousel({
+            interval: false,
+            pause: 'hover',
+            wrap: true,
+            keyboard: true,
+            autoplay: false
+        })
+        $('.carousel').carousel('cycle');
+    });
     function setWatchlist(cid) {
         // confirm callback
         $.ajax({
@@ -404,7 +391,6 @@
 
         return false;
     }
-
     function setEventWatchlist(eventid) {
 
         $.ajax({
@@ -431,8 +417,6 @@
 
         return false;
     }
-
-
 </script>
 <script>
 

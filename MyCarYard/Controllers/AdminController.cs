@@ -3547,7 +3547,7 @@ namespace MyCarYard.Controllers
             JObject json = new JObject();
 
             var SmtpClient = new SmtpClient();
-            SmtpClient.Send("info@stums.in", "nileshlad1988@gmail.com", "MYCARYARD Enquiry", "Name - " + name + ", Email - " + email + ", Subject - " + subject + ", Message - " + msg + "");
+            SmtpClient.Send("info@mycaryard.net", "madelslim@hotmail.com", "MYCARYARD Enquiry", "Name - " + name + ", Email - " + email + ", Subject - " + subject + ", Message - " + msg + "");
             json["status"] = "Success";
 
             return json;

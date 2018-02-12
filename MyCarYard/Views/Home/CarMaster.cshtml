@@ -25,12 +25,7 @@
                                 return vars;
                             }
                             var me = getUrlVars()["option"];
-                            //alert(me);
-
-
-
                         </script>
-
                         <select class="top_selecefld" onchange="getfilter(this.value);">
                             <option selected value="0">Sort by</option>
                             <option value="edate">Recent Add(Default)</option>
@@ -40,7 +35,6 @@
                                 <option>Distance</option>-->
                         </select>
                     </li>
-
                 </ul>
             </div>
         </ul>
@@ -48,7 +42,6 @@
             <div id="dealers" class="tab-pane fade in active">
                 @if (Model.carlist.Any())
                 {
-
                     for (int i = 0; i <= Model.carlist.Count - 1; i++)
                     {
                         <div class="detail_head">
@@ -62,7 +55,6 @@
                                         <li><a href="#" data-toggle="modal" data-target="#mobile_modal" onclick="ShowContact('@Model.carlist[i].cno','@Model.carlist[i].orgname')"><i class="fa fa-phone"></i></a></li>
                                     }
                                     <li>
-
                                         <div class="fb-share-button" data-href="http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.carlist[i].cid&title=@Model.carlist[i].year@Model.carlist[i].make@Model.carlist[i].model@Model.carlist[i].badge@Model.carlist[i].series&image=http://mycaryard.mobi96.org/images/cars/@Model.carlist[i].img" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="http://www.facebook.com/sharer.php?s=100&p[url]=http://mycaryard.mobi96.org/Home/CarDetails?cid=@Model.carlist[i].cid&p[images][0]=http://mycaryard.mobi96.org/images/cars/@Model.carlist[i].img&p[title]=@Model.carlist[i].year@Model.carlist[i].make@Model.carlist[i].model@Model.carlist[i].badge@Model.carlist[i].series">Share</a></div>
 
                                     </li>
@@ -95,15 +87,7 @@
                                     <div class="item"><a href="@Url.Action("CarDetails", "Home")?cid=@Model.carlist[i].cid"><img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img4)"></a></div>
                                     <div class="item"><a href="@Url.Action("CarDetails", "Home")?cid=@Model.carlist[i].cid"><img src="@Url.Content("~/images/cars/" + @Model.carlist[i].img5)"></a></div>
                                 </div>
-
-
                                 </div>
-
-
-
-
-
-
                                 </div>
                                 <div class="listing_detail">
                                     <div class="item_detail">
@@ -139,8 +123,6 @@
             <!--------end delears----------->
             <div id="events" class="tab-pane fade">
                 <div class="newlis_contain">
-
-
                     <div class="listing_tab">
                         <ul class="nav nav-tabs">
                             <li><a data-toggle="tab" href="#upcoming_events">UPCOMING EVENTS</a></li>
@@ -154,13 +136,10 @@
 
                                 @if (Model.eventlist.Any())
                                 {
-
                                     for (int i = 0; i <= Model.eventlist.Count - 1; i++)
                                     {
-
                                         if (Convert.ToDateTime(Model.eventlist[i].date) >= DateTime.Now)
                                         {
-
                                             <div class="describe_contain">
                                                 <div class="listing_slider">
                                                     <div id="@k" class="carousel slide" data-ride="carousel">
@@ -177,9 +156,7 @@
                                                             <div class="item"><a href="@Url.Action("EventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)"></a></div>
                                                             <div class="item"><a href="@Url.Action("EventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)"></a></div>
                                                         </div>
-
                                                     </div>
-
                                                 </div>
                                                 <div class="listing_detail">
                                                     <h5 class="manageev_head">@Model.eventlist[i].title </h5>
@@ -212,8 +189,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         }
                                         k++;
                                     }
@@ -221,17 +196,12 @@
                             </div>
                             <!--------end delears----------->
                             <div id="due_events" class="tab-pane fade in active">
-
-
                                 @if (Model.eventlist.Any())
                                 {
-
                                     for (int i = 0; i <= Model.eventlist.Count - 1; i++)
                                     {
-
                                         if (Convert.ToDateTime(Model.eventlist[i].date) < DateTime.Now)
                                         {
-
                                             <div class="describe_contain">
                                                 <div class="listing_slider">
                                                     <div id="@k" class="carousel slide" data-ride="carousel">
@@ -248,9 +218,7 @@
                                                             <div class="item"><a href="@Url.Action("EventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)"></a></div>
                                                             <div class="item"><a href="@Url.Action("EventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)"></a></div>
                                                         </div>
-
                                                     </div>
-
                                                 </div>
                                                 <div class="listing_detail">
                                                     <h5 class="manageev_head">@Model.eventlist[i].title </h5>
@@ -286,26 +254,16 @@
                                         }
                                         k++;
                                     }
-
                                 }
-
-
                             </div>
-
-
                             <!--------end delears----------->
                             <div id="going_events" class="tab-pane fade">
-
-
                                 @if (Model.eventlist.Any())
                                 {
-
                                     for (int i = 0; i <= Model.eventlist.Count - 1; i++)
                                     {
-
                                         if (Convert.ToDateTime(Model.eventlist[i].date) == DateTime.Now)
                                         {
-
                                             <div class="describe_contain">
                                                 <div class="listing_slider">
                                                     <div id="@k" class="carousel slide" data-ride="carousel">
@@ -315,16 +273,13 @@
                                                             <li data-target="#@k" data-slide-to="1"></li>
                                                             <li data-target="#@k" data-slide-to="2"></li>
                                                         </ol>
-
                                                         <!-- Wrapper for slides -->
                                                         <div class="carousel-inner" role="listbox">
                                                             <div class="item active"><a href="@Url.Action("EventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img)"></a></div>
                                                             <div class="item"><a href="@Url.Action("EventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img1)"></a></div>
                                                             <div class="item"><a href="@Url.Action("EventDetails", "Home")?eid=@Model.eventlist[i].eid"><img src="@Url.Content("~/images/events/" + @Model.eventlist[i].img2)"></a></div>
                                                         </div>
-
                                                     </div>
-
                                                 </div>
                                                 <div class="listing_detail">
                                                     <h5 class="manageev_head">@Model.eventlist[i].title </h5>
@@ -360,14 +315,8 @@
                                         }
                                         k++;
                                     }
-
-
                                 }
                             </div>
-
-
-
-
                         </div>
                     </div>
                 </div>
@@ -380,43 +329,33 @@
     </div>
 </div>
 
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
-
-
     $(document).ready(function () {
+        $('.carousel').carousel({
+            interval: false,
+            pause: 'hover',
+            wrap: true,
+            keyboard: true,
+            autoplay: false
+        })
+        $('.carousel').carousel('cycle');
+
         var me = getUrlVars()["option"];
         //alert(me);
         if (me != null)
             $('.top_selecefld').val(me);
 
     });
-
     function ShowContact(cno, orgname) {
 
         $('#conorgname').val(orgname);
         $('#concno').val(cno);
     }
-
-    //$('.carousel').carousel({
-
-    //});
-
-
     function getfilter(filter) {
-
-        //alert(filter);
         location.href = '@Url.Action("CarMaster", "Home")?option=' + filter;
-
-
     }
-
-
-
     function SetCustomerEmail(email) {
-
         $('#custemail').val(email);
         return false;
     }

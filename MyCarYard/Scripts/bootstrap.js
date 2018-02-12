@@ -326,11 +326,11 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
       .on('mouseleave', $.proxy(this.cycle, this))
   }
 
-  Carousel.DEFAULTS = {
-    interval: 5000
-  , pause: 'hover'
-  , wrap: true
-  }
+  //Carousel.DEFAULTS = {
+  //  interval: 5000
+  //, pause: 'hover'
+  //, wrap: true
+  //}
 
   Carousel.prototype.cycle =  function (e) {
     e || (this.paused = false)

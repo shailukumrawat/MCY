@@ -1883,11 +1883,12 @@
 
                             }
                             function sliderInit() {
-                                $('.listing_slider').carousel({
-                                    interval: 29000,
+                                $('.carousel').carousel({
+                                    interval: false,
                                     pause: 'hover',
                                     wrap: true,
-                                    keyboard: true
+                                    keyboard: true,
+                                    autoplay: false
                                 })
                                 $(".carousel").carousel("cycle");
                             };

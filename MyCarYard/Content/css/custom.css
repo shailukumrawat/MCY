@@ -1956,6 +1956,10 @@ textarea.form-control {
 
 .new_detail .item_detail ul li:first-child span {
     color: #fff;
+    /*add 9Feb2018*/
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
 }
 
 .slide_detail li:last-child {
@@ -2148,7 +2152,8 @@ table.table_view td {
     padding-left: 5px;
     float: right;
 }
+
 .toptenmargin {
-    margin-top:10px;
-    margin-bottom:5px;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
