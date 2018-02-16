@@ -2606,10 +2606,8 @@ namespace MyCarYard.Controllers
 
         }
 
-        [HttpPost]
-        [AllowAnonymous]
-        [WebMethod]
-        [AuthonticateUserHelper]
+
+        [AllowAnonymous, WebMethod, AuthonticateUserHelper]
         public JObject DeleteEvent(string eid)
         {
             eid = ConvertHelper.Decode(eid);

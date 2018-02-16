@@ -11,6 +11,8 @@ namespace MyCarYard.Models
         public string category { get; set; }
         public int status { get; set; }
         public string Count { get; set; }
+        public string PrivateCount { get; set; }
+        public string SponserCount { get; set; }
 
         public List<EventCategoryModel> categorylist { get; set; }
     }

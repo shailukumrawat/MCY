@@ -105,8 +105,16 @@ jQuery(document).ready(function ($) {
         $(this).toggleClass('star_gold');
     });
 
-       $(".my_fmg").closest(".col-sm-6").addClass("myfmgfull");  
-      
-   
+    $(".my_fmg").closest(".col-sm-6").addClass("myfmgfull");
+
+    /*Stop auto carousel*/
+    $('.carousel').carousel({
+        interval: false,
+        pause: 'hover',
+        wrap: true,
+        keyboard: true,
+        autoplay: false
+    })
+    $('.carousel').carousel('cycle');
 });
 
