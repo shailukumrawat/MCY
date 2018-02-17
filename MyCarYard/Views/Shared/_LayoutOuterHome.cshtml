@@ -685,8 +685,8 @@
                                             <div class="col-sm-12">
                                                 <div class="form-group right_top">
                                                     <select class="ms7 form-control mltple mltrstevent" id="prispo" multiple="multiple" style="display: none;">
-                                                        <option value="0">Private Event</option>
-                                                        <option value="1">Sponsored Event</option>
+                                                        @*<option value="0">Private Event</option>
+                                                            <option value="1">Sponsored Event</option>*@
                                                     </select>
                                                 </div>
                                             </div>
@@ -977,9 +977,12 @@
                                                     $("#cat").append($("<option></option>").val(result.catlist[i].ecat_id).html(result.catlist[i].category + " (" + result.catlist[i].Count + ")"));
                                                 }
                                             }
-                                            //$("#prispo").append($("<option></option>").val("0").html("Private Event" + " (" + result.catlist[0].PrivateCount + ")"));
+                                            $("#prispo").append($("<option></option>").val("0").html("Private Event" + " (" + result.catlist[0].PrivateCount + ")"));
+                                            $("#prispo").append($("<option></option>").val("1").html("Sponsored Event" + " (" + result.catlist[0].SponserCount + ")"));
                                             $('#cat').addClass("mltple");
                                             $('.ms6').multiselect('rebuild');
+                                            $('#prispo').addClass("mltple");
+                                            $('.ms7').multiselect('rebuild');
                                         },
                                         //called on jquery ajax call failure
                                         error: function ajaxError(result) {
@@ -1421,7 +1424,7 @@
                                     $body = $("body");
                                     $body.addClass("loading");
                                     //alert(cartransmission);
-                                    var spons = "";
+
                                     //var sponsvalue = $('#privateevent:checked').val();
                                     //if (sponsvalue == "on") {
 
@@ -1432,7 +1435,7 @@
                                     //    spons = "0";
 
                                     //}
-                                    spons = $('#prispo').val();
+                                    var spons = $('#prispo').val();
 
                                     var cat = $('#cat').val();
                                     var eventdue = $('#eventdue').val();
@@ -1449,7 +1452,7 @@
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
 
-                                        data: JSON.stringify(obj),
+                                        data: "{ cat: '" + cat + "', eventdue: '" + eventdue + "', country: '" + eventcountry + "', state: '" + state + "', eventkeyword: '" + eventkeyword + "', spons: '" + spons + "' }",
                                         url: '/Home/AdvanceSearchEvent',
                                         asyn: false,
                                         cache: false,
@@ -1534,7 +1537,6 @@
                                     $body = $("body");
                                     $body.addClass("loading");
                                     //alert(cartransmission);
-                                    var spons = "";
                                     //var sponsvalue = $('#privateevent:checked').val();
                                     //if (sponsvalue == "on") {
 
@@ -1545,7 +1547,7 @@
                                     //    spons = "0";
 
                                     //}
-                                    spons = $('#prispo').val();
+                                    var spons = $('#prispo').val();
 
                                     var cat = $('#cat').val();
                                     var eventdue = $('#eventdue').val();
@@ -1562,7 +1564,7 @@
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
 
-                                        data: JSON.stringify(obj),
+                                        data: "{ cat: '" + cat + "', eventdue: '" + eventdue + "', country: '" + eventcountry + "', state: '" + state + "', eventkeyword: '" + eventkeyword + "', spons: '" + spons + "' }",// JSON.stringify(obj),
                                         url: '/Home/AdvanceSearchEventMap',
                                         asyn: false,
                                         cache: false,

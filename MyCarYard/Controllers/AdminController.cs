@@ -2698,8 +2698,8 @@ namespace MyCarYard.Controllers
                         category = dr["category"].ToString(),
                         status = Convert.ToInt32(dr["status"].ToString()),
                         Count = dr["catcount"].ToString(),
-                        PrivateCount = dr["catcount"].ToString(),
-                        SponserCount = dr["catcount"].ToString()
+                        PrivateCount = dr["PrivateCount"].ToString(),
+                        SponserCount = dr["SponserCount"].ToString()
                     });
             }
             json["catlist"] = JToken.FromObject(catlist);
