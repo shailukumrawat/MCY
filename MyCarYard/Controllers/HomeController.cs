@@ -22,6 +22,7 @@ using System.Collections;
 namespace MyCarYard.Controllers
 {
     [ValidateInput(false)]
+    [OutputCache(Duration = 60)]
     public class HomeController : Controller
     {
         string constr = ConfigurationManager.ConnectionStrings["connection"].ConnectionString;
@@ -38,6 +39,8 @@ namespace MyCarYard.Controllers
             con = new SqlConnection(constr);
             con.Open();
             cmd = new SqlCommand("GetMakeTypeWithCount", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@countryid", '0');
             dr = cmd.ExecuteReader();
             while (dr.Read())
             {
@@ -3141,7 +3144,7 @@ namespace MyCarYard.Controllers
         [HttpPost]
         [WebMethod]
         [ValidateInput(false)]
-        public JObject AdvanceSearchCar(string make, string model, string series, string badge, string condition, string transmission, int fyear, int tyear, int country, int state, Int32 minprice, Int32 maxprice, string keyword)
+        public JObject AdvanceSearchCar(string make, string model, string series, string badge, string condition, string transmission, int fyear, int tyear, int country, int state, Int32 minprice, Int32 maxprice, string keyword, string filterval)
         {
             DataTable dt = new DataTable();
             List<CarModel> carlist = new List<CarModel>();
@@ -3164,6 +3167,7 @@ namespace MyCarYard.Controllers
             cmd.Parameters.AddWithValue("@minprice", minprice);
             cmd.Parameters.AddWithValue("@maxprice", maxprice);
             cmd.Parameters.AddWithValue("@keyword", keyword);
+            cmd.Parameters.AddWithValue("@filterval", filterval);
 
             con.Open();
             da = new SqlDataAdapter(cmd);
@@ -3542,7 +3546,7 @@ namespace MyCarYard.Controllers
 
         [WebMethod]
         [HttpPost]
-        public JObject AdvanceSearchEvent(string cat, string eventdue, string country, string state, string eventkeyword, string spons, string loginid)
+        public JObject AdvanceSearchEvent(string cat, string eventdue, string country, string state, string eventkeyword, string spons, string loginid, string filterval)
         {
 
 
@@ -3561,6 +3565,7 @@ namespace MyCarYard.Controllers
             cmd.Parameters.AddWithValue("@keyword", eventkeyword);
             cmd.Parameters.AddWithValue("@spons", spons);
             cmd.Parameters.AddWithValue("@loginid", loginid);
+            cmd.Parameters.AddWithValue("@filterval", filterval);
 
 
             con.Open();
@@ -4507,8 +4512,13 @@ namespace MyCarYard.Controllers
         }
 
         [AuthonticateUserHelper]
-        public ActionResult ManageEvent()
+        public ActionResult ManageEvent(string option = "0")
         {
+            if (option == "0")
+            {
+
+                option = "CID";
+            }
             string uid = Session["id"].ToString();
             DataTable dt = new DataTable();
             List<EventViewModel> eventlist1 = new List<EventViewModel>();
@@ -4518,6 +4528,7 @@ namespace MyCarYard.Controllers
             SqlCommand cmd = new SqlCommand("GetAllEventList", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@cid", uid);
+            cmd.Parameters.AddWithValue("@sortby", option);
             con.Open();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dt);
@@ -4632,8 +4643,14 @@ namespace MyCarYard.Controllers
 
         }
         [AuthonticateUserHelper]
-        public ActionResult ManageYard()
+        public ActionResult ManageYard(string option = "0")
         {
+            if (option == "0")
+            {
+
+                option = "CID";
+            }
+
             string uid = Session["id"].ToString();
             DataTable dt = new DataTable();
             List<CarModel> carlist = new List<CarModel>();
@@ -4645,6 +4662,7 @@ namespace MyCarYard.Controllers
                     con.Open();
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@uid", uid);
+                    cmd.Parameters.AddWithValue("@sortby", option);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
                     if (dt.Rows.Count > 0)

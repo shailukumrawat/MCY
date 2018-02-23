@@ -2061,12 +2061,13 @@ namespace MyCarYard.Controllers
 
         [HttpPost]
         [WebMethod]
-        public JObject LoadMakeWithCount()
+        public JObject LoadMakeWithCount(string countryid)
         {
             con = new SqlConnection(constr);
             List<MakeTypeModel> makelist = new List<MakeTypeModel>();
             JObject json = new JObject();
             SqlCommand cmd = new SqlCommand("GetMakeTypeWithCount", con);
+            cmd.Parameters.AddWithValue("@countryid", countryid);
             cmd.CommandType = CommandType.StoredProcedure;
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
@@ -2121,7 +2122,7 @@ namespace MyCarYard.Controllers
 
         [HttpPost]
         [WebMethod]
-        public JObject LoadModelWithCount(string[] make)
+        public JObject LoadModelWithCount(string[] make, string countryid)
         {
             con = new SqlConnection(constr);
             List<ModelTypeModel> modellist = new List<ModelTypeModel>();
@@ -2133,6 +2134,7 @@ namespace MyCarYard.Controllers
             con.Open();
             //cmd.Parameters.AddWithValue("@make_id", make);
             cmd.Parameters.Add("@List", SqlDbType.VarChar).Value = make[0];
+            cmd.Parameters.Add("@countryid", SqlDbType.VarChar).Value = countryid;
             da.Fill(dt);
             con.Close();
             foreach (DataRow dr in dt.Rows)
@@ -2186,7 +2188,7 @@ namespace MyCarYard.Controllers
         [HttpPost]
 
         [WebMethod]
-        public JObject LoadBadgeWithCount(string[] model)
+        public JObject LoadBadgeWithCount(string[] model, string countryid)
         {
             con = new SqlConnection(constr);
             List<BadgeTypeModel> badgelist = new List<BadgeTypeModel>();
@@ -2198,6 +2200,7 @@ namespace MyCarYard.Controllers
             con.Open();
             //cmd.Parameters.AddWithValue("@make_id", make);
             cmd.Parameters.AddWithValue("@List", model[0]);
+            cmd.Parameters.Add("@countryid", SqlDbType.VarChar).Value = countryid;
             da.Fill(dt);
             con.Close();
             foreach (DataRow dr in dt.Rows)
@@ -2425,7 +2428,7 @@ namespace MyCarYard.Controllers
 
         [HttpPost]
         [WebMethod]
-        public JObject LoadSeriesWithCount(string[] badge)
+        public JObject LoadSeriesWithCount(string[] badge, string countryid)
         {
             con = new SqlConnection(constr);
             List<SeriesModel> serieslist = new List<SeriesModel>();
@@ -2438,6 +2441,7 @@ namespace MyCarYard.Controllers
             //cmd.Parameters.AddWithValue("@make_id", make);
             //cmd.Parameters.AddWithValue("@model_id", model);
             cmd.Parameters.AddWithValue("@List", badge[0]);
+            cmd.Parameters.Add("@countryid", SqlDbType.VarChar).Value = countryid;
             da.Fill(dt);
             con.Close();
             foreach (DataRow dr in dt.Rows)
@@ -2527,7 +2531,7 @@ namespace MyCarYard.Controllers
         [HttpPost]
         [AllowAnonymous]
         [WebMethod]
-        public JObject LoadCondition()
+        public JObject LoadCondition(string countryid)
         {
             con = new SqlConnection(constr);
             List<ConditionModel> conditionlist = new List<ConditionModel>();
@@ -2537,6 +2541,7 @@ namespace MyCarYard.Controllers
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             con.Open();
+            cmd.Parameters.Add("@countryid", SqlDbType.VarChar).Value = countryid;
             da.Fill(dt);
             con.Close();
             foreach (DataRow dr in dt.Rows)
@@ -2558,7 +2563,7 @@ namespace MyCarYard.Controllers
         [HttpPost]
         [AllowAnonymous]
         [WebMethod]
-        public JObject LoadTransmission()
+        public JObject LoadTransmission(string countryid)
         {
             con = new SqlConnection(constr);
             List<TransmisionModel> translist = new List<TransmisionModel>();
@@ -2568,6 +2573,7 @@ namespace MyCarYard.Controllers
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             con.Open();
+            cmd.Parameters.Add("@countryid", SqlDbType.VarChar).Value = countryid;
             da.Fill(dt);
             con.Close();
             foreach (DataRow dr in dt.Rows)

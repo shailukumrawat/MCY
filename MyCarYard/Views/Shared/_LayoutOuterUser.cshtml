@@ -394,7 +394,7 @@
                                                 <div class="form-group right_top">
                                                     <select class="ms7 form-control mltple mltrstevent" id="prispo" multiple="multiple" style="display: none;">
                                                         @*<option value="0">Private Event</option>
-                                                        <option value="1">Sponsored Event</option>*@
+                                                            <option value="1">Sponsored Event</option>*@
                                                     </select>
                                                 </div>
                                             </div>
@@ -708,6 +708,8 @@
                                     //    spons = "0";
 
                                     //}
+                                    var filterval = $('#ddlfilter').val();
+
                                     var spons = $('#prispo').val();
                                     var cat = $('#cat').val();
                                     var eventdue = $('#eventdue').val();
@@ -723,7 +725,7 @@
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
 
-                                        data: "{ cat: '" + cat + "',eventdue: '" + eventdue + "',country: '" + eventcountry + "',state: '" + state + "',eventkeyword: '" + eventkeyword + "',spons: '" + spons + "',loginid:'" + @Session["id"] + "'}",
+                                        data: "{ cat: '" + cat + "',eventdue: '" + eventdue + "',country: '" + eventcountry + "',state: '" + state + "',eventkeyword: '" + eventkeyword + "',spons: '" + spons + "',loginid:'" + @Session["id"] + "',filterval: '" + filterval + "'}",
                                         url: '/Home/AdvanceSearchEvent',
                                         asyn: false,
                                         cache: false,
@@ -736,7 +738,12 @@
                                             // _html += "<ul class='nav nav-tabs'><div class='top_select'><ul><li><select class='top_selecefld'><option>Sort by</option><option>Recent Ads (Default)</option>";
                                             // _html += "<option>Price (High to Low)</option><option>Price (Low to High)</option><option>Last update</option><option>Distance</option></select></li></ul></div></ul>";
 
-                                            _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Event List </h4></div></div>";
+                                            //_html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Event List </h4></div></div>";
+                                            _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Event List </h4>";
+                                            _html += "<div class='top_select'><ul><li><select class='top_selecefld' onchange='advanceSearchEvent();' id='ddlfilter'><option selected value='0'>Sort by</option><option value='edate'>Recent Ads (Default)</option>";
+                                            _html += "<option value='price'>Price (High to Low)</option><option value='pricel'>Price (Low to High)</option></select></li></ul></div></div>";
+
+
                                             _html += "<div class='tab-content'><div id='events' class='tab-pane fade in active'>";
 
                                             _html += "<div class='newlis_contain'><div class='listing_tab'>";
@@ -1167,6 +1174,8 @@
                                     $body = $("body");
                                     $body.addClass("loading");
 
+                                    var filterval = $('#ddlfilter').val();
+
                                     var make = $('#maketype').val();
                                     //alert(make);
                                     var model = $('#modeltype').val();
@@ -1200,7 +1209,7 @@
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
 
-                                        data: "{ make: '" + make + "',model: '" + model + "',series: '" + series + "',badge: '" + badge + "',condition: '" + carcondition + "',transmission: '" + cartransmission + "',fyear: '" + fromyear + "',tyear: '" + toyear + "',country: '" + country + "',state: '" + state + "',minprice: '" + minprice + "',maxprice: '" + maxprice + "',keyword: '" + keyword + "' }",
+                                        data: "{ make: '" + make + "',model: '" + model + "',series: '" + series + "',badge: '" + badge + "',condition: '" + carcondition + "',transmission: '" + cartransmission + "',fyear: '" + fromyear + "',tyear: '" + toyear + "',country: '" + country + "',state: '" + state + "',minprice: '" + minprice + "',maxprice: '" + maxprice + "',keyword: '" + keyword + "',filterval: '" + filterval + "' }",
                                         url: '/Home/AdvanceSearchCar',
                                         asyn: false,
                                         cache: false,
@@ -1214,7 +1223,12 @@
                                             // _html += "<ul class='nav nav-tabs'><div class='top_select'><ul><li><select class='top_selecefld'><option>Sort by</option><option>Recent Ads (Default)</option>";
                                             // _html += "<option>Price (High to Low)</option><option>Price (Low to High)</option><option>Last update</option><option>Distance</option></select></li></ul></div></ul>";
                                             //_html += "<div class='tab-content'><div id='dealers' class='tab-pane fade in active'>";
-                                            _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Car List </h4></div>";
+
+                                            _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Car List </h4>";
+                                            _html += "<div class='top_select'><ul><li><select class='top_selecefld' onchange='advanceSearchCar();' id='ddlfilter'><option selected value='0'>Sort by</option><option value='edate'>Recent Ads (Default)</option>";
+                                            _html += "<option value='price'>Price (High to Low)</option><option value='pricel'>Price (Low to High)</option></select></li></ul></div></div>";
+
+                                            // _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Car List </h4></div>";
                                             for (var i = 0; i <= result.carlist.length - 1 ; i++) {
 
                                                 //alert(result.carlist[i].make);
@@ -1462,7 +1476,7 @@
                         </script>
 
                         <script type="text/javascript">
-                            function loadhomeseries(modelval) {
+                            function loadhomeseries(modelval, countryid) {
 
                                 try {
 
@@ -1480,7 +1494,7 @@
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
-                                        data: "{ model:'" + modelval + "' }",
+                                        data: "{ model:'" + modelval + "' ,countryid:'" + countryid + "'}",
                                         url: '/Admin/LoadBadgeWithCount',
                                         asyn: false,
                                         cache: false,
@@ -1518,7 +1532,7 @@
                         </script>
 
                         <script type="text/javascript">
-                            function loadhomebadge(seriesval) {
+                            function loadhomebadge(seriesval, countryid) {
                                 try {
                                     var make = $('#maketype option:selected').val();
                                     $('#homebadge').html('');
@@ -1532,7 +1546,7 @@
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
-                                        data: "{ badge:'" + seriesval + "' }",
+                                        data: "{ badge:'" + seriesval + "',countryid:'" + countryid + "' }",
                                         url: '/Admin/LoadSeriesWithCount',
                                         asyn: false,
                                         cache: false,
@@ -1767,6 +1781,16 @@
                                             // alert("Data Not Found");
                                         }
                                     });
+
+                                    loadMakeType(count_id);
+                                    loadTrans1(count_id);
+                                    loadCondition1(count_id);
+                                    $('#modeltype').html('');
+                                    $('#modeltype').multiselect('rebuild');
+                                    $('#homeseries').html('');
+                                    $('#homeseries').multiselect('rebuild');
+                                    $('#homebadge').html('');
+                                    $('#homebadge').multiselect('rebuild');
                                 } catch (e) {
 
                                     console.log(e);
@@ -1811,10 +1835,10 @@
                         </script>
                         <script type="text/javascript">
                             $(document).ready(function () {
-                                loadMakeType();
+                                loadMakeType(0);
                             });
 
-                            function loadMakeType() {
+                            function loadMakeType(countryid) {
 
                                 try {
 
@@ -1823,11 +1847,13 @@
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
+                                        data: "{countryid:'" + countryid + "'}",
                                         url: '/Admin/LoadMakeWithCount',
                                         asyn: false,
                                         cache: false,
                                         //called on jquery ajax call success
                                         success: function (result) {
+                                            $("#maketype").html('');
                                             for (var i = 0; i <= result.makelist.length - 1 ; i++) {
                                                 if (result.makelist[i].status == "1") {
                                                     if (result.makelist[i].count > 0) {
@@ -1859,7 +1885,7 @@
                             }
                         </script>
                         <script type="text/javascript">
-                            function loadModelType(maketpe) {
+                            function loadModelType(maketpe, countryid) {
                                 try {
                                     //alert("Hello");
 
@@ -1886,7 +1912,7 @@
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
-                                        data: "{ make: '" + maketpe + "' }",
+                                        data: "{ make: '" + maketpe + "',countryid:'" + countryid + "' }",
                                         url: '/Admin/LoadModelWithCount',
                                         asyn: false,
                                         cache: false,
@@ -1933,11 +1959,11 @@
 
                         <script type="text/javascript">
                             $(document).ready(function () {
-                                loadCondition1();
+                                loadCondition1(0);
 
                             });
 
-                            function loadCondition1() {
+                            function loadCondition1(countryid) {
                                 // alert("hi");
                                 try {
                                     $.ajax({
@@ -1945,11 +1971,13 @@
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
+                                        data: "{countryid:'" + countryid + "'}",
                                         url: '/Admin/LoadCondition',
                                         asyn: false,
                                         cache: false,
                                         //called on jquery ajax call success
                                         success: function (result) {
+                                            $("#carcondition").html('');
                                             for (var i = 0; i <= result.conditionlist.length - 1 ; i++) {
                                                 if (result.conditionlist[i].status == 1) {
                                                     //$("#carcondition").append($("<option></option>").val(result.conditionlist[i].cond_id).html(result.conditionlist[i].condition));
@@ -1976,22 +2004,24 @@
 
                         <script type="text/javascript">
                             $(document).ready(function () {
-                                loadTrans1();
+                                loadTrans1(0);
 
                             });
 
-                            function loadTrans1() {
+                            function loadTrans1(countryid) {
                                 try {
                                     $.ajax({
                                         type: "POST",
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
+                                        data: "{countryid:'" + countryid + "'}",
                                         url: '/Admin/LoadTransmission',
                                         asyn: false,
                                         cache: false,
                                         //called on jquery ajax call success
                                         success: function (result) {
+                                            $("#cartransmission").html('');
                                             for (var i = 0; i <= result.translist.length - 1 ; i++) {
                                                 //alert("hi");
                                                 if (result.translist[i].status == "1") {

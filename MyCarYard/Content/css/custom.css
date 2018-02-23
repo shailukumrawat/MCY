@@ -786,33 +786,32 @@ select::-ms-expand {
 }
 /*car details*/
 /*Add 13feb 2018 start */
-#car_detail
-{
-margin-bottom: 20px;
+#car_detail {
+    margin-bottom: 20px;
 }
-/*Add 13feb2018  end*/
+    /*Add 13feb2018  end*/
 
-#car_detail .owl-dot, .car_detail .owl-dot {
-    background-color: rgb(255, 255, 255);
-    border-radius: 50%;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
-    display: inline-block;
-    height: 9px;
-    margin: 2px 5px;
-    width: 9px;
-}
+    #car_detail .owl-dot, .car_detail .owl-dot {
+        background-color: rgb(255, 255, 255);
+        border-radius: 50%;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+        display: inline-block;
+        height: 9px;
+        margin: 2px 5px;
+        width: 9px;
+    }
 
-#car_detail .owl-dots, .car_detail .owl-dots {
-    left: 0;
-    position: absolute;
-    text-align: center;
-    /*top: 96%;*//*Change on 13fab2018*/
-    top: 100%;
-    width: 100%;
-}
+    #car_detail .owl-dots, .car_detail .owl-dots {
+        left: 0;
+        position: absolute;
+        text-align: center;
+        /*top: 96%;*/ /*Change on 13fab2018*/
+        top: 100%;
+        width: 100%;
+    }
 
 .carousel-indicators {
-    /*bottom: 0;*//*change on 13fab2018*/
+    /*bottom: 0;*/ /*change on 13fab2018*/
     bottom: -20px;
 }
 /*.car_detail .owl-dots {
@@ -2165,4 +2164,14 @@ table.table_view td {
 .toptenmargin {
     margin-top: 10px;
     margin-bottom: 5px;
+}
+/*Call button*/
+.callanc {
+    background-color: rgb(53, 153, 230);
+    border: 0 none;
+    border-radius: 0;
+    color: rgb(255, 255, 255);
+    padding: 9px;
+    text-transform: uppercase;
+    width: 125px;
 }

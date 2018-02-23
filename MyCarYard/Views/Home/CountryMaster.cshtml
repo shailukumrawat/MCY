@@ -42,16 +42,16 @@
                     <h3 class="box-title">Add New Country</h3>
 
                     <div class="box-tools pull-right">
-                       @*  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
+                        @*  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>*@
                     </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-6">
-                            
-                                                        <div class="form-group">
+
+                            <div class="form-group">
                                 <label for="PlanName">Enter Country Name<span style="color:red;font-size:large;">*</span></label>
                                 <input type="text" class="form-control" id="country" placeholder="Enter Country Name" value="">
                             </div>
@@ -73,7 +73,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <button type="submit" class="btn btn-primary" id="save" onclick="SaveCountry();">Save Country</button>
-                    <button type="submit" class="btn btn-primary hidden" id="update" onclick="UpdateCountry();" >Update</button>
+                    <button type="submit" class="btn btn-primary hidden" id="update" onclick="UpdateCountry();">Update</button>
                 </div>
             </div>
             <div class="row">
@@ -95,9 +95,11 @@
                                 </thead>
                                 <tbody id="tblDetails">
 
-                                    @if (Model.countrylist.Any()) {
+                                    @if (Model.countrylist.Any())
+                                    {
                                         int j = 1;
-                                        for (int i = 0; i <= Model.countrylist.Count - 1; i++) {
+                                        for (int i = 0; i <= Model.countrylist.Count - 1; i++)
+                                        {
 
                                             <tr>
                                                 <td>@j</td>
@@ -140,7 +142,7 @@
 </div>
 <script>
 
-    function getData(cid,cname,status) {
+    function getData(cid, cname, status) {
 
         $('#country').val(cname);
         $('#status').val(status);
@@ -149,7 +151,7 @@
         $('#update').removeClass('hidden');
         $('#save').addClass('hidden');
         return false;
-        
+
 
     }
 
@@ -160,7 +162,7 @@
         var isvalid = true;
 
         try {
-            
+
             var countryname = $("#country").val();
             var status = $("#status").val();
             if (countryname.trim() == "" || countryname == undefined) {
@@ -235,10 +237,10 @@
                             });
                             $('.alert-btn').focus();
                         }
-                       
+
                     },
                     error: function () {
-                       
+
                         //  alert("Error");
                     }
                 });
@@ -255,8 +257,8 @@
                 $('.alert-btn').focus();
 
             }
-        } catch (e) { 
-    
+        } catch (e) {
+
             isvalid = false;
         }
 
@@ -265,7 +267,7 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
-       // loadtable();
+        // loadtable();
     });
 
     function loadtable() {
@@ -291,7 +293,7 @@
             },
             //called on jquery ajax call failure
             error: function ajaxError(result) {
-               // alert("Data Not Found");
+                // alert("Data Not Found");
             }
         });
 
@@ -307,7 +309,7 @@
             type: "POST",
             contentType: "application/json; charset=utf-8",
             url: '/Home/UpdateCountry',
-            data: "{count_id:'"+ $("#cid").val() +"' ,country: '" + $("#country").val() + "',status:'" + $("#status").val() + "'}",
+            data: "{count_id:'" + $("#cid").val() + "' ,country: '" + $("#country").val() + "',status:'" + $("#status").val() + "'}",
             dataType: "json",
             async: false,
             success: function (response) {

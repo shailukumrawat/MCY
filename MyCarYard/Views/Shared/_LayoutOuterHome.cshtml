@@ -762,6 +762,7 @@
                                             </div>
 
                                             <div class="submit_login">
+                                                <a id="concnocall" class="btn btn-default callanc" href="tel:9584305210" style="border-radius: 0;padding: 9px;">Call</a>
                                                 <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
                                             </div>
 
@@ -1129,6 +1130,16 @@
                                             // alert("Data Not Found");
                                         }
                                     });
+                                    loadMakeType(count_id);
+                                    loadTrans(count_id);
+                                    loadCondition(count_id);
+                                    $('#modeltype').html('');
+                                    $('#modeltype').multiselect('rebuild');
+                                    $('#homeseries').html('');
+                                    $('#homeseries').multiselect('rebuild');
+                                    $('#homebadge').html('');
+                                    $('#homebadge').multiselect('rebuild');
+
                                 } catch (e) {
 
                                     console.log(e);
@@ -1175,22 +1186,24 @@
 
                         <script type="text/javascript">
                             $(document).ready(function () {
-                                loadMakeType();
+                                loadMakeType(0);
 
                             });
 
-                            function loadMakeType() {
+                            function loadMakeType(countryid) {
                                 try {
                                     $.ajax({
                                         type: "POST",
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
+                                        data: "{countryid:'" + countryid + "'}",
                                         url: '/Admin/LoadMakeWithCount',
                                         asyn: false,
                                         cache: false,
                                         //called on jquery ajax call success
                                         success: function (result) {
+                                            $("#maketype").html('');
                                             for (var i = 0; i <= result.makelist.length - 1 ; i++) {
                                                 if (result.makelist[i].status == "1") {
 
@@ -1223,7 +1236,7 @@
                             }
                         </script>
                         <script type="text/javascript">
-                            function loadModelType(maketpe) {
+                            function loadModelType(maketpe, countryid) {
                                 try {
 
                                     //alert("Hello");
@@ -1257,7 +1270,7 @@
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
-                                        data: "{ make: '" + maketpe + "' }",
+                                        data: "{ make: '" + maketpe + "',countryid:'" + countryid + "' }",
                                         url: '/Admin/LoadModelWithCount',
                                         asyn: false,
                                         cache: false,
@@ -1303,7 +1316,7 @@
                             }
                         </script>
                         <script type="text/javascript">
-                            function loadhomeseries(modelval) {
+                            function loadhomeseries(modelval, countryid) {
                                 try {
                                     var make = $('#maketype option:selected').val();
                                     //  alert(count_id);
@@ -1324,7 +1337,7 @@
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
-                                        data: "{ model:'" + modelval + "' }",
+                                        data: "{ model:'" + modelval + "',countryid:'" + countryid + "' }",
                                         url: '/Admin/LoadBadgeWithCount',
                                         asyn: false,
                                         cache: false,
@@ -1363,7 +1376,7 @@
                             }
                         </script>
                         <script type="text/javascript">
-                            function loadhomebadge(seriesval) {
+                            function loadhomebadge(seriesval, countryid) {
                                 try {
                                     var make = $('#maketype option:selected').val();
                                     $('#homebadge').html('');
@@ -1377,7 +1390,7 @@
                                         contentType: "application/json; charset=utf-8",
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
-                                        data: "{ badge:'" + seriesval + "' }",
+                                        data: "{ badge:'" + seriesval + "',countryid:'" + countryid + "' }",
                                         url: '/Admin/LoadSeriesWithCount',
                                         asyn: false,
                                         cache: false,
@@ -1435,6 +1448,9 @@
                                     //    spons = "0";
 
                                     //}
+
+                                    var filterval = $('#ddlfilter').val();
+
                                     var spons = $('#prispo').val();
 
                                     var cat = $('#cat').val();
@@ -1452,7 +1468,7 @@
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
 
-                                        data: "{ cat: '" + cat + "', eventdue: '" + eventdue + "', country: '" + eventcountry + "', state: '" + state + "', eventkeyword: '" + eventkeyword + "', spons: '" + spons + "' }",
+                                        data: "{ cat: '" + cat + "', eventdue: '" + eventdue + "', country: '" + eventcountry + "', state: '" + state + "', eventkeyword: '" + eventkeyword + "', spons: '" + spons + "',filterval: '" + filterval + "' }",
                                         url: '/Home/AdvanceSearchEvent',
                                         asyn: false,
                                         cache: false,
@@ -1465,7 +1481,11 @@
                                             // _html += "<ul class='nav nav-tabs'><div class='top_select'><ul><li><select class='top_selecefld'><option>Sort by</option><option>Recent Ads (Default)</option>";
                                             // _html += "<option>Price (High to Low)</option><option>Price (Low to High)</option><option>Last update</option><option>Distance</option></select></li></ul></div></ul>";
 
-                                            _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Event List </h4></div></div>";
+                                            //_html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Event List </h4></div></div>";
+                                            _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Event List </h4>";
+                                            _html += "<div class='top_select'><ul><li><select class='top_selecefld' onchange='advanceSearchEvent();' id='ddlfilter'><option selected value='0'>Sort by</option><option value='edate'>Recent Ads (Default)</option>";
+                                            _html += "<option value='price'>Price (High to Low)</option><option value='pricel'>Price (Low to High)</option></select></li></ul></div></div>";
+
 
                                             _html += "<div class='tab-content'><div id='events' class='tab-pane fade in active'>";
 
@@ -1547,6 +1567,7 @@
                                     //    spons = "0";
 
                                     //}
+
                                     var spons = $('#prispo').val();
 
                                     var cat = $('#cat').val();
@@ -1768,6 +1789,8 @@
                                     $body = $("body");
                                     $body.addClass("loading");
 
+                                    var filterval = $('#ddlfilter').val();
+
                                     var make = $('#maketype').val();
                                     //alert(make);
                                     var model = $('#modeltype').val();
@@ -1801,7 +1824,7 @@
                                         //url is the path of our web method (Page name/function name)
                                         dataType: "json",
 
-                                        data: "{ make: '" + make + "',model: '" + model + "',series: '" + series + "',badge: '" + badge + "',condition: '" + carcondition + "',transmission: '" + cartransmission + "',fyear: '" + fromyear + "',tyear: '" + toyear + "',country: '" + country + "',state: '" + state + "',minprice: '" + minprice + "',maxprice: '" + maxprice + "',keyword: '" + keyword + "' }",
+                                        data: "{ make: '" + make + "',model: '" + model + "',series: '" + series + "',badge: '" + badge + "',condition: '" + carcondition + "',transmission: '" + cartransmission + "',fyear: '" + fromyear + "',tyear: '" + toyear + "',country: '" + country + "',state: '" + state + "',minprice: '" + minprice + "',maxprice: '" + maxprice + "',keyword: '" + keyword + "',filterval: '" + filterval + "' }",
                                         url: '/Home/AdvanceSearchCar',
                                         asyn: false,
                                         cache: false,
@@ -1815,8 +1838,11 @@
                                             // _html += "<option>Price (High to Low)</option><option>Price (Low to High)</option><option>Last update</option><option>Distance</option></select></li></ul></div></ul>";
                                             // _html += "<div class='tab-content'><div id='dealers' class='tab-pane fade in active'>";
 
-                                            _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Car List </h4></div>";
+                                            _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Car List </h4>";
+                                            _html += "<div class='top_select'><ul><li><select class='top_selecefld' onchange='advanceSearchCar();' id='ddlfilter'><option selected value='0'>Sort by</option><option value='edate'>Recent Ads (Default)</option>";
+                                            _html += "<option value='price'>Price (High to Low)</option><option value='pricel'>Price (Low to High)</option></select></li></ul></div></div>";
 
+                                           // _html += "<div class='mngevnt_contain'><div class='detail_head event_head prfl'><h4 class='detail_heading'> Car List </h4></div>";
                                             if (result.carlist.length < 1) { _html += "<h1> Record Not Found !!</h1>"; }
 
 
@@ -2084,8 +2110,9 @@
                         includeSelectAllOption: true,
                         onDropdownHide: function (e) {
                             maketpe = $('#maketype').val();
+                            countryid = $('#coun').val();
                             if (maketpe != null) {
-                                loadModelType(maketpe);
+                                loadModelType(maketpe, countryid);
                             } else {
                                 $('#modeltype').html('');
                                 $('#modeltype').multiselect('rebuild');
@@ -2105,8 +2132,9 @@
                         includeSelectAllOption: true,
                         onDropdownHide: function (e) {
                             modelval = $('#modeltype').val();
+                            countryid = $('#coun').val();
                             if (modelval != null) {
-                                loadhomeseries(modelval);
+                                loadhomeseries(modelval, countryid);
                             } else {
                                 $('#homeseries').html('');
                                 $('#homeseries').multiselect('rebuild');
@@ -2124,8 +2152,9 @@
                         includeSelectAllOption: true,
                         onDropdownHide: function (e) {
                             seriesval = $('#homeseries').val();
+                            countryid = $('#coun').val();
                             if (seriesval != null) {
-                                loadhomebadge(seriesval);
+                                loadhomebadge(seriesval, countryid);
                             } else {
                                 $('#homebadge').html('');
                                 $('#homebadge').multiselect('rebuild');
@@ -2311,8 +2340,6 @@
                 }
             });
 
-
-
         </script>
         <!-- login Modal -->
 
@@ -2418,6 +2445,7 @@
             }
 
         </script>
+
         <script>
 
             function validate() {
@@ -2486,8 +2514,6 @@
 
 
                     }
-
-
 
                 }
                 catch (e) {
@@ -2676,6 +2702,7 @@
             }
         }
     </script>
+
     <script type="text/javascript">
         function loadNewRegionnew() {
             try {
@@ -2775,9 +2802,8 @@
             //loadNewRegionnew();
         }
     </script>
+
     <script type="text/javascript">
-
-
 
         function loadRegState() {
             try {
@@ -2812,8 +2838,6 @@
                 console.log(e);
             }
         }
-
-
 
         $('input[type=radio]').change(function () {
             var value = $('input[name=Type]:checked').val();
@@ -3059,38 +3083,36 @@
             return isvalid;
         }
 
-
     </script>
 
     <script>
-
         function ShowContact(cno, orgname) {
-            //alert(cno);
-
             $('#concno').val(cno);
             $('#conorgname').val(orgname);
+            $('#concnocall').attr('href', 'tel:"' + cno + '"');
         }
-
     </script>
 
     <script type="text/javascript">
         $(document).ready(function () {
-            loadTrans();
+            loadTrans(0);
 
         });
 
-        function loadTrans() {
+        function loadTrans(countryid) {
 
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 //url is the path of our web method (Page name/function name)
                 dataType: "json",
+                data: "{countryid:'" + countryid + "'}",
                 url: '/Admin/LoadTransmission',
                 asyn: false,
                 cache: false,
                 //called on jquery ajax call success
                 success: function (result) {
+                    $("#cartransmission").html('');
                     for (var i = 0; i <= result.translist.length - 1 ; i++) {
                         //alert("hi");
                         if (result.translist[i].status == "1") {
@@ -3115,22 +3137,24 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            loadCondition();
+            loadCondition(0);
 
         });
 
-        function loadCondition() {
+        function loadCondition(countryid) {
             // alert("hi");
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 //url is the path of our web method (Page name/function name)
                 dataType: "json",
+                data: "{countryid:'" + countryid + "'}",
                 url: '/Admin/LoadCondition',
                 asyn: false,
                 cache: false,
                 //called on jquery ajax call success
                 success: function (result) {
+                    $("#carcondition").html('');
                     for (var i = 0; i <= result.conditionlist.length - 1 ; i++) {
                         if (result.conditionlist[i].status == 1) {
                             $("#carcondition").append($("<option></option>").val(result.conditionlist[i].cond_id).html(result.conditionlist[i].condition + " (" + result.conditionlist[i].count + ")"));

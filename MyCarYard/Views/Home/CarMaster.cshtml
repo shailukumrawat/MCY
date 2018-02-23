@@ -26,7 +26,7 @@
                             }
                             var me = getUrlVars()["option"];
                         </script>
-                        <select class="top_selecefld" onchange="getfilter(this.value);">
+                        <select class="top_selecefld" onchange="getfilter(this.value);" id="ddlfilter">
                             <option selected value="0">Sort by</option>
                             <option value="edate">Recent Add(Default)</option>
                             <option value="price">Price (High to Low)</option>
@@ -340,9 +340,9 @@
 
     });
     function ShowContact(cno, orgname) {
-
         $('#conorgname').val(orgname);
         $('#concno').val(cno);
+        $('#concnocall').attr('href', 'tel:"' + cno + '"');
     }
     function getfilter(filter) {
         location.href = '@Url.Action("CarMaster", "Home")?option=' + filter;

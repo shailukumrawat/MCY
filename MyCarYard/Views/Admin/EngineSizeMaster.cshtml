@@ -576,7 +576,8 @@
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 url: '/Admin/DeleteEngineSizeMaster',
-                data: "{engsizeid: '" + engsizeid + "'}",
+                //data: "{engsizeid: '" + engsizeid + "'}",
+                data: "{engsizeid: '" + id + "'}",
                 dataType: "json",
                 async: false,
                 success: function (response) {
